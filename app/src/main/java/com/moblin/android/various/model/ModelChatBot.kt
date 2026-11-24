@@ -732,6 +732,20 @@ fun Model.triggerReaction(reaction: SettingsReaction) {
         when (reaction.rawValue) {
             "glasses" -> triggerGlasses()
             "sparkle" -> triggerSparkle()
+            "pope" -> popeHatEffect?.play(
+                alert = com.moblin.android.videoeffects.alerts.AlertsEffectAlert.QuickButton
+            )
+            "pizzaChef" -> {
+                chefHatEffect?.play(
+                    alert = com.moblin.android.videoeffects.alerts.AlertsEffectAlert.QuickButton
+                )
+                moustacheEffect?.play(
+                    alert = com.moblin.android.videoeffects.alerts.AlertsEffectAlert.QuickButton
+                )
+            }
+            "poop" -> poopEffect?.play(
+                alert = com.moblin.android.videoeffects.alerts.AlertsEffectAlert.QuickButton
+            )
             else -> Unit
         }
     }

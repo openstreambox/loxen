@@ -1252,6 +1252,10 @@ private val allBundledAlertsMediaGalleryImages = listOf(
     SettingsAlertsMediaGalleryItem(name = "Sunglasses"),
     SettingsAlertsMediaGalleryItem(name = "Salty"),
     SettingsAlertsMediaGalleryItem(name = "-100"),
+    SettingsAlertsMediaGalleryItem(name = "Pope hat"),
+    SettingsAlertsMediaGalleryItem(name = "Chef hat"),
+    SettingsAlertsMediaGalleryItem(name = "Moustache"),
+    SettingsAlertsMediaGalleryItem(name = "Poop"),
 )
 
 private val allBundledAlertsMediaGallerySounds = listOf(
@@ -1289,11 +1293,27 @@ class SettingsAlertsMediaGallery(
         return bundledImages[5].id
     }
 
+    fun getPopeHatImageId(): UUID {
+        return bundledImages[8].id
+    }
+
+    fun getChefHatImageId(): UUID {
+        return bundledImages[9].id
+    }
+
+    fun getMoustacheImageId(): UUID {
+        return bundledImages[10].id
+    }
+
+    fun getPoopImageId(): UUID {
+        return bundledImages[11].id
+    }
+
     fun allImages(): List<SettingsAlertsMediaGalleryItem> {
         return bundledImages + customImages
     }
 
-    fun allSounds(): List<SettingsAlertsMediaGalleryItem> {
+    fun allSounds() : List<SettingsAlertsMediaGalleryItem> {
         return bundledSounds + customSounds
     }
 

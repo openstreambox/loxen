@@ -1,10 +1,21 @@
 {
-  "upstream": "6f9c3366d46355d2d932309ef7e5310a80462e0e",
+  "upstream": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
   "sync_error": null,
   "build": [],
   "pbswift": null,
   "held_back": [],
-  "port_failures": [],
+  "port_failures": [
+    {
+      "swift": "Moblin/Various/Model/ModelScene.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/various/model/ModelScene.kt",
+      "error": "peer closed connection without sending complete message body (incomplete chunked read)"
+    },
+    {
+      "swift": "Moblin/View/Settings/Chat/ChatBotSettingsView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/settings/chat/ChatBotSettingsView.kt",
+      "error": "peer closed connection without sending complete message body (incomplete chunked read)"
+    }
+  ],
   "hooks": [],
   "hand_ported": [],
   "effects": [],

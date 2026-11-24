@@ -1,6 +1,6 @@
 {
   "root": "/home/runner/work/loxen/loxen/.upstream",
-  "generated": "2026-11-23T00:30:45+00:00",
+  "generated": "2026-11-24T04:28:29+00:00",
   "files": [
     {
       "path": "Moblin Live Activity/MoblinLiveActivityApp.swift",
@@ -8254,8 +8254,8 @@
     },
     {
       "path": "Moblin/Media/HaishinKit/Codec/Video/VideoEncoderSettings.swift",
-      "lines": 145,
-      "sha256": "92c4e26819ba446ce2ac5abf7a1da2382fa73e893661a45051df3deda9a96da9",
+      "lines": 141,
+      "sha256": "1ad55834c36bddf10c090b963822c42a2c7476d2311b581b2493480603b5eaf2",
       "imports": [
         "Foundation",
         "VideoToolbox"
@@ -11221,8 +11221,8 @@
     },
     {
       "path": "Moblin/Various/ChatBotCommand.swift",
-      "lines": 284,
-      "sha256": "f745938e551ae6220e6009517a3cee7aae5ec698b733e4c716a8d529b647fa54",
+      "lines": 287,
+      "sha256": "0a2816588c62698cfa8d8466bcb44f369a0361bc2e5a71db1faf81abf895eca9",
       "imports": [
         "Collections",
         "FuzzyMatchingSwift"
@@ -17521,8 +17521,8 @@
     },
     {
       "path": "Moblin/Various/Model/ModelChatBot.swift",
-      "lines": 1078,
-      "sha256": "b532bfd04180f41f4a9154b3fb7be15b3561b422e627f507fcbe6651c47fa7fa",
+      "lines": 1085,
+      "sha256": "10e0cb6d762cd1a4789ac16f748b12fd37614cd1ad9c1451e23c4cdf3428820b",
       "imports": [
         "AVFoundation",
         "Foundation"
@@ -20811,8 +20811,8 @@
     },
     {
       "path": "Moblin/Various/Settings/SettingsMacros.swift",
-      "lines": 616,
-      "sha256": "c7f390966d3ed3849755652fe325a21442ac17a276cbb05a5c945c13f6a55420",
+      "lines": 631,
+      "sha256": "91aa1c8170998f48fde118fb7372ca9bd5cef9339f5227636e072a7f29094e88",
       "imports": [
         "AVFoundation",
         "Collections",
@@ -20903,8 +20903,8 @@
     },
     {
       "path": "Moblin/RemoteControl/RemoteControl.swift",
-      "lines": 1531,
-      "sha256": "b30700a995d9ce1894096c3c29d2a9c3fa062ad9d80fab4acc35d64636ed8ca0",
+      "lines": 1540,
+      "sha256": "8870e01154c790eb2e2b43ee5a5b8e2b37231c3bc23cda0ea3db005faef31223",
       "imports": [
         "AVFoundation",
         "CoreLocation",
@@ -21050,8 +21050,8 @@
     },
     {
       "path": "Moblin/Various/Settings/Settings.swift",
-      "lines": 2552,
-      "sha256": "42db146323cb2662919bc3a398ded8d71b76820a8bb81866d621329b5bd01891",
+      "lines": 2572,
+      "sha256": "1edf491d5c0c418fa320f6ac34bfb2c5ecc8865bfc3735cac71dadbdcc54c2b6",
       "imports": [
         "AVFoundation",
         "SwiftUI",
@@ -21562,8 +21562,8 @@
     },
     {
       "path": "Moblin/Various/Model/ModelMoblinCloud.swift",
-      "lines": 844,
-      "sha256": "0c653cd6a86a602a098db62fa5b01adb49b384e7c3ce2de0ccbb4318ea450c46",
+      "lines": 846,
+      "sha256": "f4f54adac4448b5a8aaea9ecced798b8995de408fd392671351b4f83c8ab3c2a",
       "imports": [
         "CryptoKit",
         "DeviceCheck",
@@ -21613,7 +21613,7 @@
     {
       "path": "Moblin/Various/Model/ModelRemoteControl.swift",
       "lines": 1774,
-      "sha256": "eb949caf6b6a7c861832e4c2ce57a351619a5164720ffe2bd658ba4ed886ee27",
+      "sha256": "18d24facd5e5bffa1d0beacfed5b84bd347f3052ce13c197955c9dd945891e48",
       "imports": [
         "AVFoundation",
         "CoreLocation",
@@ -21655,8 +21655,8 @@
     },
     {
       "path": "Moblin/Various/Model/ModelScene.swift",
-      "lines": 1942,
-      "sha256": "164a4bab49b9ce33e94219206207f6671556f9d9113b192935e3bc8161a446fc",
+      "lines": 2008,
+      "sha256": "c6f5b3c417e32ba373d60db2a4cc2271dc13ecfc8acbbbbbd817b8f8c3516bb6",
       "imports": [
         "AVFoundation",
         "CoreLocation",
@@ -22255,8 +22255,8 @@
     },
     {
       "path": "Moblin/Various/Model/Model.swift",
-      "lines": 3569,
-      "sha256": "fd3b8f9edf906323cf9a5170528848ce5ab3b7bd0bbfa98400a945b5579f8911",
+      "lines": 3573,
+      "sha256": "02c95198378d8f452a0fcc508105ad75b8001aa841ecbfe7205f8355219f02d2",
       "imports": [
         "AVKit",
         "ActivityKit",
@@ -22768,8 +22768,8 @@
     },
     {
       "path": "Moblin/View/Settings/Chat/ChatBotSettingsView.swift",
-      "lines": 862,
-      "sha256": "d6efeb7f76a06012b276d4b5db87aeaf5cddaf36958c8b07fc584ae57e610188",
+      "lines": 865,
+      "sha256": "f0dedf26e2e4548874a4a55b51b140b29ab14c241e3719c3389fd1fb74347f20",
       "imports": [
         "SwiftUI"
       ],

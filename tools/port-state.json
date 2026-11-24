@@ -4002,22 +4002,23 @@
   },
   "Moblin/Various/ChatBotCommand.swift": {
     "status": "ok",
-    "sha256": "f745938e551ae6220e6009517a3cee7aae5ec698b733e4c716a8d529b647fa54",
-    "moblin_commit": "17233fcc544596fe264fddb9d360d1b0f4a246e4",
+    "sha256": "0a2816588c62698cfa8d8466bcb44f369a0361bc2e5a71db1faf81abf895eca9",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "logic",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/ChatBotCommand.kt",
     "notes": [
-      "Added the new `vibrate` entry to ChatBotMainArgument right after `torch`, matching the Swift enum order.",
-      "Everything else in the file is untouched and byte-identical."
+      "Only the three new ChatBotReactionArgument cases (pope, pizzaChef, poop) were added; everything else is unchanged.",
+      "pizzaChef keeps the Swift raw value \"pizzachef\" (no camel-case separator) since raw values are persisted and matched by the chatbot.",
+      "The rest of the file, including the hand-ported FuzzyMatchingSwift bitap implementation and the Android-friendly ArrayDeque parts queue, is untouched."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 39968,
-    "tokens_out": 3486,
-    "seconds": 11.3,
-    "ported_at": "2026-10-13T23:28:49+00:00"
+    "tokens_in": 40298,
+    "tokens_out": 3555,
+    "seconds": 10.9,
+    "ported_at": "2026-11-24T04:28:58+00:00"
   },
   "Moblin/Various/Model/ModelLog.swift": {
     "status": "ok",
@@ -8515,26 +8516,24 @@
   },
   "Moblin/Media/HaishinKit/Codec/Video/VideoEncoderSettings.swift": {
     "status": "ok",
-    "sha256": "92c4e26819ba446ce2ac5abf7a1da2382fa73e893661a45051df3deda9a96da9",
-    "moblin_commit": "ad7072c6ada394a432fcc121ca00bc08a85fa414",
+    "sha256": "1ad55834c36bddf10c090b963822c42a2c7476d2311b581b2493480603b5eaf2",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/media/haishinkit/codec/video/VideoEncoderSettings.kt",
     "notes": [
-      "Added the new top-level createColorProperties(colorAttachments) helper right after createDataRateLimits, translating the optional lookups with ?.let and NSMutableArray-style append calls.",
-      "properties() now appends the HDR metadata insertion mode and then adds the three color properties produced from hlgColorAttachments instead of the inline ITU_R_2020 list.",
-      "hlgColorAttachments is imported from com.moblin.android.media.haishinkit.extension and typed as Map<String, String> (the Swift [String: String] color attachment dictionary).",
-      "The attachment dictionary keys kCVImageBufferColorPrimariesKey, kCVImageBufferTransferFunctionKey and kCVImageBufferYCbCrMatrixKey come from com.moblin.android.platform.video, so three new imports were added.",
-      "The per-format constants kCVImageBufferColorPrimaries_ITU_R_2020, kCVImageBufferTransferFunction_ITU_R_2100_HLG and kCVImageBufferYCbCrMatrix_ITU_R_2020 stay declared in this file because other files use them.",
-      "Everything outside the changed block (rate-control constants, Format, RateControl, thresholds, shouldInvalidateSession, bitrateProperties) is untouched."
+      "Only the .abr branch of bitrateProperties changed: it now always emits averageBitRate plus dataRateLimits, matching the removed iOS 27 availability check.",
+      "The hand-written flag videoEncoderAverageBitRateOnlySupported is no longer referenced here but is kept declared, since other Android files may still read it.",
+      "videoEncoderVariableBitRateSupported still gates the .vbr branch, matching the iOS 26 availability check that remains in Swift.",
+      "Everything else in the file is unchanged byte for byte, including imports, constants and createDataRateLimits."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 36019,
-    "tokens_out": 3300,
-    "seconds": 11.4,
-    "ported_at": "2026-09-29T00:38:51+00:00"
+    "tokens_in": 39446,
+    "tokens_out": 1974,
+    "seconds": 8.1,
+    "ported_at": "2026-11-24T04:28:54+00:00"
   },
   "Moblin/Media/HaishinKit/Media/MacScreenCapture.swift": {
     "status": "ok",
@@ -13836,24 +13835,25 @@
   },
   "Moblin/Various/Model/ModelChatBot.swift": {
     "status": "ok",
-    "sha256": "b532bfd04180f41f4a9154b3fb7be15b3561b422e627f507fcbe6651c47fa7fa",
-    "moblin_commit": "a04b3ed01577174ed701e23996f459631354b418",
+    "sha256": "10e0cb6d762cd1a4789ac16f748b12fd37614cd1ad9c1451e23c4cdf3428820b",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelChatBot.kt",
     "notes": [
-      "Only chatBotCustomCommandsTextChanged changed: the three manager starts were replaced by a single startTextVariableManagers() call.",
-      "startTextVariableManagers() is resolved as a Model extension in another file of the same package, so no import was added.",
-      "All other declarations are byte-identical to the previous Kotlin port, including the Android-specific cooldown logic using Instant/EpochMilli and the reaction/system-reaction handling.",
-      "The private formatAiAnswer helper and punctuationRegex stay unchanged at the top of the file."
+      "Only the triggerReaction when-block changed: added the pope, pizzaChef and poop branches after sparkle.",
+      "Kept the existing rawValue-string when style used by this file (the SettingsReaction enum in com.moblin.android.various.settings currently lists only fireworks, balloons, hearts, confetti, lasers, rain, glasses, sparkle; the new entries must be added there for the branches to be reachable).",
+      "popeHatEffect / chefHatEffect / moustacheEffect / poopEffect are optional effects on Model, so the Kotlin keeps the safe-call form.",
+      "`.play(alert: .quickButton)` maps to the fully qualified AlertsEffectAlert.QuickButton used by the alerts package, matching the existing fully qualified ChatBotCommand call in this file.",
+      "Imports and all other lines are unchanged."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 66848,
-    "tokens_out": 9395,
-    "seconds": 28.7,
-    "ported_at": "2026-11-03T02:09:25+00:00"
+    "tokens_in": 67073,
+    "tokens_out": 12557,
+    "seconds": 39.1,
+    "ported_at": "2026-11-24T04:29:26+00:00"
   },
   "Moblin/View/ControlBar/QuickButton/QuickButtonAutoSceneSwitcherView.swift": {
     "status": "ok",
@@ -15125,26 +15125,24 @@
   },
   "Moblin/RemoteControl/RemoteControl.swift": {
     "status": "ok",
-    "sha256": "b30700a995d9ce1894096c3c29d2a9c3fa062ad9d80fab4acc35d64636ed8ca0",
-    "moblin_commit": "33acad8eb54894bacb3b7cf647e14214f3095625",
+    "sha256": "8870e01154c790eb2e2b43ee5a5b8e2b37231c3bc23cda0ea3db005faef31223",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/remotecontrol/RemoteControl.kt",
     "notes": [
-      "GetWidgets switched from object to data class carrying `secrets`, and CreateWidget/UpdateWidget gained a `secrets` field.",
-      "Added four new stream requests (GetStream, CreateStream, UpdateStream, DeleteStream) plus the GetStream response case with matching JSON encode/decode.",
-      "RemoteControlSettings gained `currentStreamId: UUID?` serialized with UUIDSerializer, placed right after `streams` as in Swift.",
-      "New import for com.moblin.android.various.settings.SettingsStream is required by the new request/response cases.",
-      "Everything else kept byte-identical to the previous Kotlin file."
+      "Only the RemoteControlReaction diff is applied: three new cases pope, pizzaChef and poop are added with @SerialName wire names, and their toSettings() branches.",
+      "The new settings targets are mapped to SettingsReaction.POPE, SettingsReaction.PIZZA_CHEF and SettingsReaction.POOP; SettingsReaction must gain these three entries in its own file for this to compile.",
+      "Wire names stay byte-identical to Swift (\"pope\", \"pizzaChef\", \"poop\") because they are persisted in JSON and on the remote control wire.",
+      "Everything else in the Kotlin file, including the hand-written json/codable plumbing and the Java crypto fallback in RemoteControlEncryption, is unchanged."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 195368,
-    "tokens_out": 56666,
-    "seconds": 166.4,
-    "ported_at": "2026-11-12T01:46:05+00:00",
-    "warning": "changed 86 Kotlin lines for 12 changed Swift lines"
+    "tokens_in": 98070,
+    "tokens_out": 28094,
+    "seconds": 71.2,
+    "ported_at": "2026-11-24T04:29:59+00:00"
   },
   "Moblin/View/Settings/MediaPlayer/MediaPlayersSettingsView.swift": {
     "status": "ok",
@@ -15193,46 +15191,45 @@
   },
   "Moblin/Various/Settings/SettingsMacros.swift": {
     "status": "ok",
-    "sha256": "c7f390966d3ed3849755652fe325a21442ac17a276cbb05a5c945c13f6a55420",
-    "moblin_commit": "13df78b9956af458a9396b3a282bf0465dfdcb7a",
+    "sha256": "91aa1c8170998f48fde118fb7372ca9bd5cef9339f5227636e072a7f29094e88",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/settings/SettingsMacros.kt",
     "notes": [
-      "Incremental update: added the `notification` case to `SettingsMacrosActionFunction` (raw value \"Notification\", placed between sendChatMessage and sendTwitchShoutout) with its toString branch.",
-      "Added the `notificationMessage` published property to `SettingsMacrosAction`, kept in the same position as the Swift CodingKeys/encode/decode order (right after chatMessage).",
-      "Everything else in the file is byte-identical to the previous Kotlin translation, including the hand-written container serialization pattern and the SettingsReaction.toSystem() Android stub.",
-      "The enum uses the existing private rawValueSerializer helper, so the new case serializes as the string \"Notification\" exactly like Swift's String raw value."
+      "Only SettingsReaction changed: three new cases pope, pizzaChef and poop with raw values \"pope\", \"pizzachef\", \"poop\".",
+      "New enum entries are POPE, PIZZA_CHEF and POOP, inserted after SPARKLE in the declared order, and the raw-value string for pizzaChef stays \"pizzachef\" exactly as in the Swift init(value:).",
+      "toString() gained the three matching localized branches in the same order as Swift.",
+      "fromRawValue iterates entries by rawValue, so it picks up the new cases without further change.",
+      "toSystem() still returns null because AVCaptureReactionType has no Android counterpart.",
+      "Everything else in the file is byte-identical to the previous translation."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 52151,
-    "tokens_out": 6518,
-    "seconds": 18.0,
-    "ported_at": "2026-10-02T23:59:42+00:00"
+    "tokens_in": 53552,
+    "tokens_out": 6124,
+    "seconds": 17.6,
+    "ported_at": "2026-11-24T04:29:05+00:00"
   },
   "Moblin/Various/Model/ModelRemoteControl.swift": {
     "status": "ok",
-    "sha256": "eb949caf6b6a7c861832e4c2ce57a351619a5164720ffe2bd658ba4ed886ee27",
-    "moblin_commit": "33acad8eb54894bacb3b7cf647e14214f3095625",
+    "sha256": "18d24facd5e5bffa1d0beacfed5b84bd347f3052ce13c197955c9dd945891e48",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelRemoteControl.kt",
     "notes": [
-      "Added currentStreamId to RemoteControlSettings construction from the first enabled stream.",
-      "remoteControlStreamerGetWidgets, CreateWidget and UpdateWidget now take a secrets flag and forward it.",
-      "Added the four new stream CRUD delegates: GetStream, CreateStream, UpdateStream, DeleteStream.",
-      "The hand-written RemoteControlStreamerDelegateAdapter had to be updated to the new interface signatures, otherwise it would not compile.",
-      "Imported SettingsStream for the new delegate signatures."
+      "Only the visibility of handleRemoteControlTriggerReaction changed: the Swift `private func` became `func`, so the Kotlin extension lost its `private` modifier.",
+      "Every other line of the Kotlin file is unchanged, including the Android-specific delegate adapters, MediaMetadataRetriever thumbnail path and playback/cache hooks."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 100599,
-    "tokens_out": 22008,
-    "seconds": 66.1,
-    "ported_at": "2026-11-12T01:45:00+00:00"
+    "tokens_in": 100542,
+    "tokens_out": 20414,
+    "seconds": 49.7,
+    "ported_at": "2026-11-24T04:29:37+00:00"
   },
   "Moblin/Various/Model/ModelStream.swift": {
     "status": "ok",
@@ -15256,27 +15253,12 @@
     "ported_at": "2026-11-19T20:52:22+00:00"
   },
   "Moblin/Various/Model/ModelScene.swift": {
-    "status": "ok",
-    "sha256": "164a4bab49b9ce33e94219206207f6671556f9d9113b192935e3bc8161a446fc",
-    "moblin_commit": "6ad3761a777898a67c1aa71d746b5baaf52cdfab",
-    "mode": "incremental",
+    "status": "error",
+    "error": "peer closed connection without sending complete message body (incomplete chunked read)",
+    "sha256": "c6f5b3c417e32ba373d60db2a4cc2271dc13ecfc8acbbbbbd817b8f8c3516bb6",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelScene.kt",
-    "notes": [
-      "Camera-id default applied in CreateWidgetWizard.reset when a front camera exists, using the platform bestFrontCameraId val.",
-      "deleteScene now clears the scene reference of every widget that pointed at the deleted scene.",
-      "setSceneId posts RemoteControlState instead of the old RemoteControlAssistantStreamerState; the now unused import was swapped.",
-      "isCaptureDeviceWidget treats SettingsWidgetScene.sceneId as nullable before looking up the scene.",
-      "Added import for com.moblin.android.various.utils.bestFrontCameraId.",
-      "Nothing else in the file changed; hand-written Android deviations such as canvasSize() and the camera-preview device construction were preserved."
-    ],
-    "unsupported": [],
-    "model": "deepseek-flash",
-    "backend": "api",
-    "tokens_in": 103534,
-    "tokens_out": 20366,
-    "seconds": 68.5,
-    "ported_at": "2026-11-07T23:35:10+00:00"
+    "ported_at": "2026-11-24T04:29:15+00:00"
   },
   "Moblin/View/ControlBar/StreamButton.swift": {
     "status": "ok",
@@ -15367,25 +15349,23 @@
   },
   "Moblin/Various/Settings/Settings.swift": {
     "status": "ok",
-    "sha256": "42db146323cb2662919bc3a398ded8d71b76820a8bb81866d621329b5bd01891",
-    "moblin_commit": "ed96f78947c8ab8bbfc1c4c08e944aac9b849449",
+    "sha256": "1edf491d5c0c418fa320f6ac34bfb2c5ecc8865bfc3735cac71dadbdcc54c2b6",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/settings/Settings.kt",
     "notes": [
-      "Added the SettingsZoomAndSceneButtonsLayout enum with @SerialName raw values so stored JSON stays byte-identical (\"Stacked\", \"One row\", ...).",
-      "Database.verticalButtons is replaced by zoomAndSceneButtonsLayout; the old verticalButtons key is only read for migration.",
-      "The migration default reads the legacy \"verticalButtons\" boolean and maps true to .vertical, false to .stacked, exactly like the Swift decode.",
-      "encode() now writes the \"zoomAndSceneButtonsLayout\" key instead of \"verticalButtons\".",
-      "No other Kotlin declaration in the file referenced verticalButtons, so nothing else changed."
+      "Only the two Swift diff hunks were applied: four new bundled gallery images and four new getter helpers.",
+      "Get helpers use bundledImages[8..11], matching the Swift indices into the bundled image list.",
+      "Everything else in the Kotlin file is kept byte-identical."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 117123,
-    "tokens_out": 29140,
-    "seconds": 73.5,
-    "ported_at": "2026-11-19T20:52:35+00:00"
+    "tokens_in": 117096,
+    "tokens_out": 27933,
+    "seconds": 67.4,
+    "ported_at": "2026-11-24T04:29:56+00:00"
   },
   "Moblin/View/Settings/Display/QuickButtons/QuickButtonsSettingsView.swift": {
     "status": "ok",
@@ -15624,25 +15604,23 @@
   },
   "Moblin/Various/Model/Model.swift": {
     "status": "ok",
-    "sha256": "fd3b8f9edf906323cf9a5170528848ce5ab3b7bd0bbfa98400a945b5579f8911",
-    "moblin_commit": "6f9c3366d46355d2d932309ef7e5310a80462e0e",
+    "sha256": "02c95198378d8f452a0fcc508105ad75b8001aa841ecbfe7205f8355219f02d2",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/Model.kt",
     "notes": [
-      "Added `val showTaps = ShowTaps()` next to the other providers, matching the new Swift stored property.",
-      "`handleApplicationDidChangeActive` now calls `updateShowTaps()` when the app becomes active, before the isMac guard, exactly as in the new Swift code.",
-      "`ShowTaps` comes from com.moblin.android.various, already covered by the existing wildcard import.",
-      "`updateShowTaps()` is a Model extension in another file of the same package, so no import is added.",
-      "Everything else in the file is unchanged byte for byte, including the hand-written Android delegates, media proxy and timer plumbing."
+      "Only the four new alert effect properties (popeHatEffect, chefHatEffect, moustacheEffect, poopEffect) were added to Model, right after sparkleEffect.",
+      "Everything else in this file is unchanged from the previous Kotlin translation.",
+      "The new properties use the same type and initializer (AlertsEffect? = null) as the existing glassesEffect and sparkleEffect."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 148989,
-    "tokens_out": 36155,
-    "seconds": 161.0,
-    "ported_at": "2026-11-20T01:31:28+00:00"
+    "tokens_in": 149017,
+    "tokens_out": 35403,
+    "seconds": 88.0,
+    "ported_at": "2026-11-24T04:30:31+00:00"
   },
   "Moblin/View/Settings/Scenes/Widgets/Widget/VTuber/WidgetVTuberSettingsView.swift": {
     "status": "ok",
@@ -15688,26 +15666,12 @@
     "ported_at": "2026-11-13T00:44:20+00:00"
   },
   "Moblin/View/Settings/Chat/ChatBotSettingsView.swift": {
-    "status": "ok",
-    "sha256": "d6efeb7f76a06012b276d4b5db87aeaf5cddaf36958c8b07fc584ae57e610188",
-    "moblin_commit": "0292c5e7efcc2e9519f7f0927ab7b89596094758",
-    "mode": "incremental",
+    "status": "error",
+    "error": "peer closed connection without sending complete message body (incomplete chunked read)",
+    "sha256": "f0dedf26e2e4548874a4a55b51b140b29ab14c241e3719c3389fd1fb74347f20",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/chat/ChatBotSettingsView.kt",
-    "notes": [
-      "Added a Section at the top of ChatBotSettingsView's Form with the TradingCardView trading card, matching the Swift change.",
-      "The Swift drawChatBotCard(context:time:) closure became a private top-level Kotlin function (DrawScope, Double) taking the TradingCardView draw lambda's parameters.",
-      "The pulsing red dot is drawn with DrawScope.drawOval using the same 65.52/39.68/8.16 point values, colored Color(0xFF3B30) with tradingCardPulseOpacity as alpha.",
-      "Added imports for Offset, Size, Color, DrawScope, TradingCardView and tradingCardPulseOpacity.",
-      "Everything else in the file is untouched."
-    ],
-    "unsupported": [],
-    "model": "deepseek-flash",
-    "backend": "api",
-    "tokens_in": 64252,
-    "tokens_out": 9813,
-    "seconds": 33.5,
-    "ported_at": "2026-11-11T00:17:07+00:00"
+    "ported_at": "2026-11-24T04:29:16+00:00"
   },
   "Moblin/View/Settings/Scenes/Widgets/Widget/Alerts/WidgetAlertsSoundSettingsView.swift": {
     "status": "ok",
@@ -17635,24 +17599,24 @@
   },
   "Moblin/Various/Model/ModelMoblinCloud.swift": {
     "status": "ok",
-    "sha256": "0c653cd6a86a602a098db62fa5b01adb49b384e7c3ce2de0ccbb4318ea450c46",
-    "moblin_commit": "33acad8eb54894bacb3b7cf647e14214f3095625",
+    "sha256": "f4f54adac4448b5a8aaea9ecced798b8995de408fd392671351b4f83c8ab3c2a",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
     "mode": "incremental",
     "tier": "platform",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelMoblinCloud.kt",
     "notes": [
-      "Only the RemoteControlStreamerDelegate widget/stream methods changed: getWidgets/createWidget/updateWidget gained a secrets flag and four new stream CRUD methods were added.",
-      "The new overrides call Model.remoteControlGetStream/CreateStream/UpdateStream/DeleteStream and the secrets-aware widget methods; those extensions live in the Model remote-control files and are called with the same parameter names as the Swift labels.",
-      "Everything else in the file is unchanged byte-for-byte, including the DeviceCheck TODO()s and the OkHttp request helpers.",
-      "SettingsStream was already imported from com.moblin.android.various.settings, so no new imports were needed."
+      "Only remoteControlStreamerTriggerReaction changed: it now forwards the reaction to Model.handleRemoteControlTriggerReaction.",
+      "The rest of the file is byte-identical to the previous translation, including the DeviceCheck TODO() stubs."
     ],
-    "unsupported": [],
+    "unsupported": [
+      "no Android counterpart for DeviceCheck"
+    ],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 77551,
-    "tokens_out": 8968,
-    "seconds": 29.0,
-    "ported_at": "2026-11-12T01:44:02+00:00"
+    "tokens_in": 77460,
+    "tokens_out": 8233,
+    "seconds": 21.7,
+    "ported_at": "2026-11-24T04:29:09+00:00"
   },
   "Moblin/View/Settings/Scenes/Widgets/Widget/Alerts/WidgetAlertsMoblinCloudSettingsView.swift": {
     "status": "ok",

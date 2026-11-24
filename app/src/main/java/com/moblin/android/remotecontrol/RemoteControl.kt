@@ -1589,6 +1589,15 @@ enum class RemoteControlReaction(val wireName: String) {
 
     @SerialName("sparkle")
     Sparkle("sparkle"),
+
+    @SerialName("pope")
+    Pope("pope"),
+
+    @SerialName("pizzaChef")
+    PizzaChef("pizzaChef"),
+
+    @SerialName("poop")
+    Poop("poop"),
     ;
 
     fun toSettings(): SettingsReaction =
@@ -1601,6 +1610,9 @@ enum class RemoteControlReaction(val wireName: String) {
             Rain -> SettingsReaction.RAIN
             Glasses -> SettingsReaction.GLASSES
             Sparkle -> SettingsReaction.SPARKLE
+            Pope -> SettingsReaction.POPE
+            PizzaChef -> SettingsReaction.PIZZA_CHEF
+            Poop -> SettingsReaction.POOP
         }
 
     companion object {

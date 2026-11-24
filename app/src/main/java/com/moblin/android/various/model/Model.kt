@@ -879,6 +879,10 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
     var fixedHorizonEffect = FixedHorizonEffect()
     var glassesEffect: AlertsEffect? = null
     var sparkleEffect: AlertsEffect? = null
+    var popeHatEffect: AlertsEffect? = null
+    var chefHatEffect: AlertsEffect? = null
+    var moustacheEffect: AlertsEffect? = null
+    var poopEffect: AlertsEffect? = null
     var beautyEffect = BeautyEffect(fps = 30f)
     var replayEffect: ReplayEffect? = null
     var locationManager = Location(context = AppDelegate.context)

@@ -804,6 +804,7 @@ open class MoblinCloud(model: Model, url: String, streamerId: String) : RemoteCo
     }
 
     override fun remoteControlStreamerTriggerReaction(reaction: RemoteControlReaction) {
+        model?.handleRemoteControlTriggerReaction(reaction = reaction)
     }
 
     override fun remoteControlStreamerMoveToGimbalPreset(id: UUID) {

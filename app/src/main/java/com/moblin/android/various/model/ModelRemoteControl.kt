@@ -795,7 +795,7 @@ fun Model.remoteControlSetFilter(filter: RemoteControlFilter, on: Boolean) {
     }
 }
 
-private fun Model.handleRemoteControlTriggerReaction(reaction: RemoteControlReaction) {
+fun Model.handleRemoteControlTriggerReaction(reaction: RemoteControlReaction) {
     triggerReaction(reaction = reaction.toSettings())
 }
 

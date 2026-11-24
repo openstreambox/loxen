@@ -133,14 +133,10 @@ class VideoEncoderSettings {
     fun bitrateProperties(bitrate: Int): List<VTSessionProperty> {
         return when (rateControl) {
             RateControl.abr -> {
-                if (videoEncoderAverageBitRateOnlySupported) {
-                    listOf(VTSessionProperty(key = VTSessionPropertyKey.averageBitRate, value = bitrate))
-                } else {
-                    listOf(
-                        VTSessionProperty(key = VTSessionPropertyKey.averageBitRate, value = bitrate),
-                        VTSessionProperty(key = VTSessionPropertyKey.dataRateLimits, value = createDataRateLimits(bitRate = bitrate)),
-                    )
-                }
+                listOf(
+                    VTSessionProperty(key = VTSessionPropertyKey.averageBitRate, value = bitrate),
+                    VTSessionProperty(key = VTSessionPropertyKey.dataRateLimits, value = createDataRateLimits(bitRate = bitrate)),
+                )
             }
             RateControl.cbr -> {
                 listOf(VTSessionProperty(key = VTSessionPropertyKey.constantBitRate, value = bitrate))

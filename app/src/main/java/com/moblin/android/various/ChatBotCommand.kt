@@ -300,6 +300,9 @@ enum class ChatBotReactionArgument(override val rawValue: String) : ChatBotArgum
     rain("rain"),
     glasses("glasses"),
     sparkle("sparkle"),
+    pope("pope"),
+    pizzaChef("pizzachef"),
+    poop("poop"),
 }
 
 enum class ChatBotTeslaArgument(override val rawValue: String) : ChatBotArgument {

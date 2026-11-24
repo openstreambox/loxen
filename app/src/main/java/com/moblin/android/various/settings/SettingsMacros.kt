@@ -61,7 +61,10 @@ enum class SettingsReaction(val rawValue: String) {
     LASERS("lasers"),
     RAIN("rain"),
     GLASSES("glasses"),
-    SPARKLE("sparkle");
+    SPARKLE("sparkle"),
+    POPE("pope"),
+    PIZZA_CHEF("pizzachef"),
+    POOP("poop");
 
     fun toSystem(): Any? = null
 
@@ -75,6 +78,9 @@ enum class SettingsReaction(val rawValue: String) {
             RAIN -> localized("Rain")
             GLASSES -> localized("Glasses")
             SPARKLE -> localized("Sparkle")
+            POPE -> localized("Pope")
+            PIZZA_CHEF -> localized("Pizza chef")
+            POOP -> localized("Poop")
         }
     }
 
