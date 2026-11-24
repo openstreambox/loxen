@@ -15253,12 +15253,29 @@
     "ported_at": "2026-11-19T20:52:22+00:00"
   },
   "Moblin/Various/Model/ModelScene.swift": {
-    "status": "error",
-    "error": "peer closed connection without sending complete message body (incomplete chunked read)",
+    "status": "ok",
     "sha256": "c6f5b3c417e32ba373d60db2a4cc2271dc13ecfc8acbbbbbd817b8f8c3516bb6",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
+    "mode": "full",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelScene.kt",
-    "ported_at": "2026-11-24T04:29:15+00:00"
+    "notes": [
+      "CreateWidgetWizard/CreateSceneWizard become plain classes whose @Published properties are MutableStateFlow (read/write through .value); settings objects stay Published-delegated plain properties.",
+      "Swift inout [VideoEffect] / inout Bool parameters are modelled as MutableList<VideoEffect> parameters and Boolean return values (addScene*Effects return whether speech-to-text is needed).",
+      "The generic getWidgetVideoEffect<T> helper is split into a VideoEffect? helper plus explicit `as? ShapeEffect` casts at the call sites, since Kotlin cannot do `as? T` on an erased type parameter.",
+      "Swift struct copies (effect.shape.toSettings(), widget.qrCode.clone(), widget.alerts.clone(), sceneWidget.clone()) keep their clone/toSettings call shape; settings object mutations are direct property writes because settings are classes.",
+      "Timer-based throttling (DispatchQueue.main.asyncAfter 33ms / 1s) becomes mainScope.launch { delay(...) }, assuming Model exposes mainScope as in the rest of the port.",
+      "Model state objects (sceneSelector, streamOverlay, statusTopRight, createSceneWizard) are assumed to expose MutableStateFlow published properties, so their writes use .value; Database collections are MutableList.",
+      "TextFormatPart is treated as a sealed class (Timer, Stopwatch, Checkbox, Rating, LapTimes, Subtitles) because the Swift enum has an associated value; comparisons use equality on the object entries.",
+      "Settings enum entries are written in the port's camelCase entry style (SettingsWidgetType.qrCode, SettingsSceneCameraPosition.srtClient, SettingsQuickButtonType.cameraMan, SettingsMacrosEvent.SWITCH_SCENE, ...)."
+    ],
+    "unsupported": [],
+    "model": "deepseek-flash",
+    "backend": "api",
+    "tokens_in": 84634,
+    "tokens_out": 41302,
+    "seconds": 203.7,
+    "ported_at": "2026-11-24T22:36:15+00:00"
   },
   "Moblin/View/ControlBar/StreamButton.swift": {
     "status": "ok",
@@ -15666,12 +15683,29 @@
     "ported_at": "2026-11-13T00:44:20+00:00"
   },
   "Moblin/View/Settings/Chat/ChatBotSettingsView.swift": {
-    "status": "error",
-    "error": "peer closed connection without sending complete message body (incomplete chunked read)",
+    "status": "ok",
     "sha256": "f0dedf26e2e4548874a4a55b51b140b29ab14c241e3719c3389fd1fb74347f20",
+    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
+    "mode": "full",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/chat/ChatBotSettingsView.kt",
-    "ported_at": "2026-11-24T04:29:16+00:00"
+    "notes": [
+      "Every SwiftUI View became a private @Composable function with the same name; ChatBotSettingsView stays public. No Kotlin types are declared in this file.",
+      "The @ObservedObject settings objects (SettingsChatBotPermissionsCommand, SettingsChatBotAlias, SettingsChatBotCustomCommand, SettingsChat) are read and written directly, as they use Published delegates; no collectAsState.",
+      "Form + .navigationTitle is Form(title = ...). Every NavigationLink keeps its real destination composable, never a string route.",
+      "Section headers/footers written as Swift trailing closures with Text become the header/footer string parameters; VStack footers become a Column with Alignment.Start and 8.dp spacing.",
+      "Multi-line Swift strings with backslash continuations were joined into one line, and Text(String(\"...\")) stayed a plain (non-localized) string.",
+      "Swift @State value in the custom command text view is a remember { mutableStateOf(...) } and the .onChange(of: value) side effect runs inside the value setter, as on iOS.",
+      "drawChatBotCard draws with DrawScope.drawOval, scaling the fixed card coordinates by width / 260 like TradingCardView's own factor.",
+      "Alias/replacement validation helpers were kept as local functions with the same names and use the Swift split semantics (empty subsequences dropped)."
+    ],
+    "unsupported": [],
+    "model": "deepseek-flash",
+    "backend": "api",
+    "tokens_in": 57264,
+    "tokens_out": 19059,
+    "seconds": 65.0,
+    "ported_at": "2026-11-24T22:37:26+00:00"
   },
   "Moblin/View/Settings/Scenes/Widgets/Widget/Alerts/WidgetAlertsSoundSettingsView.swift": {
     "status": "ok",

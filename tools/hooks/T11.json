@@ -62,15 +62,6 @@
       "new": "import com.moblin.android.various.utils.name"
     },
     {
-      "id": "H11.11",
-      "file": "various/model/ModelScene.kt",
-      "scope": "fun getBuiltinCameraDevices(\n    videoSource",
-      "op": "replace",
-      "old": "    val device: CaptureDevice = TODO(\"no Android counterpart for AVCaptureDevice(uniqueID:)\")",
-      "new": "    val device: CaptureDevice = CaptureDevice(device = com.moblin.android.platform.avfoundation.AVCaptureDevice.withUniqueID(cameraId) ?: return, id = UUID.randomUUID(), isVideoMirrored = false)",
-      "occurrence": 1
-    },
-    {
       "id": "H11.13",
       "file": "various/model/ModelStream.kt",
       "scope": "fun setStreamCodec",
@@ -366,8 +357,8 @@
       "file": "various/model/ModelScene.kt",
       "scope": "fun Model.resetPngTuberVideoEffects",
       "op": "replace",
-      "old": "            modelPath = TODO(\"no Android counterpart for pngTuberStorage.makePath\"),",
-      "new": "            com.moblin.android.various.storages.FileStorage(directory = com.moblin.android.various.storages.pngTuberStorageDirectory).makePath(id = widget.pngTuber.id).path,",
+      "old": "            model = TODO(\"pngTuber model path\"),",
+      "new": "            model = com.moblin.android.various.storages.FileStorage(directory = com.moblin.android.various.storages.pngTuberStorageDirectory).makePath(id = widget.pngTuber.id).path,",
       "occurrence": 1,
       "note": "Swift pngTuberStorage.makePath(id:); the generated PngTuberStorage has no makePath, so the FileStorage it wraps is used directly. Positional, so it survives the parameter rename of the ME1 PngTuberEffect translation."
     },
@@ -378,33 +369,6 @@
       "op": "replace",
       "old": "        effect?.play(alert = TODO(\"no Android counterpart for AlertsEffectAlert.quickButton\"))",
       "new": "        effect?.play(alert = com.moblin.android.videoeffects.alerts.AlertsEffectAlert.QuickButton)",
-      "occurrence": 1
-    },
-    {
-      "id": "R11.3",
-      "file": "various/model/ModelScene.kt",
-      "scope": "fun Model.resetScoreboardVideoEffects",
-      "op": "replace",
-      "old": "        scoreboardEffects[widget.id] = ScoreboardEffect(canvasSize = media.getCanvasSize())",
-      "new": "        scoreboardEffects[widget.id] = ScoreboardEffect(canvasSize = canvasSize(media.getCanvasSize()))",
-      "occurrence": 1
-    },
-    {
-      "id": "R11.4",
-      "file": "various/model/ModelScene.kt",
-      "scope": "fun Model.createTextEffect",
-      "op": "replace",
-      "old": "            Instant.now().plusNanos((utcTimeDeltaFromNow(it.endTime) * 1_000_000_000.0).toLong()).toEpochMilli()",
-      "new": "            com.moblin.android.platform.core.ContinuousClock.now.advanced(bySeconds = utcTimeDeltaFromNow(it.endTime))",
-      "occurrence": 1
-    },
-    {
-      "id": "R11.5",
-      "file": "various/model/ModelScene.kt",
-      "scope": "fun Model.updateTimers",
-      "op": "replace",
-      "old": "            Instant.now().plusNanos((utcTimeDeltaFromNow(it.endTime) * 1_000_000_000.0).toLong()).toEpochMilli()",
-      "new": "            com.moblin.android.platform.core.ContinuousClock.now.advanced(bySeconds = utcTimeDeltaFromNow(it.endTime))",
       "occurrence": 1
     },
     {
@@ -544,10 +508,19 @@
       "file": "various/model/ModelScene.kt",
       "scope": "fun Model.createTextEffect",
       "op": "replace",
-      "old": "        fontDesign = widget.text.fontDesign,",
+      "old": "        fontDesign = TODO(\"font design\"),",
       "new": "        fontDesign = widget.text.fontDesign.toUiKit(),",
       "occurrence": 1,
       "note": "ME1 boundary: the regenerated TextEffect takes view.utils.FontDesign (Swift ModelScene.swift:745 passes fontDesign.toSystem(), a Font.Design; Kotlin toSystem() is a FontFamily, toUiKit() is the FontDesign)."
+    },
+    {
+      "id": "R11.29",
+      "file": "various/model/ModelScene.kt",
+      "scope": "fun Model.textWidgetFontDesignChanged",
+      "op": "replace",
+      "old": "        effect.setFontDesign(design = TODO(\"font design\"))",
+      "new": "        effect.setFontDesign(design = widget.text.fontDesign.toUiKit())",
+      "occurrence": 1
     },
     {
       "id": "R11.24",

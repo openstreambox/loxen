@@ -1,6 +1,6 @@
 # Port report
 
-Generated 2026-11-24T04:30:39+00:00
+Generated 2026-11-24T22:37:26+00:00
 
 ## Summary
 
@@ -9,8 +9,8 @@ Generated 2026-11-24T04:30:39+00:00
 | logic | 156 | 0 | 0 | 0 | 0 |
 | platform | 57 | 0 | 0 | 0 | 0 |
 | test | 87 | 0 | 0 | 0 | 0 |
-| media | 155 | 1 | 0 | 0 | 0 |
-| ui | 376 | 1 | 0 | 0 | 0 |
+| media | 156 | 0 | 0 | 0 | 0 |
+| ui | 377 | 0 | 0 | 0 | 0 |
 | apple_only | 1 | 0 | 0 | 0 | 0 |
 | skip | 0 | 0 | 0 | 0 | 22 |
 
@@ -94,11 +94,6 @@ Not port work: the Swift uses an Apple-only service, or the Android counterpart 
 
 - Moblin/Various/Model/ModelStore.swift
   - StoreKit: Product.products(for:), Transaction.updates, VerificationResult, AppStore.sync(), Product.purchase(), Transaction.currentEntitlements, Transaction.finish() (needs Google Play Billing and the icon products in the Play Console)
-
-## Errors
-
-- Moblin/Various/Model/ModelScene.swift: peer closed connection without sending complete message body (incomplete chunked read)
-- Moblin/View/Settings/Chat/ChatBotSettingsView.swift: peer closed connection without sending complete message body (incomplete chunked read)
 
 ## Ported files
 
@@ -370,6 +365,7 @@ Not port work: the Swift uses an Apple-only service, or the Android counterpart 
 | Moblin/Various/Model/ModelRistServer.swift | app/src/main/java/com/moblin/android/various/model/ModelRistServer.kt | deepseek-flash | 10.7 |
 | Moblin/Various/Model/ModelRtmpServer.swift | app/src/main/java/com/moblin/android/various/model/ModelRtmpServer.kt | deepseek-flash | 6.5 |
 | Moblin/Various/Model/ModelRtspClient.swift | app/src/main/java/com/moblin/android/various/model/ModelRtspClient.kt | deepseek-flash | 4.5 |
+| Moblin/Various/Model/ModelScene.swift | app/src/main/java/com/moblin/android/various/model/ModelScene.kt | deepseek-flash | 203.7 |
 | Moblin/Various/Model/ModelSceneEditor.swift | app/src/main/java/com/moblin/android/various/model/ModelSceneEditor.kt | deepseek-flash | 79.8 |
 | Moblin/Various/Model/ModelScoreboard.swift | app/src/main/java/com/moblin/android/various/model/ModelScoreboard.kt | deepseek-flash | 26.4 |
 | Moblin/Various/Model/ModelScreenCapture.swift | app/src/main/java/com/moblin/android/various/model/ModelScreenCapture.kt | deepseek-flash | 8.0 |
@@ -583,6 +579,7 @@ Not port work: the Swift uses an Apple-only service, or the Android counterpart 
 | Moblin/View/Settings/CatPrinters/CatPrinterScannerSettingsView.swift | app/src/main/java/com/moblin/android/view/settings/catprinters/CatPrinterScannerSettingsView.kt | deepseek-flash | 53.7 |
 | Moblin/View/Settings/CatPrinters/CatPrinterSettingsView.swift | app/src/main/java/com/moblin/android/view/settings/catprinters/CatPrinterSettingsView.kt | deepseek-flash | 7.8 |
 | Moblin/View/Settings/CatPrinters/CatPrintersSettingsView.swift | app/src/main/java/com/moblin/android/view/settings/catprinters/CatPrintersSettingsView.kt | deepseek-flash | 27.8 |
+| Moblin/View/Settings/Chat/ChatBotSettingsView.swift | app/src/main/java/com/moblin/android/view/settings/chat/ChatBotSettingsView.kt | deepseek-flash | 65.0 |
 | Moblin/View/Settings/Chat/ChatFiltersSettingsView.swift | app/src/main/java/com/moblin/android/view/settings/chat/ChatFiltersSettingsView.kt | deepseek-flash | 7.0 |
 | Moblin/View/Settings/Chat/ChatNicknamesSettingsView.swift | app/src/main/java/com/moblin/android/view/settings/chat/ChatNicknamesSettingsView.kt | deepseek-flash | 112.3 |
 | Moblin/View/Settings/Chat/ChatSettingsAppearanceView.swift | app/src/main/java/com/moblin/android/view/settings/chat/ChatSettingsAppearanceView.kt | deepseek-flash | 15.1 |

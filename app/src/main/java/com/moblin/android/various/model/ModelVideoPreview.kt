@@ -35,7 +35,7 @@ fun Model.updateVideoPreviews() {
         val scene = getSelectedScene() ?: return
         val devices = getBuiltinCameraDevices(
             scene = scene,
-            sceneDevice = cameraDevice,
+            sceneDevice = cameraDevice?.device,
             resolver = makeSceneResolver(),
         )
         for (camera in videoSources.all()) {

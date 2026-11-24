@@ -1,111 +1,57 @@
 package com.moblin.android.various.model
 
 import android.location.Location
-import androidx.camera.core.CameraInfo
-import androidx.camera.core.CameraSelector
 import com.moblin.android.localized
 import com.moblin.android.media.haishinkit.media.video.CaptureDevice
 import com.moblin.android.media.haishinkit.media.video.CaptureDevices
 import com.moblin.android.media.haishinkit.media.video.VideoEffect
-import com.moblin.android.remotecontrol.RemoteControlState
-import com.moblin.android.various.AudioPlayer
-import com.moblin.android.various.Variables
-import com.moblin.android.various.settings.MacroEvent
-import com.moblin.android.various.settings.SettingsAlignment
-import com.moblin.android.various.settings.SettingsColorSpace
-import com.moblin.android.various.settings.SettingsMacrosEvent
-import com.moblin.android.various.settings.SettingsQuickButtonType
-import com.moblin.android.various.settings.SettingsScene
-import com.moblin.android.various.settings.SettingsSceneCameraPosition
-import com.moblin.android.various.settings.SettingsSceneWidget
-import com.moblin.android.various.settings.SettingsVideoEffect
-import com.moblin.android.various.settings.SettingsVideoEffectType
-import com.moblin.android.various.settings.SettingsVideoSource
-import com.moblin.android.various.settings.SettingsWidget
-import com.moblin.android.various.settings.SettingsWidgetAlertPositionType
-import com.moblin.android.various.settings.SettingsWidgetAlerts
-import com.moblin.android.various.settings.SettingsWidgetPomodoroTimer
-import com.moblin.android.various.settings.SettingsWidgetScene
-import com.moblin.android.various.settings.SettingsWidgetScoreboardSport
-import com.moblin.android.various.settings.SettingsWidgetText
-import com.moblin.android.various.settings.SettingsWidgetTextCheckbox
-import com.moblin.android.various.settings.SettingsWidgetTextLapTimes
-import com.moblin.android.various.settings.SettingsWidgetTextRating
-import com.moblin.android.various.settings.SettingsWidgetTextStopwatch
-import com.moblin.android.various.settings.SettingsWidgetTextSubtitles
-import com.moblin.android.various.settings.SettingsWidgetTextTimer
-import com.moblin.android.various.settings.SettingsWidgetType
-import com.moblin.android.various.settings.SettingsWidgetVTuberType
-import com.moblin.android.various.settings.SettingsWidgetWheelOfLuckOption
-import com.moblin.android.various.settings.PomodoroPhase
+import com.moblin.android.platform.avfoundation.AVCaptureDevice
+import com.moblin.android.platform.core.ContinuousClock
+import com.moblin.android.platform.coregraphics.CGPoint
+import com.moblin.android.platform.coregraphics.CGRect
+import com.moblin.android.platform.swiftui.Published
+import com.moblin.android.various.settings.*
+import com.moblin.android.various.utils.bestFrontCameraId
+import com.moblin.android.various.utils.makeUniqueName
+import com.moblin.android.various.utils.truncate
 import com.moblin.android.various.utils.utcTimeDeltaFromNow
-import com.moblin.android.videoeffects.AnamorphicLensEffect
-import com.moblin.android.videoeffects.BeautyEffect
-import com.moblin.android.videoeffects.BingoCardEffect
+import com.moblin.android.videoeffects.*
+import com.moblin.android.videoeffects.alerts.AlertsEffect
+import com.moblin.android.videoeffects.alerts.AlertsEffectBackgroundLandmarkRectangle
+import com.moblin.android.videoeffects.alerts.alertsEffectBackgroundFaceRectangle
+import com.moblin.android.videoeffects.alerts.alertsEffectBackgroundMouthRectangle
+import com.moblin.android.videoeffects.alerts.alertsEffectBackgroundRightEyeRectangle
 import com.moblin.android.videoeffects.browser.BrowserEffect
 import com.moblin.android.videoeffects.browser.WidgetCrop
-import com.moblin.android.videoeffects.CameraManEffect
-import com.moblin.android.videoeffects.ChatEffect
-import com.moblin.android.videoeffects.ChatEmoteComboEffect
-import com.moblin.android.videoeffects.FaceEffect
-import com.moblin.android.videoeffects.FixedHorizonEffect
-import com.moblin.android.videoeffects.GrayScaleEffect
-import com.moblin.android.videoeffects.ImageEffect
-import com.moblin.android.videoeffects.LutEffect
-import com.moblin.android.videoeffects.MapEffect
-import com.moblin.android.videoeffects.MaskEffect
-import com.moblin.android.videoeffects.MovieEffect
-import com.moblin.android.videoeffects.OpacityEffect
-import com.moblin.android.videoeffects.PinchEffect
-import com.moblin.android.videoeffects.PixellateEffect
-import com.moblin.android.videoeffects.PngTuberEffect
-import com.moblin.android.videoeffects.PomodoroTimerEffect
-import com.moblin.android.videoeffects.QrCodeEffect
-import com.moblin.android.videoeffects.RemoveBackgroundEffect
-import com.moblin.android.videoeffects.SepiaEffect
-import com.moblin.android.videoeffects.ShapeEffect
-import com.moblin.android.videoeffects.SlideshowEffect
-import com.moblin.android.videoeffects.SlideshowEffectSlide
-import com.moblin.android.videoeffects.SnapshotEffect
-import com.moblin.android.videoeffects.TripleEffect
-import com.moblin.android.videoeffects.TwinEffect
-import com.moblin.android.videoeffects.VideoSourceEffect
-import com.moblin.android.videoeffects.vtuber.VTuberEffect
-import com.moblin.android.videoeffects.WidgetShape
-import com.moblin.android.videoeffects.WheelOfLuckEffect
-import com.moblin.android.videoeffects.WhirlpoolEffect
-import com.moblin.android.videoeffects.alerts.AlertsEffect
-import com.moblin.android.videoeffects.alerts.alertsEffectBackgroundRightEyeRectangle
 import com.moblin.android.videoeffects.dewarp360.Dewarp360Effect
 import com.moblin.android.videoeffects.scoreboard.ScoreboardEffect
 import com.moblin.android.videoeffects.text.TextEffect
 import com.moblin.android.videoeffects.text.TextFormatPart
+import com.moblin.android.videoeffects.text.isGeographyVariable
+import com.moblin.android.videoeffects.text.isGForceVariable
+import com.moblin.android.videoeffects.text.isWeatherVariable
 import com.moblin.android.videoeffects.text.loadTextFormat
 import com.moblin.android.videoeffects.vtuber.VTuberLive2DEffect
 import com.moblin.android.videoeffects.vtuber.VTuberVrmEffect
-import com.moblin.android.view.stream.CameraPreviewWidget
-import java.io.File
-import java.net.URI
-import java.time.Duration
 import java.time.Instant
 import java.util.UUID
-import kotlin.time.TimeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.moblin.android.AppDelegate
-import com.moblin.android.platform.coregraphics.CGPoint
-import com.moblin.android.platform.coregraphics.CGRect
+import kotlin.time.DurationUnit
+import kotlin.time.TimeSource
 import com.moblin.android.platform.coregraphics.toCGSize
-import com.moblin.android.various.utils.bestFrontCameraId
-import com.moblin.android.various.utils.makeUniqueName
-import com.moblin.android.various.settings.SettingsCameraId
-
-private val mainScope = CoroutineScope(Dispatchers.Main)
+import com.moblin.android.platform.coregraphics.toComposeSize
+import com.moblin.android.platform.coregraphics.toSize
+import com.moblin.android.platform.corebluetooth.identifier
+import com.moblin.android.remotecontrol.RemoteControlState
+import com.moblin.android.various.AudioPlayer
+import com.moblin.android.various.utils.add
+import com.moblin.android.various.utils.duration
+import com.moblin.android.videoeffects.vtuber.VTuberEffect
+import com.moblin.android.view.stream.CameraPreviewWidget
 
 class CreateWidgetWizard {
     val name = MutableStateFlow("")
@@ -120,8 +66,8 @@ class CreateWidgetWizard {
         widget = SettingsWidget(name = "")
         widget.text.formatString = ""
         if (bestFrontCameraId.isNotEmpty()) {
-            widget.vTuber.videoSource = widget.vTuber.videoSource.copy(cameraPosition = SettingsSceneCameraPosition.front)
-            widget.pngTuber.videoSource = widget.pngTuber.videoSource.copy(cameraPosition = SettingsSceneCameraPosition.front)
+            widget.vTuber.updateCameraId(settingsCameraId = SettingsCameraId.Front(id = bestFrontCameraId))
+            widget.pngTuber.updateCameraId(settingsCameraId = SettingsCameraId.Front(id = bestFrontCameraId))
         }
         val yes = SettingsWidgetWheelOfLuckOption()
         yes.text = localized("Yes")
@@ -131,7 +77,7 @@ class CreateWidgetWizard {
         later.text = localized("Later")
         val spinAgain = SettingsWidgetWheelOfLuckOption()
         spinAgain.text = localized("Spin again")
-        widget.wheelOfLuck.options = mutableListOf(yes, no, later, spinAgain)
+        widget.wheelOfLuck.options = listOf(yes, no, later, spinAgain)
         widget.wheelOfLuck.updateText()
         widget.wheelOfLuck.updateTotalWeight()
     }
@@ -149,13 +95,13 @@ class CreateSceneWizard {
     }
 }
 
-const val defaultScoreboardSize = 18.52
+val defaultScoreboardSize = 18.52
 
 fun Model.widgetWizardCreate(
     type: SettingsWidgetType,
     name: String,
     widget: SettingsWidget,
-    scenes: List<SettingsScene>
+    scenes: List<SettingsScene>,
 ) {
     widget.type = type
     widget.name = if (name.isEmpty()) {
@@ -179,10 +125,9 @@ fun Model.getTextEffects(id: UUID): List<TextEffect> {
     textEffects[id]?.let { effects.add(it) }
     for (slideshow in slideshowEffects.values) {
         for (slide in slideshow.slides) {
-            if (slide.widgetId != id) {
-                continue
+            if (slide.widgetId == id) {
+                (slide.effect as? TextEffect)?.let { effects.add(it) }
             }
-            (slide.effect as? TextEffect)?.let { effects.add(it) }
         }
     }
     return effects
@@ -226,7 +171,7 @@ private fun Model.executeWheelOfLuckOptionFunction(widget: SettingsWidget, optio
         buttonId = "wol:${option.id}",
         function = option.function,
         functionData = option.functionData,
-        pressed = false
+        pressed = false,
     )
 }
 
@@ -246,40 +191,40 @@ fun Model.getScoreboardEffect(id: UUID): ScoreboardEffect? {
 }
 
 fun Model.getWidgetShapeEffect(widget: SettingsWidget, effect: SettingsVideoEffect): ShapeEffect? {
-    return getWidgetVideoEffect<ShapeEffect>(widget, effect)
+    return getWidgetVideoEffect(widget, effect) as? ShapeEffect
 }
 
 fun Model.getWidgetAnamorphicLensEffect(
     widget: SettingsWidget,
-    effect: SettingsVideoEffect
+    effect: SettingsVideoEffect,
 ): AnamorphicLensEffect? {
-    return getWidgetVideoEffect<AnamorphicLensEffect>(widget, effect)
+    return getWidgetVideoEffect(widget, effect) as? AnamorphicLensEffect
 }
 
 fun Model.getWidgetDewarp360Effect(
     widget: SettingsWidget,
-    effect: SettingsVideoEffect
+    effect: SettingsVideoEffect,
 ): Dewarp360Effect? {
-    return getWidgetVideoEffect<Dewarp360Effect>(widget, effect)
+    return getWidgetVideoEffect(widget, effect) as? Dewarp360Effect
 }
 
 fun Model.getWidgetLutEffect(widget: SettingsWidget, effect: SettingsVideoEffect): LutEffect? {
-    return getWidgetVideoEffect<LutEffect>(widget, effect)
+    return getWidgetVideoEffect(widget, effect) as? LutEffect
 }
 
 fun Model.getWidgetOpacityEffect(widget: SettingsWidget, effect: SettingsVideoEffect): OpacityEffect? {
-    return getWidgetVideoEffect<OpacityEffect>(widget, effect)
+    return getWidgetVideoEffect(widget, effect) as? OpacityEffect
 }
 
 fun Model.getWidgetMaskEffect(widget: SettingsWidget, effect: SettingsVideoEffect): MaskEffect? {
-    return getWidgetVideoEffect<MaskEffect>(widget, effect)
+    return getWidgetVideoEffect(widget, effect) as? MaskEffect
 }
 
 fun Model.getWidgetRemoveBackgroundEffect(
     widget: SettingsWidget,
-    effect: SettingsVideoEffect
+    effect: SettingsVideoEffect,
 ): RemoveBackgroundEffect? {
-    return getWidgetVideoEffect<RemoveBackgroundEffect>(widget, effect)
+    return getWidgetVideoEffect(widget, effect) as? RemoveBackgroundEffect
 }
 
 fun Model.shapeEffectSettingsChanged(widget: SettingsWidget, effect: SettingsVideoEffect) {
@@ -313,32 +258,29 @@ fun Model.maskEffectSettingsChanged(widget: SettingsWidget, effect: SettingsVide
 fun Model.removeBackgroundEffectSettingsChanged(widget: SettingsWidget, effect: SettingsVideoEffect) {
     getWidgetRemoveBackgroundEffect(widget, effect)?.setColorRange(
         from = effect.removeBackground.from,
-        to = effect.removeBackground.to
+        to = effect.removeBackground.to,
     )
 }
 
 private fun Model.getEffectWithPossibleEffects(id: UUID): VideoEffect? {
-    return getVideoSourceEffect(id)
-        ?: getImageEffect(id)
-        ?: getBrowserEffect(id)
-        ?: getMapEffect(id)
-        ?: getSnapshotEffect(id)
-        ?: getQrCodeEffect(id)
+    return getVideoSourceEffect(id = id)
+        ?: getImageEffect(id = id)
+        ?: getBrowserEffect(id = id)
+        ?: getMapEffect(id = id)
+        ?: getSnapshotEffect(id = id)
+        ?: getQrCodeEffect(id = id)
 }
 
-private inline fun <reified T> Model.getWidgetVideoEffect(
-    widget: SettingsWidget,
-    effect: SettingsVideoEffect
-): T? {
+private fun Model.getWidgetVideoEffect(widget: SettingsWidget, effect: SettingsVideoEffect): VideoEffect? {
     val effectIndex = widget.effects.filter { it.enabled }.indexOfFirst { it === effect }
     if (effectIndex == -1) {
         return null
     }
-    val videoEffect = getEffectWithPossibleEffects(id = widget.id) ?: return null
-    if (effectIndex >= videoEffect.effects.size) {
+    val parentEffect = getEffectWithPossibleEffects(id = widget.id) ?: return null
+    if (effectIndex >= parentEffect.effects.size) {
         return null
     }
-    return videoEffect.effects[effectIndex] as? T
+    return parentEffect.effects[effectIndex]
 }
 
 fun Model.isFixedHorizonEnabled(scene: SettingsScene): Boolean {
@@ -355,7 +297,7 @@ fun Model.resetSelectedScene(changeScene: Boolean = true, attachCamera: Boolean 
         videoSize = media.getCanvasSize().toCGSize(),
         size = drawOnStreamSize.toCGSize(),
         lines = drawOnStream.lines.value,
-        mirror = streamOverlay.isFrontCameraSelected.value && !database.mirrorFrontCameraOnStream
+        mirror = streamOverlay.isFrontCameraSelected.value && !database.mirrorFrontCameraOnStream,
     )
     lutEffects.clear()
     for (lut in database.color.allLuts()) {
@@ -380,8 +322,10 @@ fun Model.showSceneSettings(scene: SettingsScene) {
 }
 
 fun Model.selectSceneByName(name: String) {
-    val scene = enabledScenes.firstOrNull { it.name.lowercase() == name.lowercase() } ?: return
-    selectScene(id = scene.id)
+    val scene = enabledScenes.firstOrNull { it.name.lowercase() == name.lowercase() }
+    if (scene != null) {
+        selectScene(id = scene.id)
+    }
 }
 
 fun Model.selectScene(id: UUID) {
@@ -420,7 +364,7 @@ private fun Model.throttledSceneUpdate() {
     sceneUpdateThrottled = true
     throttledSceneUpdatePending = false
     sceneUpdated()
-    mainScope.launch {
+    CoroutineScope(Dispatchers.Main.immediate).launch {
         delay(33)
         if (throttledSceneUpdatePending) {
             throttledSceneUpdate()
@@ -449,22 +393,19 @@ fun Model.sceneUpdated(attachCamera: Boolean = false, updateRemoteScene: Boolean
     }
     updateStatusCameraText()
     updateSpeechToText(
-        drawnWidgets = resolver.resolve(scene, includeRemote = true).localDrawnWidgets().map { it.widget }
+        drawnWidgets = resolver.resolve(scene, includeRemote = true).localDrawnWidgets()
+            .map { it.widget },
     )
     updateWidgetOutlines(resolver = resolver)
 }
 
 fun Model.getSceneName(id: UUID?): String? {
-    if (id == null) {
-        return null
-    }
+    val id = id ?: return null
     return database.findScene(id = id)?.name
 }
 
 fun Model.getWidgetName(id: UUID?): String? {
-    if (id == null) {
-        return null
-    }
+    val id = id ?: return null
     return database.findWidget(id = id)?.name
 }
 
@@ -525,58 +466,73 @@ fun Model.attachSingleLayout(scene: SettingsScene, resolver: SceneResolver) {
     streamOverlay.isFrontCameraSelected.value = false
     deactivateAllMediaPlayers()
     when (scene.videoSource.cameraPosition) {
-        SettingsSceneCameraPosition.back ->
-            attachCamera(
-                scene = scene,
-                position = CameraSelector.LENS_FACING_BACK,
-                resolver = resolver
-            )
+        SettingsSceneCameraPosition.back -> attachCamera(
+            scene = scene,
+            position = AVCaptureDevice.Position.back.rawValue,
+            resolver = resolver,
+        )
         SettingsSceneCameraPosition.front -> {
-            attachCamera(
-                scene = scene,
-                position = CameraSelector.LENS_FACING_FRONT,
-                resolver = resolver
-            )
+            attachCamera(scene = scene, position = AVCaptureDevice.Position.front.rawValue, resolver = resolver)
             streamOverlay.isFrontCameraSelected.value = true
         }
-        SettingsSceneCameraPosition.rtmp ->
-            attachBufferedCamera(cameraId = scene.videoSource.rtmpCameraId, scene = scene, resolver = resolver)
-        SettingsSceneCameraPosition.srtla ->
-            attachBufferedCamera(cameraId = scene.videoSource.srtlaCameraId, scene = scene, resolver = resolver)
-        SettingsSceneCameraPosition.srtClient ->
-            attachBufferedCamera(
-                cameraId = scene.videoSource.srtClientCameraId,
-                scene = scene,
-                resolver = resolver
-            )
-        SettingsSceneCameraPosition.rist ->
-            attachBufferedCamera(cameraId = scene.videoSource.ristCameraId, scene = scene, resolver = resolver)
-        SettingsSceneCameraPosition.rtsp ->
-            attachBufferedCamera(cameraId = scene.videoSource.rtspCameraId, scene = scene, resolver = resolver)
-        SettingsSceneCameraPosition.whip ->
-            attachBufferedCamera(cameraId = scene.videoSource.whipCameraId, scene = scene, resolver = resolver)
-        SettingsSceneCameraPosition.whep ->
-            attachBufferedCamera(cameraId = scene.videoSource.whepCameraId, scene = scene, resolver = resolver)
+        SettingsSceneCameraPosition.rtmp -> attachBufferedCamera(
+            cameraId = scene.videoSource.rtmpCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
+        SettingsSceneCameraPosition.srtla -> attachBufferedCamera(
+            cameraId = scene.videoSource.srtlaCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
+        SettingsSceneCameraPosition.srtClient -> attachBufferedCamera(
+            cameraId = scene.videoSource.srtClientCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
+        SettingsSceneCameraPosition.rist -> attachBufferedCamera(
+            cameraId = scene.videoSource.ristCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
+        SettingsSceneCameraPosition.rtsp -> attachBufferedCamera(
+            cameraId = scene.videoSource.rtspCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
+        SettingsSceneCameraPosition.whip -> attachBufferedCamera(
+            cameraId = scene.videoSource.whipCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
+        SettingsSceneCameraPosition.whep -> attachBufferedCamera(
+            cameraId = scene.videoSource.whepCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
         SettingsSceneCameraPosition.mediaPlayer -> {
             mediaPlayers[scene.videoSource.mediaPlayerCameraId]?.activate()
             attachBufferedCamera(
                 cameraId = scene.videoSource.mediaPlayerCameraId,
                 scene = scene,
-                resolver = resolver
+                resolver = resolver,
             )
         }
-        SettingsSceneCameraPosition.external ->
-            attachExternalCamera(scene = scene, resolver = resolver)
-        SettingsSceneCameraPosition.screenCapture ->
-            attachBufferedCamera(cameraId = screenCaptureCameraId, scene = scene, resolver = resolver)
-        SettingsSceneCameraPosition.backTripleLowEnergy ->
-            attachBackTripleLowEnergyCamera()
-        SettingsSceneCameraPosition.backDualLowEnergy ->
-            attachBackDualLowEnergyCamera()
-        SettingsSceneCameraPosition.backWideDualLowEnergy ->
-            attachBackWideDualLowEnergyCamera()
-        SettingsSceneCameraPosition.none ->
-            attachBufferedCamera(cameraId = noneCameraId, scene = scene, resolver = resolver)
+        SettingsSceneCameraPosition.external -> attachExternalCamera(scene = scene, resolver = resolver)
+        SettingsSceneCameraPosition.screenCapture -> attachBufferedCamera(
+            cameraId = screenCaptureCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
+        SettingsSceneCameraPosition.backTripleLowEnergy -> attachBackTripleLowEnergyCamera()
+        SettingsSceneCameraPosition.backDualLowEnergy -> attachBackDualLowEnergyCamera()
+        SettingsSceneCameraPosition.backWideDualLowEnergy -> attachBackWideDualLowEnergyCamera()
+        SettingsSceneCameraPosition.none -> attachBufferedCamera(
+            cameraId = noneCameraId,
+            scene = scene,
+            resolver = resolver,
+        )
+        else -> {}
     }
 }
 
@@ -599,11 +555,9 @@ fun Model.findWidget(name: String): SettingsWidget? {
 }
 
 fun Model.getTextWidget(id: UUID?): SettingsWidget? {
-    if (id == null) {
-        return null
-    }
-    val widget = findWidget(id = id)
-    if (widget != null && widget.type == SettingsWidgetType.text) {
+    val id = id ?: return null
+    val widget = findWidget(id = id) ?: return null
+    if (widget.type == SettingsWidgetType.text) {
         return widget
     }
     return null
@@ -624,12 +578,11 @@ fun Model.getFillFrame(scene: SettingsScene): Boolean {
 
 fun Model.drawnWidgetsInSelectedAndRemoteScene(resolver: SceneResolver? = null): List<SettingsWidget> {
     val resolver = resolver ?: makeSceneResolver()
-    var widgets = mutableListOf<SettingsWidget>()
+    var widgets: MutableList<SettingsWidget> = mutableListOf()
     val scene = getSelectedScene()
     if (scene != null) {
         widgets = resolver.resolve(scene, includeRemote = true).localDrawnWidgets()
-            .map { it.widget }
-            .toMutableList()
+            .map { it.widget }.toMutableList()
     }
     val remoteSceneId = database.remoteSceneId ?: return widgets
     val remoteScene = database.findScene(id = remoteSceneId) ?: return widgets
@@ -649,7 +602,7 @@ fun Model.sceneWidgetsInSelectedScene(): List<ResolvedSceneWidget> {
 
 fun Model.switchToNextSceneRoundRobin() {
     val currentSceneIndex = findEnabledSceneIndex(id = sceneSelector.selectedSceneId) ?: return
-    val nextSceneIndex = (currentSceneIndex + 1) % enabledScenes.count()
+    val nextSceneIndex = (currentSceneIndex + 1) % enabledScenes.size
     if (nextSceneIndex == currentSceneIndex) {
         return
     }
@@ -657,7 +610,7 @@ fun Model.switchToNextSceneRoundRobin() {
 }
 
 fun Model.appendWidgetToScene(scene: SettingsScene, widget: SettingsWidget) {
-    if (addableWidgets(scene = scene).none { it === widget }) {
+    if (!addableWidgets(scene = scene).any { it === widget }) {
         return
     }
     scene.widgets.add(SettingsSceneWidget(widget = widget))
@@ -725,14 +678,14 @@ fun Model.vTuberWidgetSettingsChanged(widget: SettingsWidget) {
         cameraPositionY = vTuber.cameraPositionY,
         mirror = vTuber.mirror,
         sensitivity = vTuber.sensitivity,
-        armsAngle = vTuber.armsAngle
+        armsAngle = vTuber.armsAngle,
     )
 }
 
 fun Model.pngTuberWidgetSettingsChanged(widget: SettingsWidget) {
     getPngTuberEffect(id = widget.id)?.setSettings(
         mirror = widget.pngTuber.mirror,
-        sensitivity = widget.pngTuber.sensitivity
+        sensitivity = widget.pngTuber.sensitivity,
     )
 }
 
@@ -819,7 +772,7 @@ fun Model.textWidgetLayoutChanged(widget: SettingsWidget) {
         effect.setLayout(
             alignment = text.horizontalAlignment,
             width = if (text.widthEnabled) text.width else null,
-            cornerRadius = text.cornerRadius.toDouble()
+            cornerRadius = text.cornerRadius.toDouble(),
         )
     }
     remoteSceneSettingsUpdated()
@@ -846,11 +799,9 @@ fun Model.updateSettingsFromTextWidgets() {
     for (widgetId in textEffects.keys) {
         val widget = findWidget(id = widgetId) ?: continue
         for (stopwatch in widget.text.stopwatches) {
-            if (!stopwatch.running) {
-                continue
+            if (stopwatch.running) {
+                stopwatch.totalElapsed += (Instant.now().toEpochMilli() - stopwatch.playPressedTime.toEpochMilli()) / 1000.0
             }
-            stopwatch.totalElapsed += Duration.between(stopwatch.playPressedTime, Instant.now())
-                .toNanos() / 1_000_000_000.0
         }
     }
 }
@@ -884,39 +835,32 @@ fun Model.updateMapEffects() {
         return
     }
     var location = locationManager.getLatestKnownLocation()
-    if (location != null && isLocationInPrivacyRegion(location = location)) {
-        location = Location("").apply { time = System.currentTimeMillis() }
+    val latestKnownLocation = location
+    if (latestKnownLocation != null && isLocationInPrivacyRegion(location = latestKnownLocation)) {
+        location = Location("")
     }
-    if (location != null) {
-        remoteControlAssistantSetRemoteSceneDataLocation(location = location)
-    }
+    location?.let { remoteControlAssistantSetRemoteSceneDataLocation(location = it) }
     val remoteLocation = remoteSceneData.location?.toLocation()
     for ((widgetId, mapEffect) in mapEffects) {
-        val widgetLocation = if (isRemoteSceneWidget(id = widgetId)) remoteLocation else location
-        if (widgetLocation != null) {
-            mapEffect.updateLocation(location = widgetLocation)
+        val effectiveLocation = if (isRemoteSceneWidget(id = widgetId)) remoteLocation else location
+        if (effectiveLocation != null) {
+            mapEffect.updateLocation(location = effectiveLocation)
         }
     }
 }
 
 fun Model.isSceneVideoSourceActive(scene: SettingsScene): Boolean {
     return when (scene.videoSource.cameraPosition) {
-        SettingsSceneCameraPosition.rtmp ->
-            activeBufferedVideoIds.contains(scene.videoSource.rtmpCameraId)
-        SettingsSceneCameraPosition.srtla ->
-            activeBufferedVideoIds.contains(scene.videoSource.srtlaCameraId)
-        SettingsSceneCameraPosition.srtClient ->
-            activeBufferedVideoIds.contains(scene.videoSource.srtClientCameraId)
-        SettingsSceneCameraPosition.rist ->
-            activeBufferedVideoIds.contains(scene.videoSource.ristCameraId)
-        SettingsSceneCameraPosition.rtsp ->
-            activeBufferedVideoIds.contains(scene.videoSource.rtspCameraId)
-        SettingsSceneCameraPosition.whip ->
-            activeBufferedVideoIds.contains(scene.videoSource.whipCameraId)
-        SettingsSceneCameraPosition.whep ->
-            activeBufferedVideoIds.contains(scene.videoSource.whepCameraId)
-        SettingsSceneCameraPosition.external ->
-            isExternalCameraConnected(cameraId = scene.videoSource.externalCameraId)
+        SettingsSceneCameraPosition.rtmp -> activeBufferedVideoIds.contains(scene.videoSource.rtmpCameraId)
+        SettingsSceneCameraPosition.srtla -> activeBufferedVideoIds.contains(scene.videoSource.srtlaCameraId)
+        SettingsSceneCameraPosition.srtClient -> activeBufferedVideoIds.contains(scene.videoSource.srtClientCameraId)
+        SettingsSceneCameraPosition.rist -> activeBufferedVideoIds.contains(scene.videoSource.ristCameraId)
+        SettingsSceneCameraPosition.rtsp -> activeBufferedVideoIds.contains(scene.videoSource.rtspCameraId)
+        SettingsSceneCameraPosition.whip -> activeBufferedVideoIds.contains(scene.videoSource.whipCameraId)
+        SettingsSceneCameraPosition.whep -> activeBufferedVideoIds.contains(scene.videoSource.whepCameraId)
+        SettingsSceneCameraPosition.external -> isExternalCameraConnected(
+            cameraId = scene.videoSource.externalCameraId,
+        )
         else -> true
     }
 }
@@ -931,10 +875,18 @@ fun Model.isSceneVideoSourceActive(sceneId: UUID): Boolean {
     return isSceneVideoSourceActive(scene = scene)
 }
 
+private fun Model.makeCaptureDevice(device: AVCaptureDevice): CaptureDevice {
+    return CaptureDevice(
+        device = device,
+        id = UUID.nameUUIDFromBytes(device.uniqueID.toByteArray()),
+        isVideoMirrored = false,
+    )
+}
+
 fun Model.getBuiltinCameraDevices(
     scene: SettingsScene,
-    sceneDevice: CaptureDevice?,
-    resolver: SceneResolver
+    sceneDevice: AVCaptureDevice?,
+    resolver: SceneResolver,
 ): CaptureDevices {
     val devices = CaptureDevices(hasSceneDevice = false, devices = mutableListOf())
     if (sceneDevice != null) {
@@ -949,7 +901,7 @@ fun Model.getBuiltinCameraDevices(
                 getBuiltinCameraDevicesInScene(
                     scene = otherScene,
                     devices = devices.devices,
-                    resolver = resolver
+                    resolver = resolver,
                 )
             }
         }
@@ -960,8 +912,8 @@ fun Model.getBuiltinCameraDevices(
 
 fun Model.getCameraPreviewDeviceIds(
     scene: SettingsScene,
-    sceneDevice: CaptureDevice?,
-    resolver: SceneResolver
+    sceneDevice: AVCaptureDevice?,
+    resolver: SceneResolver,
 ): List<UUID> {
     val deviceIds = mutableSetOf<UUID>()
     if (sceneDevice != null) {
@@ -972,7 +924,7 @@ fun Model.getCameraPreviewDeviceIds(
         getBuiltinCameraDevices(videoSource = otherScene.videoSource, devices = devices)
         deviceIds.addAll(devices.map { it.id })
         deviceIds.addAll(
-            getCameraPreviewWidgets(resolvedScene = resolver.resolve(otherScene)).map { it.deviceId }
+            getCameraPreviewWidgets(resolvedScene = resolver.resolve(otherScene)).map { it.deviceId },
         )
     }
     return deviceIds.toList()
@@ -1004,27 +956,21 @@ private fun Model.getCameraPreviewWidgets(resolvedScene: ResolvedScene): List<Ca
         }
         val videoSource = widget.widget.videoSource
         val cameraId = videoSource.videoSource.getCaptureDeviceCameraId() ?: continue
-        val avDevice = com.moblin.android.platform.avfoundation.AVCaptureDevice.withUniqueID(cameraId)
-            ?: continue
-        val device = CaptureDevice(device = avDevice, id = UUID.randomUUID(), isVideoMirrored = false)
+        val device = AVCaptureDevice.withUniqueID(cameraId) ?: continue
         val previewWidget = CameraPreviewWidget(
             id = widget.widget.id,
             deviceId = makeCaptureDevice(device = device).id,
             layout = widget.sceneWidget.layout,
             mirror = videoSource.mirror,
             shape = WidgetShape(
-                contentRegion = CGRect(
-                    origin = CGPoint.zero,
-                    size = media.getCanvasSize().toCGSize(),
-                ),
+                contentRegion = CGRect(origin = CGPoint.zero, size = media.getCanvasSize().toCGSize()),
                 rotation = videoSource.rotation,
-            )
+            ),
         )
         for (effect in widget.widget.effects) {
-            if (!effect.enabled || effect.type != SettingsVideoEffectType.shape) {
-                continue
+            if (effect.enabled && effect.type == SettingsVideoEffectType.shape) {
+                previewWidget.shape.apply(effect.shape.toSettings())
             }
-            previewWidget.shape.apply(effect.shape.toSettings())
         }
         widgets.add(previewWidget)
     }
@@ -1039,7 +985,7 @@ fun Model.updateCameraPreviewWidgets() {
 private fun Model.updateCameraPreviewWidgets(resolvedScene: ResolvedScene) {
     cameraPreviewView.setWidgets(
         widgets = getCameraPreviewWidgets(resolvedScene = resolvedScene),
-        canvasSize = media.getCanvasSize().toCGSize()
+        canvasSize = media.getCanvasSize().toCGSize(),
     )
 }
 
@@ -1055,7 +1001,7 @@ private fun Model.createGlobalVideoEffects() {
     cameraManEffect = CameraManEffect(
         moveVertically = database.debug.cameraManMoveVertically.value,
         speed = database.debug.cameraManSpeed.value,
-        alwaysMove = database.debug.cameraManAlwaysMove.value
+        alwaysMove = database.debug.cameraManAlwaysMove.value,
     )
     pollEffect = null
     whirlpoolEffect = WhirlpoolEffect(angle = database.whirlpoolAngle)
@@ -1063,15 +1009,19 @@ private fun Model.createGlobalVideoEffects() {
     fixedHorizonEffect = FixedHorizonEffect()
     glassesEffect = createGlassesEffect()
     sparkleEffect = createSparkleEffect()
-    beautyEffect = BeautyEffect(fps = (stream.value.fps).toFloat())
+    popeHatEffect = createPopeHatEffect()
+    chefHatEffect = createChefHatEffect()
+    moustacheEffect = createMoustacheEffect()
+    poopEffect = createPoopEffect()
+    beautyEffect = BeautyEffect(fps = stream.value.fps.toFloat())
     beautyEffect.setSmoothnessSettings(
         radius = database.beauty.smoothnessRadius,
-        strength = database.beauty.smoothnessStrength
+        strength = database.beauty.smoothnessStrength,
     )
     beautyEffect.setShapeSettings(
         position = database.beauty.shapePosition,
         radius = database.beauty.shapeRadius,
-        strength = database.beauty.shapeStrength
+        strength = database.beauty.shapeStrength,
     )
 }
 
@@ -1091,7 +1041,68 @@ private fun Model.createGlassesEffect(): AlertsEffect {
         delegate = this,
         mediaStorage = alertMediaStorage,
         bundledImages = database.alertsMediaGallery.bundledImages,
-        bundledSounds = database.alertsMediaGallery.bundledSounds
+        bundledSounds = database.alertsMediaGallery.bundledSounds,
+    )
+}
+
+private fun Model.createPopeHatEffect(): AlertsEffect {
+    return createFaceReactionEffect(
+        imageId = database.alertsMediaGallery.getPopeHatImageId(),
+        landmark = alertsEffectBackgroundFaceRectangle,
+        centerY = -1.05,
+        height = 1.8,
+    )
+}
+
+private fun Model.createChefHatEffect(): AlertsEffect {
+    return createFaceReactionEffect(
+        imageId = database.alertsMediaGallery.getChefHatImageId(),
+        landmark = alertsEffectBackgroundFaceRectangle,
+        centerY = -0.85,
+        height = 1.45,
+    )
+}
+
+private fun Model.createMoustacheEffect(): AlertsEffect {
+    return createFaceReactionEffect(
+        imageId = database.alertsMediaGallery.getMoustacheImageId(),
+        landmark = alertsEffectBackgroundMouthRectangle,
+        centerY = 0.05,
+        height = 0.3,
+    )
+}
+
+private fun Model.createPoopEffect(): AlertsEffect {
+    return createFaceReactionEffect(
+        imageId = database.alertsMediaGallery.getPoopImageId(),
+        landmark = alertsEffectBackgroundFaceRectangle,
+        centerY = -0.95,
+        height = 1.21,
+    )
+}
+
+private fun Model.createFaceReactionEffect(
+    imageId: UUID,
+    landmark: AlertsEffectBackgroundLandmarkRectangle,
+    centerY: Double,
+    height: Double,
+): AlertsEffect {
+    val settings = SettingsWidgetAlerts()
+    settings.disableAll()
+    settings.quickButton.enabled = true
+    settings.quickButton.positionType = SettingsWidgetAlertPositionType.face
+    val size = height * alertsEffectBackgroundFaceRectangle.height()
+    settings.quickButton.facePosition.x = (landmark.topLeftX + landmark.bottomRightX) / 2 - size / 2
+    settings.quickButton.facePosition.y = landmark.topLeftY + centerY * landmark.height() - size / 2
+    settings.quickButton.facePosition.width = size
+    settings.quickButton.facePosition.height = size
+    settings.quickButton.imageId = imageId
+    return AlertsEffect(
+        settings = settings,
+        delegate = this,
+        mediaStorage = alertMediaStorage,
+        bundledImages = database.alertsMediaGallery.bundledImages,
+        bundledSounds = database.alertsMediaGallery.bundledSounds,
     )
 }
 
@@ -1100,8 +1111,8 @@ private fun Model.createSparkleEffect(): AlertsEffect {
     settings.disableAll()
     settings.quickButton.enabled = true
     settings.quickButton.positionType = SettingsWidgetAlertPositionType.face
-    settings.quickButton.facePosition.x = (alertsEffectBackgroundRightEyeRectangle.topLeftX
-        + alertsEffectBackgroundRightEyeRectangle.bottomRightX) / 2 + 0.01
+    settings.quickButton.facePosition.x = (alertsEffectBackgroundRightEyeRectangle.topLeftX +
+        alertsEffectBackgroundRightEyeRectangle.bottomRightX) / 2 + 0.01
     settings.quickButton.facePosition.y = alertsEffectBackgroundRightEyeRectangle.topLeftY + 0.03
     settings.quickButton.facePosition.width = alertsEffectBackgroundRightEyeRectangle.width() * 0.8
     settings.quickButton.facePosition.height = alertsEffectBackgroundRightEyeRectangle.height() * 0.8
@@ -1111,7 +1122,7 @@ private fun Model.createSparkleEffect(): AlertsEffect {
         delegate = this,
         mediaStorage = alertMediaStorage,
         bundledImages = database.alertsMediaGallery.bundledImages,
-        bundledSounds = database.alertsMediaGallery.bundledSounds
+        bundledSounds = database.alertsMediaGallery.bundledSounds,
     )
 }
 
@@ -1119,6 +1130,10 @@ private fun Model.registerGlobalVideoEffects(scene: SettingsScene): List<VideoEf
     val effects = mutableListOf<VideoEffect>()
     sparkleEffect?.let { effects.add(it) }
     glassesEffect?.let { effects.add(it) }
+    popeHatEffect?.let { effects.add(it) }
+    chefHatEffect?.let { effects.add(it) }
+    moustacheEffect?.let { effects.add(it) }
+    poopEffect?.let { effects.add(it) }
     val fixedHorizonStatus: String
     if (isFixedHorizonEnabled(scene = scene)) {
         fixedHorizonEffect.start(portrait = stream.value.portrait)
@@ -1134,41 +1149,41 @@ private fun Model.registerGlobalVideoEffects(scene: SettingsScene): List<VideoEf
     if (isFaceEnabled()) {
         effects.add(faceEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.cameraMan)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.cameraMan)) {
         effects.add(cameraManEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.whirlpool)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.whirlpool)) {
         effects.add(whirlpoolEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.pinch)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.pinch)) {
         effects.add(pinchEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.movie)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.movie)) {
         effects.add(movieEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.fourThree)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.fourThree)) {
         effects.add(fourThreeEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.grayScale)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.grayScale)) {
         effects.add(grayScaleEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.sepia)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.sepia)) {
         effects.add(sepiaEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.triple)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.triple)) {
         effects.add(tripleEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.twin)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.twin)) {
         effects.add(twinEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.pixellate)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.pixellate)) {
         pixellateEffect.setSettings(strength = database.pixellateStrength)
         effects.add(pixellateEffect)
     }
     if (database.beauty.enabled) {
         effects.add(beautyEffect)
     }
-    if (isQuickButtonOn(SettingsQuickButtonType.crt)) {
+    if (isQuickButtonOn(type = SettingsQuickButtonType.crt)) {
         effects.add(crtEffect)
     }
     return effects
@@ -1176,9 +1191,8 @@ private fun Model.registerGlobalVideoEffects(scene: SettingsScene): List<VideoEf
 
 private fun Model.registerGlobalVideoEffectsOnTop(): List<VideoEffect> {
     val effects = mutableListOf<VideoEffect>()
-    val effect = pollEffect
-    if (isQuickButtonOn(SettingsQuickButtonType.poll) && effect != null) {
-        effects.add(effect)
+    if (isQuickButtonOn(type = SettingsQuickButtonType.poll)) {
+        pollEffect?.let { effects.add(it) }
     }
     return effects
 }
@@ -1257,12 +1271,12 @@ private fun Model.createTextEffect(widget: SettingsWidget): TextEffect {
         cornerRadius = widget.text.cornerRadius.toDouble(),
         delay = widget.text.delay,
         timersEndTime = widget.text.timers.map {
-            com.moblin.android.platform.core.ContinuousClock.now.advanced(bySeconds = utcTimeDeltaFromNow(it.endTime))
-        }.toMutableList(),
-        stopwatches = widget.text.stopwatches.map { it.clone() }.toMutableList(),
-        checkboxes = widget.text.checkboxes.map { it.checked }.toMutableList(),
-        ratings = widget.text.ratings.map { it.rating }.toMutableList(),
-        lapTimes = widget.text.lapTimes.map { it.lapTimes.toMutableList() }.toMutableList()
+            ContinuousClock.now.advanced(bySeconds = utcTimeDeltaFromNow(to = it.endTime))
+        },
+        stopwatches = widget.text.stopwatches.map { it.clone() },
+        checkboxes = widget.text.checkboxes.map { it.checked },
+        ratings = widget.text.ratings.map { it.rating },
+        lapTimes = widget.text.lapTimes.map { it.lapTimes },
     )
 }
 
@@ -1285,7 +1299,7 @@ private fun Model.resetBrowserVideoEffects(widgets: List<SettingsWidget>) {
         if (widget.type != SettingsWidgetType.browser) {
             continue
         }
-        val url = runCatching { URI(widget.browser.url) }.getOrNull() ?: continue
+        val url = runCatching { java.net.URI(widget.browser.url) }.getOrNull() ?: continue
         val effect = BrowserEffect(
             url = url,
             styleSheet = widget.browser.styleSheet,
@@ -1340,7 +1354,7 @@ private fun Model.resetScoreboardVideoEffects(widgets: List<SettingsWidget>) {
         if (widget.type != SettingsWidgetType.scoreboard) {
             continue
         }
-        scoreboardEffects[widget.id] = ScoreboardEffect(canvasSize = canvasSize(media.getCanvasSize()))
+        scoreboardEffects[widget.id] = ScoreboardEffect(canvasSize = media.getCanvasSize().toCGSize().toComposeSize())
     }
 }
 
@@ -1355,7 +1369,7 @@ private fun Model.resetAlertsVideoEffects(widgets: List<SettingsWidget>) {
             delegate = this,
             mediaStorage = alertMediaStorage,
             bundledImages = database.alertsMediaGallery.bundledImages,
-            bundledSounds = database.alertsMediaGallery.bundledSounds
+            bundledSounds = database.alertsMediaGallery.bundledSounds,
         )
     }
 }
@@ -1368,13 +1382,17 @@ private fun Model.resetVTuberVideoEffects(widgets: List<SettingsWidget>) {
         }
         val path = vTuberStorage.makePath(id = widget.vTuber.id)
         when (widget.vTuber.type) {
-            SettingsWidgetVTuberType.vrm -> vTuberEffects[widget.id] = VTuberVrmEffect(
-                vrm = path.toString(),
-                cameraFieldOfView = widget.vTuber.cameraFieldOfView,
-                cameraPositionY = widget.vTuber.cameraPositionY
-            )
-            SettingsWidgetVTuberType.live2D ->
-                vTuberEffects[widget.id] = VTuberLive2DEffect(directory = File(path.toString()))
+            SettingsWidgetVTuberType.vrm -> {
+                vTuberEffects[widget.id] = VTuberVrmEffect(
+                    vrm = path.path,
+                    cameraFieldOfView = widget.vTuber.cameraFieldOfView,
+                    cameraPositionY = widget.vTuber.cameraPositionY,
+                )
+            }
+            SettingsWidgetVTuberType.live2D -> {
+                vTuberEffects[widget.id] = VTuberLive2DEffect(directory = path)
+            }
+            else -> {}
         }
     }
 }
@@ -1386,8 +1404,8 @@ private fun Model.resetPngTuberVideoEffects(widgets: List<SettingsWidget>) {
             continue
         }
         pngTuberEffects[widget.id] = PngTuberEffect(
-            com.moblin.android.various.storages.FileStorage(directory = com.moblin.android.various.storages.pngTuberStorageDirectory).makePath(id = widget.pngTuber.id).path,
-            costume = 1
+            model = com.moblin.android.various.storages.FileStorage(directory = com.moblin.android.various.storages.pngTuberStorageDirectory).makePath(id = widget.pngTuber.id).path,
+            costume = 1,
         )
     }
 }
@@ -1438,18 +1456,17 @@ private fun Model.resetSlideshowVideoEffects(widgets: List<SettingsWidget>) {
         for (slide in widget.slideshow.slides) {
             val widgetId = slide.widgetId ?: continue
             val slideWidget = findWidget(id = widgetId) ?: continue
-            val effect: VideoEffect
-            when (slideWidget.type) {
-                SettingsWidgetType.text -> effect = createTextEffect(widget = slideWidget)
-                SettingsWidgetType.image -> effect = createImageEffect(widget = slideWidget)
+            val effect: VideoEffect = when (slideWidget.type) {
+                SettingsWidgetType.text -> createTextEffect(widget = slideWidget)
+                SettingsWidgetType.image -> createImageEffect(widget = slideWidget)
                 else -> continue
             }
             slides.add(
                 SlideshowEffectSlide(
                     widgetId = widgetId,
                     effect = effect,
-                    time = slide.time.toDouble()
-                )
+                    time = slide.time.toDouble(),
+                ),
             )
         }
         slideshowEffects[widget.id] = SlideshowEffect(slides = slides)
@@ -1463,11 +1480,12 @@ private fun Model.resetWheelOfLuckEffects(widgets: List<SettingsWidget>) {
             continue
         }
         wheelOfLuckEffects[widget.id] = WheelOfLuckEffect(
-            canvasSize = canvasSize(media.getCanvasSize())
-        ) { result ->
-            widget.wheelOfLuck.appendResult(result = result)
-            executeWheelOfLuckOptionFunction(widget = widget, optionId = result.optionId)
-        }
+            canvasSize = media.getCanvasSize().toCGSize().toComposeSize(),
+            onResult = { result ->
+                widget.wheelOfLuck.appendResult(result = result)
+                executeWheelOfLuckOptionFunction(widget = widget, optionId = result.optionId)
+            },
+        )
     }
 }
 
@@ -1477,7 +1495,7 @@ private fun Model.resetBingoCardEffects(widgets: List<SettingsWidget>) {
         if (widget.type != SettingsWidgetType.bingoCard) {
             continue
         }
-        bingoCardEffects[widget.id] = BingoCardEffect(canvasSize = canvasSize(media.getCanvasSize()))
+        bingoCardEffects[widget.id] = BingoCardEffect(canvasSize = media.getCanvasSize().toCGSize().toComposeSize())
     }
 }
 
@@ -1487,7 +1505,7 @@ private fun Model.resetPomodoroTimerEffects(widgets: List<SettingsWidget>) {
         if (widget.type != SettingsWidgetType.pomodoroTimer) {
             continue
         }
-        pomodoroTimerEffects[widget.id] = PomodoroTimerEffect(canvasSize = canvasSize(media.getCanvasSize()))
+        pomodoroTimerEffects[widget.id] = PomodoroTimerEffect(canvasSize = media.getCanvasSize().toCGSize().toComposeSize())
         val pomodoroTimer = widget.pomodoroTimer
         pomodoroTimer.onPhaseChanged = { newPhase ->
             onPomodoroTimerPhaseChanged(pomodoroTimer, newPhase = newPhase)
@@ -1497,7 +1515,7 @@ private fun Model.resetPomodoroTimerEffects(widgets: List<SettingsWidget>) {
 
 private fun Model.onPomodoroTimerPhaseChanged(
     settings: SettingsWidgetPomodoroTimer,
-    newPhase: PomodoroPhase
+    newPhase: PomodoroPhase,
 ) {
     when (newPhase) {
         PomodoroPhase.focus -> {
@@ -1512,6 +1530,7 @@ private fun Model.onPomodoroTimerPhaseChanged(
                 sendChatMessage(message = settings.focusToBreakChatMessage)
             }
         }
+        else -> {}
     }
 }
 
@@ -1558,19 +1577,21 @@ private fun Model.sceneUpdatedOn(scene: SettingsScene, resolver: SceneResolver, 
         effects.add(lutEffect)
     }
     for (lut in database.color.allLuts()) {
-        val lutEffect = lutEffects[lut.id]
-        if (!lut.enabled || lutEffect == null) {
+        if (!lut.enabled) {
             continue
         }
+        val lutEffect = lutEffects[lut.id] ?: continue
         effects.add(lutEffect)
     }
     effects.addAll(registerGlobalVideoEffects(scene = scene))
-    val needsSpeechToText = BooleanArray(1)
+    var needsSpeechToText = false
     enabledAlertsEffects.clear()
     enabledSnapshotEffects.clear()
     enabledChatEffects.clear()
     enabledChatEmoteComboEffects.clear()
-    addSceneEffects(resolvedScene.drawnWidgets(), effects, needsSpeechToText)
+    if (addSceneEffects(resolvedScene.drawnWidgets(), effects)) {
+        needsSpeechToText = true
+    }
     if (drawOnStream.lines.value.isNotEmpty()) {
         effects.add(drawOnStreamEffect)
     }
@@ -1578,7 +1599,7 @@ private fun Model.sceneUpdatedOn(scene: SettingsScene, resolver: SceneResolver, 
     media.setPendingAfterAttachEffects(
         effects = effects,
         rotation = scene.videoSourceRotation,
-        mirror = scene.mirror
+        mirror = scene.mirror,
     )
     for (effect in browserEffects.values) {
         if (!effects.contains(effect)) {
@@ -1602,7 +1623,7 @@ private fun Model.sceneUpdatedOn(scene: SettingsScene, resolver: SceneResolver, 
             }
         }
     }
-    media.setSpeechToText(enabled = needsSpeechToText[0])
+    media.setSpeechToText(enabled = needsSpeechToText)
     if (attachCamera) {
         attachSingleLayout(scene = scene, resolver = resolver)
     } else {
@@ -1614,7 +1635,7 @@ private fun Model.sceneUpdatedOn(scene: SettingsScene, resolver: SceneResolver, 
             videoSize = media.getCanvasSize().toCGSize(),
             size = drawOnStreamSize.toCGSize(),
             lines = drawOnStream.lines.value,
-            mirror = streamOverlay.isFrontCameraSelected.value && !database.mirrorFrontCameraOnStream
+            mirror = streamOverlay.isFrontCameraSelected.value && !database.mirrorFrontCameraOnStream,
         )
     }
 }
@@ -1622,46 +1643,53 @@ private fun Model.sceneUpdatedOn(scene: SettingsScene, resolver: SceneResolver, 
 private fun Model.addSceneEffects(
     drawnWidgets: List<ResolvedSceneWidget>,
     effects: MutableList<VideoEffect>,
-    needsSpeechToText: BooleanArray
-) {
+): Boolean {
+    var needsSpeechToText = false
     for (drawnWidget in drawnWidgets) {
         val sceneWidget = drawnWidget.sceneWidget
         val widget = drawnWidget.widget
         when (widget.type) {
             SettingsWidgetType.image -> addSceneImageEffects(sceneWidget, widget, effects)
-            SettingsWidgetType.text -> addSceneTextEffects(sceneWidget, widget, effects, needsSpeechToText)
-            SettingsWidgetType.browser -> addSceneBrowserEffects(
-                sceneWidget,
-                widget,
-                drawnWidgets,
-                effects,
-                needsSpeechToText
-            )
+            SettingsWidgetType.text -> {
+                if (addSceneTextEffects(sceneWidget, widget, effects)) {
+                    needsSpeechToText = true
+                }
+            }
+            SettingsWidgetType.browser -> {
+                if (addSceneBrowserEffects(sceneWidget, widget, drawnWidgets, effects)) {
+                    needsSpeechToText = true
+                }
+            }
             SettingsWidgetType.crop -> addSceneCropEffects(widget, drawnWidgets, effects)
             SettingsWidgetType.map -> addSceneMapEffects(sceneWidget, widget, effects)
             SettingsWidgetType.scene -> {}
             SettingsWidgetType.slideshow -> addSceneSlideshowEffects(sceneWidget, widget, effects)
             SettingsWidgetType.qrCode -> addSceneQrCodeEffects(sceneWidget, widget, effects)
-            SettingsWidgetType.alerts -> addSceneAlertsEffects(sceneWidget, widget, effects, needsSpeechToText)
+            SettingsWidgetType.alerts -> {
+                if (addSceneAlertsEffects(sceneWidget, widget, effects)) {
+                    needsSpeechToText = true
+                }
+            }
             SettingsWidgetType.videoSource -> addSceneVideoSourceEffects(sceneWidget, widget, effects)
             SettingsWidgetType.scoreboard -> addSceneScoreboardEffects(sceneWidget, widget, effects)
             SettingsWidgetType.vTuber -> addSceneVTuberEffects(sceneWidget, widget, effects)
             SettingsWidgetType.pngTuber -> addScenePngTuberEffects(sceneWidget, widget, effects)
             SettingsWidgetType.snapshot -> addSceneSnapshotEffects(sceneWidget, widget, effects)
             SettingsWidgetType.chat -> addSceneChatEffects(sceneWidget, widget, effects)
-            SettingsWidgetType.chatEmoteCombo ->
-                addSceneChatEmoteComboEffects(sceneWidget, widget, effects)
+            SettingsWidgetType.chatEmoteCombo -> addSceneChatEmoteComboEffects(sceneWidget, widget, effects)
             SettingsWidgetType.wheelOfLuck -> addSceneWheelOfLuckEffects(sceneWidget, widget, effects)
             SettingsWidgetType.bingoCard -> addSceneBingoCardEffects(sceneWidget, widget, effects)
             SettingsWidgetType.pomodoroTimer -> addScenePomodoroTimerEffects(sceneWidget, widget, effects)
+            else -> {}
         }
     }
+    return needsSpeechToText
 }
 
 private fun Model.addSceneImageEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = imageEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1675,17 +1703,14 @@ private fun Model.addSceneTextEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
     effects: MutableList<VideoEffect>,
-    needsSpeechToText: BooleanArray
-) {
-    val effect = textEffects[widget.id] ?: return
+): Boolean {
+    val effect = textEffects[widget.id] ?: return false
     if (effects.contains(effect)) {
-        return
+        return false
     }
     effect.setSceneWidget(sceneWidget = sceneWidget.clone())
     effects.add(effect)
-    if (widget.text.needsSubtitles) {
-        needsSpeechToText[0] = true
-    }
+    return widget.text.needsSubtitles
 }
 
 private fun Model.addSceneBrowserEffects(
@@ -1693,26 +1718,23 @@ private fun Model.addSceneBrowserEffects(
     widget: SettingsWidget,
     drawnWidgets: List<ResolvedSceneWidget>,
     effects: MutableList<VideoEffect>,
-    needsSpeechToText: BooleanArray
-) {
-    val effect = browserEffects[widget.id] ?: return
+): Boolean {
+    val effect = browserEffects[widget.id] ?: return false
     if (effects.contains(effect)) {
-        return
+        return false
     }
     effect.setSceneWidget(
         sceneWidget = sceneWidget.clone(),
-        crops = findWidgetCrops(drawnWidgets = drawnWidgets, sourceWidgetId = widget.id)
+        crops = findWidgetCrops(drawnWidgets, widget.id),
     )
     effects.add(effect)
-    if (widget.browser.moblinAccess && widget.browser.speechToText) {
-        needsSpeechToText[0] = true
-    }
+    return widget.browser.moblinAccess && widget.browser.speechToText
 }
 
 private fun Model.addSceneCropEffects(
     widget: SettingsWidget,
     drawnWidgets: List<ResolvedSceneWidget>,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val sourceWidgetId = widget.crop.sourceWidgetId
     val effect = browserEffects[sourceWidgetId] ?: return
@@ -1722,7 +1744,7 @@ private fun Model.addSceneCropEffects(
     val sceneWidget = drawnWidgets.firstOrNull { it.widget.id == sourceWidgetId }?.sceneWidget
     effect.setSceneWidget(
         sceneWidget = sceneWidget?.clone(),
-        crops = findWidgetCrops(drawnWidgets = drawnWidgets, sourceWidgetId = sourceWidgetId)
+        crops = findWidgetCrops(drawnWidgets, sourceWidgetId),
     )
     effects.add(effect)
 }
@@ -1730,7 +1752,7 @@ private fun Model.addSceneCropEffects(
 private fun Model.addSceneMapEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = mapEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1743,7 +1765,7 @@ private fun Model.addSceneMapEffects(
 private fun Model.addSceneSlideshowEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = slideshowEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1756,7 +1778,7 @@ private fun Model.addSceneSlideshowEffects(
 private fun Model.addSceneQrCodeEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = qrCodeEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1770,31 +1792,29 @@ private fun Model.addSceneAlertsEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
     effects: MutableList<VideoEffect>,
-    needsSpeechToText: BooleanArray
-) {
-    val effect = alertsEffects[widget.id] ?: return
+): Boolean {
+    val effect = alertsEffects[widget.id] ?: return false
     if (effects.contains(effect)) {
-        return
+        return false
     }
     effect.setLayout(sceneWidget.layout)
     enabledAlertsEffects.add(effect)
     effects.add(effect)
-    if (widget.alerts.needsSubtitles) {
-        needsSpeechToText[0] = true
-    }
+    return widget.alerts.needsSubtitles
 }
 
 private fun Model.addSceneVideoSourceEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = videoSourceEffects[widget.id] ?: return
     if (effects.contains(effect)) {
         return
     }
-    getVideoSourceId(cameraId = widget.videoSource.toCameraId())?.let {
-        effect.setVideoSourceId(videoSourceId = it)
+    val videoSourceId = getVideoSourceId(cameraId = widget.videoSource.toCameraId())
+    if (videoSourceId != null) {
+        effect.setVideoSourceId(videoSourceId = videoSourceId)
     }
     effect.setSceneWidget(sceneWidget = sceneWidget.clone())
     effect.setSettings(settings = widget.videoSource.toEffectSettings())
@@ -1804,7 +1824,7 @@ private fun Model.addSceneVideoSourceEffects(
 private fun Model.addSceneScoreboardEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = getScoreboardEffect(id = widget.id) ?: return
     if (effects.contains(effect)) {
@@ -1814,14 +1834,18 @@ private fun Model.addSceneScoreboardEffects(
     effect.update(
         scoreboard = widget.scoreboard,
         config = getModularScoreboardConfig(scoreboard = widget.scoreboard),
-        players = database.scoreboardPlayers
+        players = database.scoreboardPlayers,
     )
     if (isWatchLocal()) {
         when (widget.scoreboard.sport) {
-            SettingsWidgetScoreboardSport.padel ->
-                sendUpdatePadelScoreboardToWatch(id = widget.id, padel = widget.scoreboard.padel)
-            SettingsWidgetScoreboardSport.generic ->
-                sendUpdateGenericScoreboardToWatch(id = widget.id, generic = widget.scoreboard.generic)
+            SettingsWidgetScoreboardSport.padel -> sendUpdatePadelScoreboardToWatch(
+                id = widget.id,
+                padel = widget.scoreboard.padel,
+            )
+            SettingsWidgetScoreboardSport.generic -> sendUpdateGenericScoreboardToWatch(
+                id = widget.id,
+                generic = widget.scoreboard.generic,
+            )
             else -> {}
         }
     }
@@ -1831,14 +1855,15 @@ private fun Model.addSceneScoreboardEffects(
 private fun Model.addSceneVTuberEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = vTuberEffects[widget.id] ?: return
     if (effects.contains(effect)) {
         return
     }
-    getVideoSourceId(cameraId = widget.vTuber.toCameraId())?.let {
-        effect.setVideoSourceId(videoSourceId = it)
+    val videoSourceId = getVideoSourceId(cameraId = widget.vTuber.toCameraId())
+    if (videoSourceId != null) {
+        effect.setVideoSourceId(videoSourceId = videoSourceId)
     }
     effect.setSceneWidget(sceneWidget = sceneWidget.clone())
     effect.setSettings(
@@ -1846,7 +1871,7 @@ private fun Model.addSceneVTuberEffects(
         cameraPositionY = widget.vTuber.cameraPositionY,
         mirror = widget.vTuber.mirror,
         sensitivity = widget.vTuber.sensitivity,
-        armsAngle = widget.vTuber.armsAngle
+        armsAngle = widget.vTuber.armsAngle,
     )
     effects.add(effect)
 }
@@ -1854,14 +1879,15 @@ private fun Model.addSceneVTuberEffects(
 private fun Model.addScenePngTuberEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = pngTuberEffects[widget.id] ?: return
     if (effects.contains(effect)) {
         return
     }
-    getVideoSourceId(cameraId = widget.pngTuber.toCameraId())?.let {
-        effect.setVideoSourceId(videoSourceId = it)
+    val videoSourceId = getVideoSourceId(cameraId = widget.pngTuber.toCameraId())
+    if (videoSourceId != null) {
+        effect.setVideoSourceId(videoSourceId = videoSourceId)
     }
     effect.setSceneWidget(sceneWidget = sceneWidget.clone())
     effect.setSettings(mirror = widget.pngTuber.mirror, sensitivity = widget.pngTuber.sensitivity)
@@ -1871,7 +1897,7 @@ private fun Model.addScenePngTuberEffects(
 private fun Model.addSceneSnapshotEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = snapshotEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1885,7 +1911,7 @@ private fun Model.addSceneSnapshotEffects(
 private fun Model.addSceneChatEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = chatEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1900,7 +1926,7 @@ private fun Model.addSceneChatEffects(
 private fun Model.addSceneChatEmoteComboEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = chatEmoteComboEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1915,7 +1941,7 @@ private fun Model.addSceneChatEmoteComboEffects(
 private fun Model.addSceneWheelOfLuckEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = wheelOfLuckEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1929,7 +1955,7 @@ private fun Model.addSceneWheelOfLuckEffects(
 private fun Model.addSceneBingoCardEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = bingoCardEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1943,7 +1969,7 @@ private fun Model.addSceneBingoCardEffects(
 private fun Model.addScenePomodoroTimerEffects(
     sceneWidget: SettingsSceneWidget,
     widget: SettingsWidget,
-    effects: MutableList<VideoEffect>
+    effects: MutableList<VideoEffect>,
 ) {
     val effect = pomodoroTimerEffects[widget.id] ?: return
     if (effects.contains(effect)) {
@@ -1960,7 +1986,7 @@ private fun Model.updateRemoteSceneSettings() {
     }
     remoteSceneSettingsUpdating = true
     remoteControlAssistantSetRemoteSceneSettings()
-    mainScope.launch {
+    CoroutineScope(Dispatchers.Main.immediate).launch {
         delay(1000)
         remoteSceneSettingsUpdating = false
         if (remoteSceneSettingsUpdateRequested) {
@@ -1980,28 +2006,29 @@ private fun Model.getLocalAndRemoteWidgets(): List<SettingsWidget> {
 
 private fun Model.findWidgetCrops(
     drawnWidgets: List<ResolvedSceneWidget>,
-    sourceWidgetId: UUID
+    sourceWidgetId: UUID,
 ): List<WidgetCrop> {
     return drawnWidgets
-        .filter {
-            it.widget.type == SettingsWidgetType.crop && it.widget.crop.sourceWidgetId == sourceWidgetId
-        }
+        .filter { it.widget.type == SettingsWidgetType.crop && it.widget.crop.sourceWidgetId == sourceWidgetId }
         .map { WidgetCrop(crop = it.widget.crop.clone(), sceneWidget = it.sceneWidget.clone()) }
 }
 
 fun Model.isCaptureDeviceWidget(widget: SettingsWidget): Boolean {
-    when (widget.type) {
+    return when (widget.type) {
         SettingsWidgetType.scene -> {
-            val sceneId = widget.scene.sceneId ?: return false
+            val sceneId = widget.scene.sceneId
+            if (sceneId == null) {
+                return false
+            }
             val scene = database.findScene(id = sceneId) ?: return false
-            return resolveScene(scene, includeDisabledSceneWidgets = true).widgets.any {
+            resolveScene(scene, includeDisabledSceneWidgets = true).widgets.any {
                 it.widget.type != SettingsWidgetType.scene && isCaptureDeviceWidget(widget = it.widget)
             }
         }
-        SettingsWidgetType.videoSource -> return widget.videoSource.videoSource.isCaptureDevice()
-        SettingsWidgetType.vTuber -> return widget.vTuber.videoSource.isCaptureDevice()
-        SettingsWidgetType.pngTuber -> return widget.pngTuber.videoSource.isCaptureDevice()
-        else -> return false
+        SettingsWidgetType.videoSource -> widget.videoSource.videoSource.isCaptureDevice()
+        SettingsWidgetType.vTuber -> widget.vTuber.videoSource.isCaptureDevice()
+        SettingsWidgetType.pngTuber -> widget.pngTuber.videoSource.isCaptureDevice()
+        else -> false
     }
 }
 
@@ -2016,40 +2043,44 @@ private fun Model.updateTextWidgetsLapTimes(now: Instant) {
         val nowSeconds = now.toEpochMilli() / 1000.0
         for (lapTimes in widget.text.lapTimes) {
             val lastIndex = lapTimes.lapTimes.size - 1
-            val currentLapStartTime = lapTimes.currentLapStartTime
-            if (lastIndex < 0 || currentLapStartTime == null) {
+            val currentLapStartTime = lapTimes.currentLapStartTime ?: continue
+            if (lastIndex < 0) {
                 continue
             }
-            val newLapTimes = lapTimes.lapTimes.toMutableList()
-            newLapTimes[lastIndex] = nowSeconds - currentLapStartTime
-            lapTimes.lapTimes = newLapTimes
+            lapTimes.lapTimes = lapTimes.lapTimes.toMutableList().also {
+                it[lastIndex] = nowSeconds - currentLapStartTime
+            }
         }
         for (effect in getTextEffects(id = widget.id)) {
-            effect.setLapTimes(lapTimes = widget.text.lapTimes.map { it.lapTimes.toMutableList() }.toMutableList())
+            effect.setLapTimes(lapTimes = widget.text.lapTimes.map { it.lapTimes })
         }
     }
 }
 
-fun Model.updateTextEffects(now: Instant, timestamp: TimeSource.Monotonic.ValueTimeMark) {
+fun Model.updateTextEffects(now: Instant, timestamp: ContinuousClock.Instant) {
     if (textEffects.isEmpty()) {
         return
     }
     updateTextWidgetsLapTimes(now = now)
-    val variables = createVariables(now = now, timestamp = timestamp)
+    val variables = createVariables(now = now, timestamp = TimeSource.Monotonic.markNow())
     remoteControlAssistantSetRemoteSceneDataVariables(variables = variables)
     val remoteVariables = remoteSceneData.textStats?.toVariables()
     for ((widgetId, effect) in textEffects) {
-        val effectVariables = if (isRemoteSceneWidget(id = widgetId)) remoteVariables else variables
-        if (effectVariables != null) {
-            effect.updateVariables(variables = effectVariables)
+        val effectiveVariables = if (isRemoteSceneWidget(id = widgetId)) remoteVariables else variables
+        if (effectiveVariables != null) {
+            effect.updateVariables(variables = effectiveVariables)
         }
     }
     for (effect in slideshowEffects.values) {
         for (slide in effect.slides) {
             val textEffect = slide.effect as? TextEffect ?: continue
-            val slideVariables = if (isRemoteSceneWidget(id = slide.widgetId)) remoteVariables else variables
-            if (slideVariables != null) {
-                textEffect.updateVariables(variables = slideVariables)
+            val effectiveVariables = if (isRemoteSceneWidget(id = slide.widgetId)) {
+                remoteVariables
+            } else {
+                variables
+            }
+            if (effectiveVariables != null) {
+                textEffect.updateVariables(variables = effectiveVariables)
             }
         }
     }
@@ -2058,17 +2089,23 @@ fun Model.updateTextEffects(now: Instant, timestamp: TimeSource.Monotonic.ValueT
 private fun Model.getBuiltinCameraDevicesInScene(
     scene: SettingsScene,
     devices: MutableList<CaptureDevice>,
-    resolver: SceneResolver
+    resolver: SceneResolver,
 ) {
     for (drawnWidget in resolver.resolve(scene).drawnWidgets()) {
         val widget = drawnWidget.widget
         when (widget.type) {
-            SettingsWidgetType.videoSource ->
-                getBuiltinCameraDevices(videoSource = widget.videoSource.videoSource, devices = devices)
-            SettingsWidgetType.vTuber ->
-                getBuiltinCameraDevices(videoSource = widget.vTuber.videoSource, devices = devices)
-            SettingsWidgetType.pngTuber ->
-                getBuiltinCameraDevices(videoSource = widget.pngTuber.videoSource, devices = devices)
+            SettingsWidgetType.videoSource -> getBuiltinCameraDevices(
+                videoSource = widget.videoSource.videoSource,
+                devices = devices,
+            )
+            SettingsWidgetType.vTuber -> getBuiltinCameraDevices(
+                videoSource = widget.vTuber.videoSource,
+                devices = devices,
+            )
+            SettingsWidgetType.pngTuber -> getBuiltinCameraDevices(
+                videoSource = widget.pngTuber.videoSource,
+                devices = devices,
+            )
             else -> {}
         }
     }
@@ -2076,105 +2113,84 @@ private fun Model.getBuiltinCameraDevicesInScene(
 
 private fun Model.getBuiltinCameraDevices(
     videoSource: SettingsVideoSource,
-    devices: MutableList<CaptureDevice>
+    devices: MutableList<CaptureDevice>,
 ) {
     val cameraId = videoSource.getCaptureDeviceCameraId() ?: return
-    val device: CaptureDevice = CaptureDevice(device = com.moblin.android.platform.avfoundation.AVCaptureDevice.withUniqueID(cameraId) ?: return, id = UUID.randomUUID(), isVideoMirrored = false)
-    if (devices.any { it.device == device.device }) {
-        return
+    val device = AVCaptureDevice.withUniqueID(cameraId) ?: return
+    if (devices.none { it.device == device }) {
+        devices.add(makeCaptureDevice(device = device))
     }
-    devices.add(makeCaptureDevice(device = device))
 }
 
 private fun Model.updateTimers(
     text: SettingsWidgetText,
     textEffect: TextEffect,
-    parts: List<TextFormatPart>
+    parts: List<TextFormatPart>,
 ) {
     val length = parts.count { it == TextFormatPart.Timer }
-    while (text.timers.size > length) {
-        text.timers = text.timers.dropLast(1)
-    }
-    while (text.timers.size < length) {
-        text.timers = text.timers + SettingsWidgetTextTimer()
-    }
+    text.timers = text.timers.toMutableList().also { it.truncate(length = length) { SettingsWidgetTextTimer() } }
     textEffect.setTimersEndTime(
         endTimes = text.timers.map {
-            com.moblin.android.platform.core.ContinuousClock.now.advanced(bySeconds = utcTimeDeltaFromNow(it.endTime))
-        }.toMutableList()
+            ContinuousClock.now.advanced(bySeconds = utcTimeDeltaFromNow(to = it.endTime))
+        },
     )
 }
 
 private fun Model.updateStopwatches(
     text: SettingsWidgetText,
     textEffect: TextEffect,
-    parts: List<TextFormatPart>
+    parts: List<TextFormatPart>,
 ) {
     val length = parts.count { it == TextFormatPart.Stopwatch }
-    while (text.stopwatches.size > length) {
-        text.stopwatches = text.stopwatches.dropLast(1)
-    }
-    while (text.stopwatches.size < length) {
-        text.stopwatches = text.stopwatches + SettingsWidgetTextStopwatch()
-    }
-    textEffect.setStopwatches(stopwatches = text.stopwatches.map { it.clone() }.toMutableList())
+    text.stopwatches = text.stopwatches.toMutableList()
+        .also { it.truncate(length = length) { SettingsWidgetTextStopwatch() } }
+    textEffect.setStopwatches(stopwatches = text.stopwatches.map { it.clone() })
 }
 
 private fun Model.updateCheckboxes(
     text: SettingsWidgetText,
     textEffect: TextEffect,
-    parts: List<TextFormatPart>
+    parts: List<TextFormatPart>,
 ) {
     val length = parts.count { it == TextFormatPart.Checkbox }
-    while (text.checkboxes.size > length) {
-        text.checkboxes = text.checkboxes.dropLast(1)
-    }
-    while (text.checkboxes.size < length) {
-        text.checkboxes = text.checkboxes + SettingsWidgetTextCheckbox()
-    }
-    textEffect.setCheckboxes(checkboxes = text.checkboxes.map { it.checked }.toMutableList())
+    text.checkboxes = text.checkboxes.toMutableList()
+        .also { it.truncate(length = length) { SettingsWidgetTextCheckbox() } }
+    textEffect.setCheckboxes(checkboxes = text.checkboxes.map { it.checked })
 }
 
 private fun Model.updateRatings(
     text: SettingsWidgetText,
     textEffect: TextEffect,
-    parts: List<TextFormatPart>
+    parts: List<TextFormatPart>,
 ) {
     val length = parts.count { it == TextFormatPart.Rating }
-    while (text.ratings.size > length) {
-        text.ratings = text.ratings.dropLast(1)
-    }
-    while (text.ratings.size < length) {
-        text.ratings = text.ratings + SettingsWidgetTextRating()
-    }
-    textEffect.setRatings(ratings = text.ratings.map { it.rating }.toMutableList())
+    text.ratings = text.ratings.toMutableList()
+        .also { it.truncate(length = length) { SettingsWidgetTextRating() } }
+    textEffect.setRatings(ratings = text.ratings.map { it.rating })
 }
 
 private fun Model.updateLapTimes(
     text: SettingsWidgetText,
     textEffect: TextEffect,
-    parts: List<TextFormatPart>
+    parts: List<TextFormatPart>,
 ) {
     val length = parts.count { it == TextFormatPart.LapTimes }
-    while (text.lapTimes.size > length) {
-        text.lapTimes = text.lapTimes.dropLast(1)
-    }
-    while (text.lapTimes.size < length) {
-        text.lapTimes = text.lapTimes + SettingsWidgetTextLapTimes()
-    }
-    textEffect.setLapTimes(lapTimes = text.lapTimes.map { it.lapTimes.toMutableList() }.toMutableList())
+    text.lapTimes = text.lapTimes.toMutableList()
+        .also { it.truncate(length = length) { SettingsWidgetTextLapTimes() } }
+    textEffect.setLapTimes(lapTimes = text.lapTimes.map { it.lapTimes })
 }
 
 private fun Model.updateSubtitles(
     text: SettingsWidgetText,
     textEffect: TextEffect?,
-    parts: List<TextFormatPart>
+    parts: List<TextFormatPart>,
 ) {
-    text.subtitles = mutableListOf()
+    text.subtitles = emptyList()
     for (part in parts) {
         when (part) {
             is TextFormatPart.Subtitles -> {
                 val item = SettingsWidgetTextSubtitles()
+                item.identifier = UUID.randomUUID().toString()
                 text.subtitles = text.subtitles + item
             }
             else -> {}
@@ -2182,20 +2198,4 @@ private fun Model.updateSubtitles(
     }
     text.needsSubtitles = text.subtitles.isNotEmpty()
     reloadSpeechToText()
-}
-
-private fun List<TextFormatPart>.isWeatherVariable(): Boolean {
-    return false
-}
-
-private fun List<TextFormatPart>.isGeographyVariable(): Boolean {
-    return false
-}
-
-private fun List<TextFormatPart>.isGForceVariable(): Boolean {
-    return false
-}
-
-private fun canvasSize(size: android.util.Size): androidx.compose.ui.geometry.Size {
-    return androidx.compose.ui.geometry.Size(size.width.toFloat(), size.height.toFloat())
 }

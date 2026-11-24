@@ -2087,7 +2087,7 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
         updateAltitude()
         updateSlope()
         updateAverageSpeed(now = monotonicNow.toEpochMilli())
-        updateTextEffects(now = now, timestamp = TimeSource.Monotonic.markNow())
+        updateTextEffects(now = now, timestamp = com.moblin.android.platform.core.ContinuousClock.now)
         updateMapEffects()
         updateScoreboardEffects()
         updatePoll()
@@ -3169,14 +3169,14 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
     private fun attachCameraFinalize(scene: SettingsScene, resolver: SceneResolver) {
         lastAttachCompletedTime = null
         val isMirrored = getVideoMirroredOnScreen()
-        val devices = getBuiltinCameraDevices(scene = scene, sceneDevice = cameraDevice, resolver = resolver)
+        val devices = getBuiltinCameraDevices(scene = scene, sceneDevice = cameraDevice?.device, resolver = resolver)
         val showCameraPreview = updateShowCameraPreview()
         val attachCameraPreview = shouldShowCameraPreview() || database.alwaysAttachCameraPreview
         if (attachCameraPreview) {
             cameraPreviewView.setDevices(
                 ids = getCameraPreviewDeviceIds(
                     scene = scene,
-                    sceneDevice = cameraDevice,
+                    sceneDevice = cameraDevice?.device,
                     resolver = resolver,
                 ),
             )
@@ -3329,7 +3329,7 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
         if (isWatchLocal()) {
             sendIsMutedToWatch(isMuteOn = audio.muted.value)
         }
-        updateTextEffects(now = Instant.now(), timestamp = TimeSource.Monotonic.markNow())
+        updateTextEffects(now = Instant.now(), timestamp = com.moblin.android.platform.core.ContinuousClock.now)
         forceUpdateTextEffects()
         remoteControlStateChanged(state = RemoteControlState(muted = audio.muted.value))
     }
