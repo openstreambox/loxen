@@ -1,6 +1,6 @@
 {
   "root": "/home/runner/work/loxen/loxen/.upstream",
-  "generated": "2026-11-24T22:32:29+00:00",
+  "generated": "2026-11-25T03:12:41+00:00",
   "files": [
     {
       "path": "Moblin Live Activity/MoblinLiveActivityApp.swift",
@@ -15062,7 +15062,7 @@
     {
       "path": "Moblin/Various/Model/ModelYouTube.swift",
       "lines": 357,
-      "sha256": "17c44facf4a0f002f84dab52aa6a98c2faaa893758a1a148593ecd3069a591e7",
+      "sha256": "cac21ab90433d1ab98434db789029b427a2b58d9f630063d1049398677028904",
       "imports": [
         "AppAuth",
         "AppAuthCore",
@@ -17759,7 +17759,7 @@
     {
       "path": "Moblin/Various/Model/ModelTwitch.swift",
       "lines": 1357,
-      "sha256": "a0b8177a309997563e720b2640206a6b5f19e9dc5316dbbcb7d9d4a931f1eae0",
+      "sha256": "795d6e12d7d55cf50811527c40a35b404461418e19bd1d02de25544355bd1383",
       "imports": [
         "CoreImage",
         "Foundation",
@@ -21363,8 +21363,8 @@
     },
     {
       "path": "Moblin/View/Settings/About/AboutVersionHistorySettingsView.swift",
-      "lines": 4429,
-      "sha256": "41324e56e9d2d85c535d4adc6063ac7c73ea64e11bdaa69444def1bda9b2ffbe",
+      "lines": 4456,
+      "sha256": "88122affff81f98aa2ab3870a20684cb6c2e5324387df6a35cfe83dafabb0b0a",
       "imports": [
         "SwiftUI"
       ],
@@ -21613,7 +21613,7 @@
     {
       "path": "Moblin/Various/Model/ModelRemoteControl.swift",
       "lines": 1774,
-      "sha256": "18d24facd5e5bffa1d0beacfed5b84bd347f3052ce13c197955c9dd945891e48",
+      "sha256": "9e2208bcbd1fbb143c60cadeaebeab5c76bffb9b7ad30fab3ffb0483984e6388",
       "imports": [
         "AVFoundation",
         "CoreLocation",
@@ -22256,7 +22256,7 @@
     {
       "path": "Moblin/Various/Model/Model.swift",
       "lines": 3573,
-      "sha256": "02c95198378d8f452a0fcc508105ad75b8001aa841ecbfe7205f8355219f02d2",
+      "sha256": "b7425b5cfb48acb63670f2ee4b8446d1a979fe6284774bbe9190680dcebfa5fb",
       "imports": [
         "AVKit",
         "ActivityKit",

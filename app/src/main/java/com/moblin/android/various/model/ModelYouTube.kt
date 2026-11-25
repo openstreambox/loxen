@@ -255,7 +255,7 @@ fun Model.reloadYouTubeLiveChat() {
 }
 
 fun Model.updateYouTubeStream(monotonicNow: java.time.Instant) {
-    if (!isLive.value || !isYouTubeViewersConfigured()) {
+    if (!isYouTubeViewersConfigured()) {
         youTubePlatformStatus = PlatformStatus.unknown
         return
     }

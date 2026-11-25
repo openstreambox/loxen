@@ -384,7 +384,7 @@ fun Model.createStreamMarker() {
 }
 
 fun Model.updateTwitchStream(monotonicNow: Instant) {
-    if (!isLive.value || !isTwitchViewersConfigured()) {
+    if (!isTwitchViewersConfigured()) {
         twitchPlatformStatus = PlatformStatus.unknown
         return
     }

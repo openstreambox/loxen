@@ -4529,25 +4529,22 @@
   },
   "Moblin/Various/Model/ModelYouTube.swift": {
     "status": "ok",
-    "sha256": "17c44facf4a0f002f84dab52aa6a98c2faaa893758a1a148593ecd3069a591e7",
-    "moblin_commit": "0742a493ecb0d0ae98c7285d370638cbe8e02c49",
+    "sha256": "cac21ab90433d1ab98434db789029b427a2b58d9f630063d1049398677028904",
+    "moblin_commit": "a2f1225ddb7a1e759a943833e1ce2ec9b3e23836",
     "mode": "incremental",
     "tier": "logic",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelYouTube.kt",
     "notes": [
-      "The Swift diff only adds [weak self] to the getYouTubeAccesssToken closure; Kotlin has no weak captures, so the existing call youTubeApiUnauthorized(stream = stream) already expresses the same intent and the Kotlin file is unchanged.",
-      "mainScope (Dispatchers.Main) stands in for DispatchQueue.main.async in the sign-in callback.",
-      "youTubeFetchVideoIdStartTime uses java.time.Instant/Duration instead of ContinuousClock, as already established in this file.",
-      "network responses are matched with NetworkResponse.Success instead of Swift Result cases.",
-      "the YouTubeLiveChatDelegate conformance is an internal delegate class forwarding to Model extension functions."
+      "Only the guard in Model.updateYouTubeStream changed: the isLive check was dropped, so viewers polling now depends solely on isYouTubeViewersConfigured().",
+      "Everything else in the Kotlin file is unchanged, including the Android hooks and hand-written adaptations."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 57943,
-    "tokens_out": 4030,
-    "seconds": 16.2,
-    "ported_at": "2026-11-06T23:51:35+00:00"
+    "tokens_in": 58069,
+    "tokens_out": 3457,
+    "seconds": 15.4,
+    "ported_at": "2026-11-25T03:13:09+00:00"
   },
   "MoblinTests/Moblin/Obs/ObsWebSocketSuite.swift": {
     "status": "ok",
@@ -14014,23 +14011,23 @@
   },
   "Moblin/Various/Model/ModelTwitch.swift": {
     "status": "ok",
-    "sha256": "a0b8177a309997563e720b2640206a6b5f19e9dc5316dbbcb7d9d4a931f1eae0",
-    "moblin_commit": "6f9c3366d46355d2d932309ef7e5310a80462e0e",
+    "sha256": "795d6e12d7d55cf50811527c40a35b404461418e19bd1d02de25544355bd1383",
+    "moblin_commit": "a2f1225ddb7a1e759a943833e1ce2ec9b3e23836",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelTwitch.kt",
     "notes": [
-      "Only the new twitchEventSubChannelShoutoutReceive extension function was added, directly after twitchEventSubChannelShoutoutCreate, matching the Swift diff.",
-      "The function reuses the existing private appendTwitchChatAlertMessage helper and makeTwitchAlertSegments, with .orange mapped to Color(0xFFFF9500) and .other to ChatHighlightKind.Other as elsewhere in the file.",
-      "The TwitchEventSubDelegate anonymous object in reloadTwitchEventSub was left byte-identical, since the Swift diff did not add an override there."
+      "Only the guard in updateTwitchStream changed: the isLive check was dropped, so the Twitch viewer refresh now runs whenever the channel is configured.",
+      "Everything else is byte-identical to the previous Kotlin translation.",
+      "isLive is no longer referenced in this file but the Model property remains untouched elsewhere."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 79907,
-    "tokens_out": 14099,
-    "seconds": 64.6,
-    "ported_at": "2026-11-20T01:29:36+00:00"
+    "tokens_in": 80052,
+    "tokens_out": 13666,
+    "seconds": 37.9,
+    "ported_at": "2026-11-25T03:13:31+00:00"
   },
   "Moblin/View/Settings/BlackSharkCoolers/BlackSharkCoolerDevicesSettingsView.swift": {
     "status": "ok",
@@ -15214,22 +15211,23 @@
   },
   "Moblin/Various/Model/ModelRemoteControl.swift": {
     "status": "ok",
-    "sha256": "18d24facd5e5bffa1d0beacfed5b84bd347f3052ce13c197955c9dd945891e48",
-    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
+    "sha256": "9e2208bcbd1fbb143c60cadeaebeab5c76bffb9b7ad30fab3ffb0483984e6388",
+    "moblin_commit": "a2f1225ddb7a1e759a943833e1ce2ec9b3e23836",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelRemoteControl.kt",
     "notes": [
-      "Only the visibility of handleRemoteControlTriggerReaction changed: the Swift `private func` became `func`, so the Kotlin extension lost its `private` modifier.",
-      "Every other line of the Kotlin file is unchanged, including the Android-specific delegate adapters, MediaMetadataRetriever thumbnail path and playback/cache hooks."
+      "Single change: the viewers status item is now added whenever viewers are configured, no longer gated on being live.",
+      "All other Kotlin lines, including the Android-specific adapters and hooks, are unchanged.",
+      "The Kotlin condition in createRemoteControlStatusTopLeft was `isViewersConfigured() && isLive.value`; the `&& isLive.value` part is removed."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 100542,
-    "tokens_out": 20414,
-    "seconds": 49.7,
-    "ported_at": "2026-11-24T04:29:37+00:00"
+    "tokens_in": 100555,
+    "tokens_out": 20413,
+    "seconds": 53.6,
+    "ported_at": "2026-11-25T03:13:47+00:00"
   },
   "Moblin/Various/Model/ModelStream.swift": {
     "status": "ok",
@@ -15346,23 +15344,24 @@
   },
   "Moblin/View/Settings/About/AboutVersionHistorySettingsView.swift": {
     "status": "ok",
-    "sha256": "41324e56e9d2d85c535d4adc6063ac7c73ea64e11bdaa69444def1bda9b2ffbe",
-    "moblin_commit": "3a68b5f97fb93e37a5987eff8faeedd8048c82cd",
+    "sha256": "88122affff81f98aa2ab3870a20684cb6c2e5324387df6a35cfe83dafabb0b0a",
+    "moblin_commit": "a2f1225ddb7a1e759a943833e1ce2ec9b3e23836",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/about/AboutVersionHistorySettingsView.kt",
     "notes": [
-      "Added the new 40.0.0 Version entry at the top of the versions list, keeping the existing Kotlin list formatting and style.",
-      "Only the data changed; the composable, imports and all other entries stay byte-identical.",
-      "Change strings are copied verbatim from the Swift source, including the indented sub-bullets."
+      "Only the versions list changed: a new 40.1.0 entry was inserted at the top, before 40.0.0.",
+      "The new entry keeps the Swift strings verbatim, including the escaped double quotes around \"Helpful\" and the ASCII arrow in \"Settings -> Display\".",
+      "Nothing else in the file was touched: the Version data class, the composable and all existing entries are byte-identical.",
+      "The changelog entries are data, not UI, so no Compose code needed to change."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 150198,
-    "tokens_out": 17414,
-    "seconds": 58.8,
-    "ported_at": "2026-11-08T23:14:27+00:00"
+    "tokens_in": 151411,
+    "tokens_out": 19416,
+    "seconds": 86.9,
+    "ported_at": "2026-11-25T03:14:26+00:00"
   },
   "Moblin/Various/Settings/Settings.swift": {
     "status": "ok",
@@ -15621,23 +15620,21 @@
   },
   "Moblin/Various/Model/Model.swift": {
     "status": "ok",
-    "sha256": "02c95198378d8f452a0fcc508105ad75b8001aa841ecbfe7205f8355219f02d2",
-    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
+    "sha256": "b7425b5cfb48acb63670f2ee4b8446d1a979fe6284774bbe9190680dcebfa5fb",
+    "moblin_commit": "a2f1225ddb7a1e759a943833e1ce2ec9b3e23836",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/Model.kt",
     "notes": [
-      "Only the four new alert effect properties (popeHatEffect, chefHatEffect, moustacheEffect, poopEffect) were added to Model, right after sparkleEffect.",
-      "Everything else in this file is unchanged from the previous Kotlin translation.",
-      "The new properties use the same type and initializer (AlertsEffect? = null) as the existing glassesEffect and sparkleEffect."
+      "Removed the isLive condition from isShowingStatusViewers so the viewers status now shows whenever viewers are configured and at least one platform status exists."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 149017,
-    "tokens_out": 35403,
-    "seconds": 88.0,
-    "ported_at": "2026-11-24T04:30:31+00:00"
+    "tokens_in": 149042,
+    "tokens_out": 35863,
+    "seconds": 94.9,
+    "ported_at": "2026-11-25T03:14:34+00:00"
   },
   "Moblin/View/Settings/Scenes/Widgets/Widget/VTuber/WidgetVTuberSettingsView.swift": {
     "status": "ok",

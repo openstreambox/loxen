@@ -3380,7 +3380,7 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
     fun isShowingStatusEvents(): Boolean = database.show.events && isEventsConfigured()
 
     fun isShowingStatusViewers(): Boolean =
-        isLive.value && database.show.viewers && statusTopLeft.streamingPlatformStatuses.value.isNotEmpty()
+        database.show.viewers && statusTopLeft.streamingPlatformStatuses.value.isNotEmpty()
 
     private fun statusStreamText(): String {
         val proto = stream.value.protocolString()

@@ -568,7 +568,7 @@ private fun Model.createRemoteControlStatusTopLeft(): RemoteControlStatusTopLeft
     if (isChatConfigured()) {
         topLeft.chat = RemoteControlStatusItem(message = statusTopLeft.statusChatText.value)
     }
-    if (isViewersConfigured() && isLive.value) {
+    if (isViewersConfigured()) {
         topLeft.viewers = RemoteControlStatusItem(message = statusViewersText())
     }
     return topLeft
