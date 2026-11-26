@@ -662,6 +662,22 @@ sealed class RemoteControlRequest {
         }
     }
 
+    data class SetMoblinCloudMediaShareWidget(val id: UUID?) : RemoteControlRequest() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("setMoblinCloudMediaShareWidget") {
+                if (id != null) {
+                    put("id", id.toString())
+                }
+            }
+        }
+    }
+
+    data object SkipMoblinCloudMediaShare : RemoteControlRequest() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("skipMoblinCloudMediaShare") {}
+        }
+    }
+
     data class ShowTally(
         val message: String,
         val background: RgbColor,
@@ -888,6 +904,12 @@ sealed class RemoteControlRequest {
                         if (it is JsonNull) null else UUID.fromString(it.jsonPrimitive.content)
                     },
                 )
+                "setMoblinCloudMediaShareWidget" -> SetMoblinCloudMediaShareWidget(
+                    id = params["id"]?.let {
+                        if (it is JsonNull) null else UUID.fromString(it.jsonPrimitive.content)
+                    },
+                )
+                "skipMoblinCloudMediaShare" -> SkipMoblinCloudMediaShare
                 "showTally" -> ShowTally(
                     message = params.getValue("message").jsonPrimitive.content,
                     background = remoteControlJson.decodeFromJsonElement(params.getValue("background")),
@@ -925,6 +947,15 @@ sealed class RemoteControlTipKind {
         }
     }
 
+    data class MediaShare(val source: RemoteControlMediaShareSource, val duration: Int) : RemoteControlTipKind() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("mediaShare") {
+                put("source", source.toJsonElement())
+                put("duration", duration)
+            }
+        }
+    }
+
     companion object {
         fun fromJsonElement(element: JsonElement): RemoteControlTipKind {
             val entry = element.jsonObject.entries.first()
@@ -936,6 +967,10 @@ sealed class RemoteControlTipKind {
                 )
                 "effect" -> Effect(sound = params.getValue("sound").jsonPrimitive.content)
                 "wheelOfLuck" -> WheelOfLuck(count = params.getValue("count").jsonPrimitive.int)
+                "mediaShare" -> MediaShare(
+                    source = RemoteControlMediaShareSource.fromJsonElement(params.getValue("source")),
+                    duration = params.getValue("duration").jsonPrimitive.int,
+                )
                 else -> throw SerializationException("Unknown tip kind ${entry.key}")
             }
         }
@@ -951,6 +986,54 @@ object RemoteControlTipKindSerializer : KSerializer<RemoteControlTipKind> {
 
     override fun deserialize(decoder: Decoder): RemoteControlTipKind =
         RemoteControlTipKind.fromJsonElement(
+            decoder.decodeSerializableValue(JsonElement.serializer()),
+        )
+}
+
+@Serializable(with = RemoteControlMediaShareSourceSerializer::class)
+sealed class RemoteControlMediaShareSource {
+    abstract fun toJsonElement(): JsonObject
+
+    data class YouTube(val videoId: String, val start: Int) : RemoteControlMediaShareSource() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("youTube") {
+                put("videoId", videoId)
+                put("start", start)
+            }
+        }
+    }
+
+    data class TwitchClip(val slug: String) : RemoteControlMediaShareSource() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("twitchClip") { put("slug", slug) }
+        }
+    }
+
+    companion object {
+        fun fromJsonElement(element: JsonElement): RemoteControlMediaShareSource {
+            val entry = element.jsonObject.entries.first()
+            val params = entry.value.jsonObject
+            return when (entry.key) {
+                "youTube" -> YouTube(
+                    videoId = params.getValue("videoId").jsonPrimitive.content,
+                    start = params.getValue("start").jsonPrimitive.int,
+                )
+                "twitchClip" -> TwitchClip(slug = params.getValue("slug").jsonPrimitive.content)
+                else -> throw SerializationException("Unknown media share source ${entry.key}")
+            }
+        }
+    }
+}
+
+object RemoteControlMediaShareSourceSerializer : KSerializer<RemoteControlMediaShareSource> {
+    override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
+
+    override fun serialize(encoder: Encoder, value: RemoteControlMediaShareSource) {
+        encoder.encodeSerializableValue(JsonElement.serializer(), value.toJsonElement())
+    }
+
+    override fun deserialize(decoder: Decoder): RemoteControlMediaShareSource =
+        RemoteControlMediaShareSource.fromJsonElement(
             decoder.decodeSerializableValue(JsonElement.serializer()),
         )
 }
@@ -1233,6 +1316,12 @@ sealed class RemoteControlEvent {
         }
     }
 
+    data class MediaShare(val state: RemoteControlMediaShareState) : RemoteControlEvent() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("mediaShare") { put("state", state.toJsonElement()) }
+        }
+    }
+
     companion object {
         fun fromJson(data: String): RemoteControlEvent =
             fromJsonElement(remoteControlJson.parseToJsonElement(data))
@@ -1271,9 +1360,97 @@ sealed class RemoteControlEvent {
                     },
                 )
                 "icon" -> Icon(id = params.getValue("id").jsonPrimitive.content)
+                "mediaShare" -> MediaShare(
+                    state = RemoteControlMediaShareState.fromJsonElement(params.getValue("state")),
+                )
                 else -> throw SerializationException("Unknown event ${entry.key}")
             }
         }
+    }
+}
+
+@Serializable(with = RemoteControlMediaShareStateSerializer::class)
+sealed class RemoteControlMediaShareState {
+    abstract fun toJsonElement(): JsonObject
+
+    data object Unavailable : RemoteControlMediaShareState() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("unavailable") {}
+        }
+    }
+
+    data class Idle(val lastEnded: RemoteControlMediaShareEnded? = null) : RemoteControlMediaShareState() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("idle") {
+                if (lastEnded != null) {
+                    put("lastEnded", remoteControlJson.encodeToJsonElement(lastEnded))
+                }
+            }
+        }
+    }
+
+    data class Playing(val requestId: String) : RemoteControlMediaShareState() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("playing") { put("requestId", requestId) }
+        }
+    }
+
+    companion object {
+        fun fromJsonElement(element: JsonElement): RemoteControlMediaShareState {
+            val entry = element.jsonObject.entries.first()
+            val params = entry.value.jsonObject
+            return when (entry.key) {
+                "unavailable" -> Unavailable
+                "idle" -> Idle(
+                    lastEnded = params["lastEnded"]?.let {
+                        if (it is JsonNull) null
+                        else remoteControlJson.decodeFromJsonElement<RemoteControlMediaShareEnded>(it)
+                    },
+                )
+                "playing" -> Playing(requestId = params.getValue("requestId").jsonPrimitive.content)
+                else -> throw SerializationException("Unknown media share state ${entry.key}")
+            }
+        }
+    }
+}
+
+object RemoteControlMediaShareStateSerializer : KSerializer<RemoteControlMediaShareState> {
+    override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
+
+    override fun serialize(encoder: Encoder, value: RemoteControlMediaShareState) {
+        encoder.encodeSerializableValue(JsonElement.serializer(), value.toJsonElement())
+    }
+
+    override fun deserialize(decoder: Decoder): RemoteControlMediaShareState =
+        RemoteControlMediaShareState.fromJsonElement(
+            decoder.decodeSerializableValue(JsonElement.serializer()),
+        )
+}
+
+@Serializable
+data class RemoteControlMediaShareEnded(
+    val requestId: String,
+    val reason: RemoteControlMediaShareEndedReason,
+)
+
+@Serializable
+enum class RemoteControlMediaShareEndedReason(val wireName: String) {
+    @SerialName("finished")
+    Finished("finished"),
+
+    @SerialName("skipped")
+    Skipped("skipped"),
+
+    @SerialName("failedToStart")
+    FailedToStart("failedToStart"),
+
+    @SerialName("timedOut")
+    TimedOut("timedOut"),
+    ;
+
+    companion object {
+        fun fromName(name: String): RemoteControlMediaShareEndedReason? =
+            entries.firstOrNull { it.wireName == name }
     }
 }
 
@@ -2392,7 +2569,6 @@ data class RemoteControlStatusTopRight(
     var srtlaRtts: RemoteControlStatusItem? = null,
     var recording: RemoteControlStatusItem? = null,
     var replay: RemoteControlStatusItem? = null,
-    var browserWidgets: RemoteControlStatusItem? = null,
     var moblink: RemoteControlStatusItem? = null,
     var djiDevices: RemoteControlStatusItem? = null,
     var systemMonitor: RemoteControlStatusItem? = null,
@@ -2527,6 +2703,8 @@ data class RemoteControlSettingsMoblinCloud(
     val alertsWidgetId: UUID? = null,
     @Serializable(with = UUIDSerializer::class)
     val wheelOfLuckWidgetId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
+    val mediaShareWidgetId: UUID? = null,
 )
 
 @Serializable

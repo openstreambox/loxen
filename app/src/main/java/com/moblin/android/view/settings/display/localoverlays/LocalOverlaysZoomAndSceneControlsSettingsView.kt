@@ -9,6 +9,8 @@ import com.moblin.android.platform.swiftui.binding
 import com.moblin.android.various.settings.Database
 import com.moblin.android.various.settings.SettingsShow
 import com.moblin.android.various.settings.SettingsZoomAndSceneButtonsLayout
+import com.moblin.android.view.utils.FeatureVideosSectionView
+import com.moblin.android.various.FeatureVideo
 
 @Composable
 fun LocalOverlaysZoomAndSceneControlsSettingsView(database: Database, show: SettingsShow) {
@@ -42,5 +44,6 @@ fun LocalOverlaysZoomAndSceneControlsSettingsView(database: Database, show: Sett
                 )
             }
         }
+        FeatureVideosSectionView(videos = listOf(FeatureVideo.zoomAndSceneControls))
     }
 }

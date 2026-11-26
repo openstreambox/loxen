@@ -33,6 +33,7 @@ import com.moblin.android.videoeffects.text.isWeatherVariable
 import com.moblin.android.videoeffects.text.loadTextFormat
 import com.moblin.android.videoeffects.vtuber.VTuberLive2DEffect
 import com.moblin.android.videoeffects.vtuber.VTuberVrmEffect
+import java.net.URI
 import java.time.Instant
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
@@ -1299,9 +1300,9 @@ private fun Model.resetBrowserVideoEffects(widgets: List<SettingsWidget>) {
         if (widget.type != SettingsWidgetType.browser) {
             continue
         }
-        val url = runCatching { java.net.URI(widget.browser.url) }.getOrNull() ?: continue
+        val request = widget.browser.getRequest() ?: continue
         val effect = BrowserEffect(
-            url = url,
+            url = URI(request.url.toString()),
             styleSheet = widget.browser.styleSheet,
             widget = widget.browser,
             moblinAccess = widget.browser.moblinAccess,
@@ -1310,6 +1311,7 @@ private fun Model.resetBrowserVideoEffects(widgets: List<SettingsWidget>) {
         effect.effects = widget.getEffects(model = this).toMutableList()
         browserEffects[widget.id] = effect
     }
+    moblinCloudMediaShareEffectsReset()
 }
 
 private fun Model.resetMapVideoEffects(widgets: List<SettingsWidget>) {

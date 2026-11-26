@@ -543,22 +543,6 @@ private fun RecordingStatusView(
 }
 
 @Composable
-private fun BrowserWidgetsStatusView(
-    model: Model = LocalModel.current,
-    show: SettingsShow,
-    browserWidgetsStatus: String,
-    textPlacement: StreamOverlayIconAndTextPlacement,
-) {
-    if (model.isShowingStatusBrowserWidgets()) {
-        StreamOverlayIconAndTextView(
-            icon = "globe",
-            text = browserWidgetsStatus,
-            textPlacement = textPlacement,
-        )
-    }
-}
-
-@Composable
 private fun CatPrinterStatusView(
     model: Model = LocalModel.current,
     show: SettingsShow,
@@ -663,7 +647,6 @@ private fun StatusesView(
     val stream by model.stream.collectAsState()
     status.catPrinterState.observe()
     status.workoutDeviceState.observe()
-    status.browserWidgetsStatusChanged.observe()
     val adsRemainingTimerStatus by status.adsRemainingTimerStatus.collectAsState()
     val remoteControlStatus by status.remoteControlStatus.collectAsState()
     val remoteControlOk by status.remoteControlOk.collectAsState()
@@ -672,7 +655,6 @@ private fun StatusesView(
     val djiDevicesStatus by status.djiDevicesStatus.collectAsState()
     val gameControllersTotal by status.gameControllersTotal.collectAsState()
     val locationStatus by status.location.collectAsState()
-    val browserWidgetsStatus by status.browserWidgetsStatus.collectAsState()
     val catPrinterStatus by status.catPrinterStatus.collectAsState()
     val workoutDeviceStatus by status.workoutDeviceStatus.collectAsState()
     val fixedHorizonStatus by status.fixedHorizonStatus.collectAsState()
@@ -774,11 +756,6 @@ private fun StatusesView(
     RecordingStatusView(
         show = model.database.show,
         recording = model.recording,
-        textPlacement = textPlacement,
-    )
-    BrowserWidgetsStatusView(
-        show = model.database.show,
-        browserWidgetsStatus = browserWidgetsStatus,
         textPlacement = textPlacement,
     )
     CatPrinterStatusView(

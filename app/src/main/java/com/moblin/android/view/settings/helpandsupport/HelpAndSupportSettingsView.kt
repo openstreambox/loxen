@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import com.moblin.android.localized
 import com.moblin.android.platform.swiftui.Form
 import com.moblin.android.platform.swiftui.Section
+import com.moblin.android.various.FeatureVideo
 import com.moblin.android.view.settings.streams.stream.DiscordLogoAndNameView
 import com.moblin.android.view.settings.streams.stream.GithubLogoAndNameView
 import com.moblin.android.view.utils.ExternalUrlButtonView
+import com.moblin.android.view.utils.FeatureVideosGridView
 
 @Composable
 fun HelpAndSupportSettingsView() {
@@ -23,6 +25,9 @@ fun HelpAndSupportSettingsView() {
             ExternalUrlButtonView(url = com.moblin.android.platform.loxen.Loxen.repositoryUrl) {
                 GithubLogoAndNameView()
             }
+        }
+        Section(header = localized("Videos")) {
+            FeatureVideosGridView(videos = FeatureVideo.all)
         }
     }
 }

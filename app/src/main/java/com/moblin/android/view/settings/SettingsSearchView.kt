@@ -850,7 +850,13 @@ fun settingsSearchItems(model: Model, database: Database): List<SettingsSearchIt
         localized("Help and support"),
         emptyList(),
         "questionmark.circle",
-        searchKeywords("Help", "Manual") + listOf("discord", "github", "faq"),
+        searchKeywords("Help", "Manual", "Videos") + listOf(
+            "discord",
+            "github",
+            "faq",
+            "youtube",
+            "shorts",
+        ),
     ) {
         HelpAndSupportSettingsView()
     }

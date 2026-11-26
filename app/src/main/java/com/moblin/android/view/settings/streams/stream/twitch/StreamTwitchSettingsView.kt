@@ -33,6 +33,7 @@ import com.moblin.android.various.settings.SettingsStream
 import com.moblin.android.various.settings.SettingsTwitchAlerts
 import com.moblin.android.view.settings.streams.stream.GrayTextView
 import com.moblin.android.view.settings.streams.stream.TokenExpiresInView
+import com.moblin.android.view.utils.FeatureVideosSectionView
 import com.moblin.android.view.utils.TextButtonView
 import com.moblin.android.view.utils.TextEditNavigationView
 import com.moblin.android.view.utils.TextEditView
@@ -51,6 +52,7 @@ import com.moblin.android.various.model.twitchChannelIdUpdated
 import com.moblin.android.various.model.twitchChannelNameUpdated
 import com.moblin.android.various.model.twitchLogin
 import com.moblin.android.various.model.twitchLogout
+import com.moblin.android.various.FeatureVideo
 
 @Composable
 fun TwitchStreamLiveSettingsView(
@@ -413,5 +415,6 @@ fun StreamTwitchSettingsView(
                 Text(localized("Toasts"))
             }
         }
+        FeatureVideosSectionView(videos = listOf(FeatureVideo.twitchRaid))
     }
 }

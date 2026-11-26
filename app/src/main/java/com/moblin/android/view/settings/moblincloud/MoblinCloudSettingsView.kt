@@ -28,6 +28,7 @@ import com.moblin.android.platform.uikit.UIApplication
 import com.moblin.android.platform.uikit.open
 import com.moblin.android.various.model.Model
 import com.moblin.android.various.model.moblinCloudApiUrl
+import com.moblin.android.various.model.moblinCloudMediaShareWidgetUpdated
 import com.moblin.android.various.model.moblinCloudSendWheelOfLuck
 import com.moblin.android.various.model.reloadMoblinCloud
 import com.moblin.android.various.settings.Database
@@ -154,6 +155,33 @@ fun MoblinCloudSettingsView(model: Model = LocalModel.current, database: Databas
                 onChange = { id ->
                     moblinCloud.wheelOfLuckWidgetId = id
                     model.moblinCloudSendWheelOfLuck()
+                }
+            )
+        }
+        val mediaWidgets = database.widgets.filter { it.type == SettingsWidgetType.browser }
+        val mediaOptions: List<UUID?> = listOf<UUID?>(null) + mediaWidgets.map { it.id }
+        Section(
+            footer = localized(
+                "Browser widget that plays the YouTube videos and Twitch clips viewers " +
+                    "request, instead of its own page. Viewers can only request them while one is picked. " +
+                    "Sign in to YouTube in Moblin's browser to play videos with your account. Create one " +
+                    "in Settings → Scenes and add it to the scenes you stream with."
+            )
+        ) {
+            Picker(
+                title = "Media share",
+                selection = moblinCloud.mediaWidgetId,
+                options = mediaOptions,
+                text = { id ->
+                    if (id == null) {
+                        localized("-- None --")
+                    } else {
+                        database.widgets.firstOrNull { it.id == id }?.name ?: ""
+                    }
+                },
+                onChange = { id ->
+                    moblinCloud.mediaWidgetId = id
+                    model.moblinCloudMediaShareWidgetUpdated()
                 }
             )
         }

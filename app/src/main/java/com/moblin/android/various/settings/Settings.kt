@@ -264,7 +264,6 @@ class SettingsShow(
     location: Boolean = false,
     remoteControl: Boolean = true,
     moblinCloud: Boolean = true,
-    browserWidgets: Boolean = true,
     bonding: Boolean = true,
     events: Boolean = true,
     djiDevices: Boolean = true,
@@ -292,7 +291,6 @@ class SettingsShow(
     var location: Boolean by Published(location)
     var remoteControl: Boolean by Published(remoteControl)
     var moblinCloud: Boolean by Published(moblinCloud)
-    var browserWidgets: Boolean by Published(browserWidgets)
     var bonding: Boolean by Published(bonding)
     var events: Boolean by Published(events)
     var djiDevices: Boolean by Published(djiDevices)
@@ -321,7 +319,6 @@ class SettingsShow(
         encode("location", location)
         encode("remoteControl", remoteControl)
         encode("moblinCloud", moblinCloud)
-        encode("browserWidgets", browserWidgets)
         encode("bonding", bonding)
         encode("events", events)
         encode("djiDevices", djiDevices)
@@ -353,7 +350,6 @@ class SettingsShow(
             show.location = container.decode("location", false)
             show.remoteControl = container.decode("remoteControl", true)
             show.moblinCloud = container.decode("moblinCloud", true)
-            show.browserWidgets = container.decode("browserWidgets", true)
             show.bonding = container.decode("bonding", true)
             show.events = container.decode("events", true)
             show.djiDevices = container.decode("djiDevices", true)
@@ -1639,12 +1635,14 @@ class SettingsMoblinCloud(
     key: String = "",
     wheelOfLuckWidgetId: UUID? = null,
     alertsWidgetId: UUID? = null,
+    mediaWidgetId: UUID? = null,
     url: String = moblinCloudApiUrl,
 ) {
     var enabled: Boolean by Published(enabled)
     var key: String by Published(key)
     var wheelOfLuckWidgetId: UUID? by Published(wheelOfLuckWidgetId)
     var alertsWidgetId: UUID? by Published(alertsWidgetId)
+    var mediaWidgetId: UUID? by Published(mediaWidgetId)
     var url: String by Published(url)
 
     fun encode(): JsonObject = encodeContainer {
@@ -1652,6 +1650,7 @@ class SettingsMoblinCloud(
         encode("key", key)
         encode("wheelOfLuckWidgetId", wheelOfLuckWidgetId)
         encode("alertsWidgetId", alertsWidgetId)
+        encode("mediaWidgetId", mediaWidgetId)
         encode("url", url)
     }
 
@@ -1662,6 +1661,7 @@ class SettingsMoblinCloud(
             moblinCloud.key = container.decode("key", "")
             moblinCloud.wheelOfLuckWidgetId = container.decode<UUID?>("wheelOfLuckWidgetId", null)
             moblinCloud.alertsWidgetId = container.decode<UUID?>("alertsWidgetId", null)
+            moblinCloud.mediaWidgetId = container.decode<UUID?>("mediaWidgetId", null)
             moblinCloud.url = container.decode("url", moblinCloudApiUrl)
             return moblinCloud
         }

@@ -106,6 +106,8 @@ interface RemoteControlStreamerDelegate {
     fun remoteControlStreamerGetVideoSourceSnapshot(id: UUID, onCompleted: (ByteArray?) -> Unit)
     fun remoteControlStreamerSetMoblinCloudAlertsWidget(id: UUID?)
     fun remoteControlStreamerSetMoblinCloudWheelOfLuckWidget(id: UUID?)
+    fun remoteControlStreamerSetMoblinCloudMediaShareWidget(id: UUID?)
+    fun remoteControlStreamerSkipMoblinCloudMediaShare()
     fun remoteControlStreamerStartStats(filter: RemoteControlStartStatsFilter?)
     fun remoteControlStreamerStopStats()
     fun remoteControlStreamerStartMacro(id: UUID)
@@ -226,6 +228,13 @@ class RemoteControlStreamer(
             return
         }
         send(RemoteControlMessageToAssistant.Event(RemoteControlEvent.Icon(id)))
+    }
+
+    fun sendMediaShare(state: RemoteControlMediaShareState) {
+        if (!connected) {
+            return
+        }
+        send(RemoteControlMessageToAssistant.Event(RemoteControlEvent.MediaShare(state)))
     }
 
     fun sendPreview(preview: ByteArray) {
@@ -478,6 +487,14 @@ class RemoteControlStreamer(
             }
             is RemoteControlRequest.SetMoblinCloudWheelOfLuckWidget -> {
                 delegate.remoteControlStreamerSetMoblinCloudWheelOfLuckWidget(data.id)
+                sendEmptyOkResponse(id)
+            }
+            is RemoteControlRequest.SetMoblinCloudMediaShareWidget -> {
+                delegate.remoteControlStreamerSetMoblinCloudMediaShareWidget(data.id)
+                sendEmptyOkResponse(id)
+            }
+            is RemoteControlRequest.SkipMoblinCloudMediaShare -> {
+                delegate.remoteControlStreamerSkipMoblinCloudMediaShare()
                 sendEmptyOkResponse(id)
             }
             is RemoteControlRequest.TwitchEventSubNotification -> {

@@ -19,10 +19,12 @@ import com.moblin.android.various.model.Model
 import com.moblin.android.various.settings.SettingsStream
 import com.moblin.android.various.settings.SettingsStreamRecording
 import com.moblin.android.view.settings.streams.stream.DiscordLogoAndNameView
+import com.moblin.android.view.utils.FeatureVideosSectionView
 import com.moblin.android.view.utils.TextEditNavigationView
 import com.moblin.android.view.utils.TradingCardView
 import com.moblin.android.view.utils.strokeTradingCardDash
 import com.moblin.android.various.model.setCleanSnapshots
+import com.moblin.android.various.FeatureVideo
 
 private fun DrawScope.drawSnapshotCard(time: Double) {
     val path = Path()
@@ -113,5 +115,6 @@ fun StreamSnapshotSettingsView(
                 stream.discordSnapshotWebhookOnlyWhenLive = value
             }
         }
+        FeatureVideosSectionView(videos = listOf(FeatureVideo.chatSnapshotsToDiscord))
     }
 }

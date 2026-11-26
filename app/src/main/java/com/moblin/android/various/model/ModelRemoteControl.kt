@@ -97,6 +97,7 @@ import java.time.ZoneId
 import java.util.UUID
 import java.util.concurrent.Executors
 import com.moblin.android.AppDelegate
+import com.moblin.android.remotecontrol.RemoteControlMediaShareEndedReason
 
 private val mainScope = CoroutineScope(kotlinx.coroutines.Dispatchers.Main)
 private val previewQueue =CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
@@ -633,9 +634,6 @@ private fun Model.createRemoteControlStatusTopRight(): RemoteControlStatusTopRig
     if (stream.value.replay.enabled) {
         topRight.replay = RemoteControlStatusItem(message = localized("Enabled"))
     }
-    if (isStatusBrowserWidgetsActive()) {
-        topRight.browserWidgets = RemoteControlStatusItem(message = statusTopRight.browserWidgetsStatus.value)
-    }
     if (isAnyMoblinkConfigured()) {
         topRight.moblink = RemoteControlStatusItem(message = moblink.status.value)
     }
@@ -826,7 +824,8 @@ fun Model.remoteControlGetSettings(): RemoteControlSettings {
     val connectionPrioritiesEnabled = stream.value.srt.connectionPriorities.enabled
     val moblinCloud = RemoteControlSettingsMoblinCloud(
         alertsWidgetId = database.moblinCloud.alertsWidgetId,
-        wheelOfLuckWidgetId = database.moblinCloud.wheelOfLuckWidgetId
+        wheelOfLuckWidgetId = database.moblinCloud.wheelOfLuckWidgetId,
+        mediaShareWidgetId = database.moblinCloud.mediaWidgetId
     )
     return RemoteControlSettings(
         streams = streams,
@@ -1033,6 +1032,14 @@ fun Model.remoteControlStreamerSetMoblinCloudAlertsWidget(id: UUID?) {
 
 fun Model.remoteControlStreamerSetMoblinCloudWheelOfLuckWidget(id: UUID?) {
     remoteControlSetMoblinCloudWheelOfLuckWidget(id = id)
+}
+
+fun Model.remoteControlStreamerSetMoblinCloudMediaShareWidget(id: UUID?) {
+    remoteControlSetMoblinCloudMediaShareWidget(id = id)
+}
+
+fun Model.remoteControlStreamerSkipMoblinCloudMediaShare() {
+    moblinCloudMediaShareEnded(reason = RemoteControlMediaShareEndedReason.Skipped)
 }
 
 fun Model.remoteControlSetSrtConnectionPriority(id: UUID, priority: Int, enabled: Boolean) {
@@ -2134,6 +2141,14 @@ private class RemoteControlStreamerDelegateAdapter(
 
     override fun remoteControlStreamerSetMoblinCloudWheelOfLuckWidget(id: UUID?) {
         model.remoteControlStreamerSetMoblinCloudWheelOfLuckWidget(id = id)
+    }
+
+    override fun remoteControlStreamerSetMoblinCloudMediaShareWidget(id: UUID?) {
+        model.remoteControlStreamerSetMoblinCloudMediaShareWidget(id = id)
+    }
+
+    override fun remoteControlStreamerSkipMoblinCloudMediaShare() {
+        model.remoteControlStreamerSkipMoblinCloudMediaShare()
     }
 
     override fun remoteControlStreamerStartStats(filter: RemoteControlStartStatsFilter?) {

@@ -18,6 +18,7 @@ import com.moblin.android.platform.codable.decodeIfPresent
 import com.moblin.android.platform.codable.encodeContainer
 import com.moblin.android.platform.swiftui.Published
 import com.moblin.android.platform.swiftui.PublishedList
+import com.moblin.android.platform.webkit.URLRequest
 import com.moblin.android.remotecontrol.RemoteControlScoreboardMatchConfig
 import com.moblin.android.various.MainTimer
 import com.moblin.android.various.model.CameraId
@@ -1281,6 +1282,14 @@ class SettingsWidgetBrowser(
             browser.localOnly = container.decode("localOnly", false)
             return browser
         }
+    }
+
+    fun getRequest(): URLRequest? {
+        if (url.isEmpty()) {
+            return null
+        }
+        val uri = runCatching { java.net.URI(url) }.getOrNull() ?: return null
+        return URLRequest(url = uri)
     }
 
     object Serializer : KSerializer<SettingsWidgetBrowser> by JsonObjectSerializer(

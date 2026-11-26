@@ -96,7 +96,7 @@ class BrowserEffect(
     private val snapshotQueue = ArrayDeque<EffectImageCgImage>()
     val width: Double
     val height: Double
-    private val url: java.net.URI
+    private var request: URLRequest?
     var isLoaded: Boolean = false
         private set
     val layout = MutableStateFlow<SettingsWidgetLayout?>(null)
@@ -106,7 +106,6 @@ class BrowserEffect(
     private val snapshotTimer = MainTimer()
     private var snapshotInProgress = false
     private var nextSnapshotTime: ContinuousClock.Instant = ContinuousClock.now
-    var startLoadingTime: ContinuousClock.Instant = ContinuousClock.now
     private val scale: Double
     private var sceneWidget: SettingsSceneWidget? = null
     private var crops: List<WidgetCrop> = emptyList()
@@ -115,13 +114,14 @@ class BrowserEffect(
     private var stopped = false
     private var suspended = false
     private val snapshotConfiguration: WKSnapshotConfiguration
+    var onVideoPlaying: ((Boolean) -> Unit)? = null
     private val userContentController: WKUserContentController
     val localOnly: Boolean
     val minimized = BrowserEffectMinimized()
 
     init {
         scale = screenScale().toDouble()
-        this.url = url
+        this.request = URLRequest(url = url)
         baseFps = widget.baseFps.toDouble()
         fps = baseFps
         isLoaded = false
@@ -194,12 +194,6 @@ class BrowserEffect(
         server.sendSpeechToTextClear()
     }
 
-    val host: String
-        get() = url.host ?: "?"
-
-    val progress: Int
-        get() = (100 * webView.estimatedProgress).toInt()
-
     fun stop() {
         stopTakeSnapshots()
     }
@@ -209,12 +203,16 @@ class BrowserEffect(
         Unit
     }
 
+    fun setRequest(request: URLRequest?) {
+        this.request = request
+        reload()
+    }
+
     fun reload() {
         if (!isLoaded) {
             return
         }
-        startLoadingTime = ContinuousClock.now
-        webView.load(URLRequest(url = url))
+        load()
     }
 
     fun setSceneWidget(sceneWidget: SettingsSceneWidget?, crops: List<WidgetCrop>) {
@@ -223,7 +221,7 @@ class BrowserEffect(
         if (sceneWidget != null || crops.isNotEmpty()) {
             setSceneWidgetEnabled(sceneWidget = sceneWidget, crops = crops)
         } else if (isLoaded) {
-            setSceneWidgetLoaded()
+            setSceneWidgetDisabled()
         }
     }
 
@@ -292,6 +290,19 @@ class BrowserEffect(
         return image
     }
 
+    private fun load() {
+        val request = this.request
+        if (request != null) {
+            webView.load(request)
+        } else {
+            loadBlankPage()
+        }
+    }
+
+    private fun loadBlankPage() {
+        webView.loadHTMLString("<html></html>", baseURL = null)
+    }
+
     private fun nextSnapshot(): EffectImageCgImage? {
         val next = snapshotQueue.removeFirstOrNull()
         if (next != null) {
@@ -311,8 +322,7 @@ class BrowserEffect(
             this@BrowserEffect.crops = crops
         }
         if (!isLoaded) {
-            startLoadingTime = ContinuousClock.now
-            webView.load(URLRequest(url = url))
+            load()
             server.enable()
             isLoaded = true
         }
@@ -320,11 +330,11 @@ class BrowserEffect(
         startTakeSnapshots()
     }
 
-    private fun setSceneWidgetLoaded() {
+    private fun setSceneWidgetDisabled() {
         processorPipelineQueue.launch {
             this@BrowserEffect.clearSnapshots()
         }
-        webView.loadHTMLString("<html></html>", baseURL = null)
+        loadBlankPage()
         server.disable()
         isLoaded = false
     }
@@ -394,6 +404,7 @@ class BrowserEffect(
         if (mode != SettingsWidgetBrowserMode.audioOnly) {
             resumeTakeSnapshots()
         }
+        onVideoPlaying?.invoke(true)
     }
 
     override fun browserEffectServerVideoEnded() {
@@ -403,5 +414,6 @@ class BrowserEffect(
         } else {
             suspendTakeSnapshots()
         }
+        onVideoPlaying?.invoke(false)
     }
 }

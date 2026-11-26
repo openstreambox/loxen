@@ -5654,46 +5654,43 @@
   },
   "Moblin/RemoteControl/RemoteControlStreamer.swift": {
     "status": "ok",
-    "sha256": "2ecd9ae05e08c568607288cb5d80e30d5863d0317ca061cc859e98faaf1d06a0",
-    "moblin_commit": "33acad8eb54894bacb3b7cf647e14214f3095625",
+    "sha256": "16df4eb6f10eebfbb344a852203f5052b3b3a388e66279826e46f83ea211f5a1",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "platform",
     "kotlin_path": "app/src/main/java/com/moblin/android/remotecontrol/RemoteControlStreamer.kt",
     "notes": [
-      "Added the four stream delegate methods and inserted them between deleteScene and createWidget, matching the Swift ordering.",
-      "GetWidgets, CreateWidget and UpdateWidget now take a secrets flag; the request data class properties are read as data.secrets.",
-      "New handleRequest branches GetStream/CreateStream/UpdateStream/DeleteStream use RemoteControlRequest.GetStream(id, secrets), CreateStream(stream, secrets), UpdateStream(stream, secrets), DeleteStream(id) and RemoteControlResponse.GetStream(stream), following the naming of the existing scene/widget cases.",
-      "getStream sends an ok response with the stream when present, otherwise a result response with false, as in Swift.",
-      "Added the SettingsStream import in alphabetical position among the settings imports.",
-      "All other lines, including the platform WebSocketClient usage, MainTimer keep-alive and mainScope dispatch, stay byte-identical."
+      "Only the three diff hunks were applied: two new delegate methods, sendMediaShare, and two new request cases.",
+      "RemoteControlRequest.SetMoblinCloudMediaShareWidget / SkipMoblinCloudMediaShare and RemoteControlEvent.MediaShare are assumed declared in RemoteControl.kt following the existing naming, as in the Swift source.",
+      "Everything else, including the hand-written mainScope, SimpleStorageContext, undecodableJson and remoteControlResult helpers, is unchanged."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 64746,
-    "tokens_out": 8690,
-    "seconds": 29.1,
-    "ported_at": "2026-11-12T01:43:58+00:00"
+    "tokens_in": 64585,
+    "tokens_out": 7446,
+    "seconds": 22.6,
+    "ported_at": "2026-11-26T02:31:00+00:00"
   },
   "Moblin/RemoteControl/RemoteControlAssistant.swift": {
     "status": "ok",
-    "sha256": "3e052b3abc3ed0add51f3e4ba01b6bb52e165b2b6944a02b2757ca4b7f5b0824",
-    "moblin_commit": "6f9c3366d46355d2d932309ef7e5310a80462e0e",
+    "sha256": "9fc2557c446b08d020a734421edb919be42ae686da0e16e4c3d4714379600b0b",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "platform",
     "kotlin_path": "app/src/main/java/com/moblin/android/remotecontrol/RemoteControlAssistant.kt",
     "notes": [
-      "Only the new TwitchEventSub delegate callback was added; every other line is unchanged.",
-      "Added the import for TwitchEventSubChannelShoutoutReceiveEvent and an empty override placed between the shoutoutCreate and pollBegin callbacks, matching Swift's order.",
-      "The existing Android WebSocket server (ServerSocket + RemoteControlWebSocket) and MainTimer hand-written port were kept as is."
+      "The Swift diff only adds a `.mediaShare` branch to the event switch; the Kotlin `when` gains `is RemoteControlEvent.MediaShare -> {}` at the same position, after `.Icon` and before `.Stats`.",
+      "Everything else in the Kotlin file is unchanged, including the hand-written RFC 6455 WebSocket server (ServerSocket + RemoteControlWebSocket) that replaces NWListener/NWConnection.",
+      "The new branch requires `RemoteControlEvent.MediaShare` to exist in com.moblin.android.remotecontrol (RemoteControl.kt); it is the counterpart of the Swift `.mediaShare` case already present in the enum."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 69519,
-    "tokens_out": 11221,
-    "seconds": 54.7,
-    "ported_at": "2026-11-20T01:29:26+00:00"
+    "tokens_in": 69647,
+    "tokens_out": 10415,
+    "seconds": 44.5,
+    "ported_at": "2026-11-26T02:31:08+00:00"
   },
   "Moblin/RemoteControl/RemoteControlWeb.swift": {
     "status": "ok",
@@ -8259,25 +8256,23 @@
   },
   "Moblin/View/Settings/HelpAndSupport/HelpAndSupportSettingsView.swift": {
     "status": "ok",
-    "sha256": "38afa363fea2bfa9e340efb90750ae00ce0c6d4326c3d46415414e44689b051a",
+    "sha256": "a2ac1ef7e565bb02257933e81ad6486c9184641a807dfc3e6f6a550e5cbe5a2a",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
+    "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/helpandsupport/HelpAndSupportSettingsView.kt",
     "notes": [
-      "SwiftUI Form/Section with footer becomes a LazyColumn whose last item is the footer Text.",
-      "navigationTitle is rendered as a Material 3 TopAppBar inside a Scaffold.",
-      "The Swift trailing-closure argument of ExternalUrlButtonView is passed as the trailing @Composable content lambda.",
-      "The multi-line Swift string literal (joined with a backslash) is written as a single concatenated localised string.",
-      "@OptIn(ExperimentalMaterial3Api::class) is required for TopAppBar.",
-      "The view takes no parameters, matching the Swift struct's empty property list."
+      "Added a new Section with header \"Videos\" rendering FeatureVideosGridView(videos = FeatureVideo.all).",
+      "Imported FeatureVideosGridView from com.moblin.android.view.utils and FeatureVideo from com.moblin.android.various.",
+      "The existing Loxen.repositoryUrl Android hook for the GitHub button is kept unchanged."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 2526,
-    "tokens_out": 1455,
-    "seconds": 5.6,
-    "ported_at": "2026-09-22T13:22:56+00:00",
-    "moblin_commit": "c861d40e79a6198cbded1604ce80c3de3707b035"
+    "tokens_in": 36783,
+    "tokens_out": 945,
+    "seconds": 7.2,
+    "ported_at": "2026-11-26T02:30:30+00:00"
   },
   "Moblin/Media/SrtClient/SrtClient.swift": {
     "status": "ok",
@@ -11734,26 +11729,26 @@
   },
   "Moblin/VideoEffects/Browser/BrowserEffect.swift": {
     "status": "ok",
-    "sha256": "d79dcb90bc996ad0dc6ed9460dfe4c00a90ca44aca2492cbd6521347ab6ce3ae",
-    "moblin_commit": "ce903a1b1c796d4bacf47c64d6862d194db44f2d",
+    "sha256": "3751d79e90ce8dcada7c22c7784e7778cb310ac32f38e2353ecdabaf605acdeb",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/videoeffects/browser/BrowserEffect.kt",
     "notes": [
-      "Added the BrowserEffectMinimized holder class as a MutableStateFlow-backed ObservableObject, matching Swift's @Published value.",
-      "BrowserEffect gains the localOnly val and the minimized holder, initialised in the init block like the other constructor properties.",
-      "toggleMinimized flips the flow value; hiding the WebView has no matching member in the Kotlin WKWebView shim, so that line is a TODO while the minimized state still toggles.",
-      "All other declarations, imports and bodies are unchanged from the previous translation."
+      "BrowserEffect's constructor keeps the hand-written Android signature (url: java.net.URI, proxyServer: java.net.InetSocketAddress?) while the Swift init now takes a URLRequest; init builds the URLRequest shim from the URI so callers stay unchanged.",
+      "The Swift `url` property became a mutable `request: URLRequest?`; `load()` loads it when present and otherwise falls back to the blank page, as in Swift.",
+      "Added setRequest(request:) before reload(); reload() now only calls load(), startLoadingTime is gone.",
+      "setSceneWidgetLoaded was renamed setSceneWidgetDisabled and now calls loadBlankPage().",
+      "The host and progress computed properties were removed with the URL property.",
+      "onVideoPlaying is a nullable Kotlin lambda ((Boolean) -> Unit) invoked at the end of the two BrowserEffectServerDelegate callbacks."
     ],
-    "unsupported": [
-      "WKWebView.isHidden (UIView.isHidden) has no shim in com.moblin.android.platform.webkit"
-    ],
+    "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 68059,
-    "tokens_out": 4771,
-    "seconds": 18.3,
-    "ported_at": "2026-11-17T02:40:04+00:00"
+    "tokens_in": 68874,
+    "tokens_out": 6943,
+    "seconds": 26.2,
+    "ported_at": "2026-11-26T02:31:00+00:00"
   },
   "Moblin/VideoEffects/DrawOnStreamEffect.swift": {
     "status": "ok",
@@ -12217,26 +12212,23 @@
   },
   "Moblin/View/Settings/Streams/Stream/Snapshot/StreamSnapshotSettingsView.swift": {
     "status": "ok",
-    "sha256": "128e980b5801a5ec147e2d126af62156708516482443183773a1cbed41728fc1",
-    "moblin_commit": "ed0c4bd672433448859cd362023824b14d3b9ce5",
+    "sha256": "4b4df9bc71e72cfd83dd2987b0a1df580267abcf17da2938c5f796f679c252a9",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/streams/stream/snapshot/StreamSnapshotSettingsView.kt",
     "notes": [
-      "Added the private drawSnapshotCard helper as a DrawScope extension, translated from the Swift GraphicsContext function.",
-      "The new TradingCardView Section is the first row of the Form, before the clean-snapshots Section, matching the Swift order.",
-      "strokeTradingCardDash is called from within the DrawScope of the card: path, color, lineWidth, dash, gap and time are passed as named arguments with Float geometry.",
-      "Colours use Compose Color with 0x58/0x65/0xF2 and 0xDB/0xD7/0xE7 divided by 255f, matching the Swift Color(red:green:blue:) literals.",
-      "The card name \"Snapshot\" stays a plain literal because Swift does not wrap it in String(localized:).",
-      "Everything else in the file is unchanged: Toggle still writes recording.cleanSnapshots and calls model.setCleanSnapshots(), and both webhook editors keep their submit helpers."
+      "Added FeatureVideosSectionView(videos = listOf(FeatureVideo.chatSnapshotsToDiscord)) after the Discord webhook Section, as the Swift diff adds it inside the Form.",
+      "The FeatureVideosSectionView signature and its video enum were not part of the supplied declarations; the call uses videos = listOf(...) with the entry named chatSnapshotsToDiscord.",
+      "Only imports and the new row changed; everything else stays byte-identical to the previous Kotlin file."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 49718,
-    "tokens_out": 3453,
-    "seconds": 19.6,
-    "ported_at": "2026-11-10T02:27:37+00:00"
+    "tokens_in": 50010,
+    "tokens_out": 1764,
+    "seconds": 7.9,
+    "ported_at": "2026-11-26T02:30:31+00:00"
   },
   "Moblin/View/Settings/Store/StoreSettingsView.swift": {
     "status": "ok",
@@ -12445,23 +12437,23 @@
   },
   "Moblin/View/Settings/Streams/Stream/Twitch/StreamTwitchSettingsView.swift": {
     "status": "ok",
-    "sha256": "98fa6acbafb5260f5a601bfb89457be28387efe86695fb3e5e617eb44f15a090",
-    "moblin_commit": "c2b8fd91a8136b0e138e1d5ee7d5f71fd59c5e73",
+    "sha256": "5aa2a877613f96c8de9a408302aac6d55257c0cbded6e21bce147fa7f3552452",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/streams/stream/twitch/StreamTwitchSettingsView.kt",
     "notes": [
-      "Only the diff is applied: TwitchStreamLiveSettingsView now passes model = model to TwitchCategoryPickerView, matching the Swift call site.",
-      "TwitchCategoryPickerView in Kotlin keeps its model parameter with a LocalModel.current default, so the explicit pass is compatible.",
-      "Everything else, including imports, formatting and declaration order, is unchanged."
+      "Added FeatureVideosSectionView(videos = listOf(FeatureVideo.twitchRaid)) at the end of the Form, after the Alerts Section, as the Swift diff places it.",
+      "Added imports for FeatureVideosSectionView and the FeatureVideo enum from com.moblin.android.view.utils.",
+      "Everything else in the file is unchanged, including the hand-written Android fixes (onDismiss from rememberDismiss, BasicTextField search row, token duration conversion)."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 57069,
-    "tokens_out": 3249,
-    "seconds": 9.5,
-    "ported_at": "2026-10-06T23:22:41+00:00"
+    "tokens_in": 58084,
+    "tokens_out": 3692,
+    "seconds": 19.6,
+    "ported_at": "2026-11-26T02:30:43+00:00"
   },
   "Moblin/View/Utils/UrlsView.swift": {
     "status": "ok",
@@ -13250,25 +13242,22 @@
   },
   "Moblin/View/Utils/BannersView.swift": {
     "status": "ok",
-    "sha256": "9aaacf4a4527e9f1698cfa71113d17e3e4816cf213efb419f17155f4d60edb2c",
-    "moblin_commit": "ed0c4bd672433448859cd362023824b14d3b9ce5",
+    "sha256": "21cd3a102138807ef8e1f3ea929f15cf1997cfb6b9a7723a5dcc68fdf2191180",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/utils/BannersView.kt",
     "notes": [
-      "The Swift diff changes the banner message from a plain String to the BannerMessage model object, so HypeTrainProgressView and BannerView now take a BannerMessage and render it through the new BannerMessageView composable.",
-      "BannerMessageView reads the message text from BannerMessage.text collected as state (the model type keeps its published text in a MutableStateFlow, like every ObservableObject in this port).",
-      "HypeTrainView, TwitchPollView and TwitchPredictionView keep collecting their message flow and hand the value straight to the composables; those call sites are unchanged textually because the flow type now carries BannerMessage.",
-      "The .font(.footnote) that SwiftUI applied to BannerMessageView at the call site is baked into BannerMessageView's Text, since Compose cannot propagate a text style into a child composable.",
-      "Everything else (buttons, progress bars, the minimized capsule, the scroll clamping in BannersView) is untouched and stays byte-identical."
+      "Swift diff only adds `.scrollBounceBehavior(.basedOnSize)` to the ScrollView; Compose's `verticalScroll` never bounces when the content fits the viewport, so the Kotlin scroll container already behaves that way and stays unchanged.",
+      "All other lines of BannersView.kt are kept byte-identical, including the hand-written BannerButton helper, LocalUriHandler link and the pointerInput tap toggling `banners.minimized`."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 48993,
-    "tokens_out": 12170,
-    "seconds": 65.1,
-    "ported_at": "2026-11-10T02:28:29+00:00"
+    "tokens_in": 49543,
+    "tokens_out": 5084,
+    "seconds": 19.9,
+    "ported_at": "2026-11-26T02:30:43+00:00"
   },
   "Moblin/View/Settings/Ingests/RtmpServer/RtmpServerSettingsView.swift": {
     "status": "ok",
@@ -15122,24 +15111,27 @@
   },
   "Moblin/RemoteControl/RemoteControl.swift": {
     "status": "ok",
-    "sha256": "8870e01154c790eb2e2b43ee5a5b8e2b37231c3bc23cda0ea3db005faef31223",
-    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
+    "sha256": "02cb8eaeb630b3529b38e630f2db64fb5de9412c06bfc9fc9183066fd464369e",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/remotecontrol/RemoteControl.kt",
     "notes": [
-      "Only the RemoteControlReaction diff is applied: three new cases pope, pizzaChef and poop are added with @SerialName wire names, and their toSettings() branches.",
-      "The new settings targets are mapped to SettingsReaction.POPE, SettingsReaction.PIZZA_CHEF and SettingsReaction.POOP; SettingsReaction must gain these three entries in its own file for this to compile.",
-      "Wire names stay byte-identical to Swift (\"pope\", \"pizzaChef\", \"poop\") because they are persisted in JSON and on the remote control wire.",
-      "Everything else in the Kotlin file, including the hand-written json/codable plumbing and the Java crypto fallback in RemoteControlEncryption, is unchanged."
+      "Added the two new RemoteControlRequest cases (setMoblinCloudMediaShareWidget, skipMoblinCloudMediaShare) with their JSON encode/decode branches.",
+      "Added the mediaShare tip-kind case backed by a new RemoteControlMediaShareSource sealed class plus its KSerializer.",
+      "Added RemoteControlEvent.MediaShare and the RemoteControlMediaShareState / RemoteControlMediaShareEnded / RemoteControlMediaShareEndedReason types, encoded as Swift synthesizes them.",
+      "Removed the browserWidgets status item from RemoteControlStatusTopRight.",
+      "Added mediaShareWidgetId to RemoteControlSettingsMoblinCloud with the UUID serializer.",
+      "Optional enum associated values use encodeIfPresent semantics (omitted when null) as Swift's synthesized Codable does."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 98070,
-    "tokens_out": 28094,
-    "seconds": 71.2,
-    "ported_at": "2026-11-24T04:29:59+00:00"
+    "tokens_in": 197604,
+    "tokens_out": 61505,
+    "seconds": 209.7,
+    "ported_at": "2026-11-26T02:34:04+00:00",
+    "warning": "changed 180 Kotlin lines for 29 changed Swift lines"
   },
   "Moblin/View/Settings/MediaPlayer/MediaPlayersSettingsView.swift": {
     "status": "ok",
@@ -15211,23 +15203,25 @@
   },
   "Moblin/Various/Model/ModelRemoteControl.swift": {
     "status": "ok",
-    "sha256": "9e2208bcbd1fbb143c60cadeaebeab5c76bffb9b7ad30fab3ffb0483984e6388",
-    "moblin_commit": "a2f1225ddb7a1e759a943833e1ce2ec9b3e23836",
+    "sha256": "729d1f7ef36cb2a955c217154e0ecdeec596e747f79cb89cb4779323e409a05c",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelRemoteControl.kt",
     "notes": [
-      "Single change: the viewers status item is now added whenever viewers are configured, no longer gated on being live.",
-      "All other Kotlin lines, including the Android-specific adapters and hooks, are unchanged.",
-      "The Kotlin condition in createRemoteControlStatusTopLeft was `isViewersConfigured() && isLive.value`; the `&& isLive.value` part is removed."
+      "Removed the browser widgets entry from createRemoteControlStatusTopRight, matching the Swift removal.",
+      "Added mediaShareWidgetId to the RemoteControlSettingsMoblinCloud construction from database.moblinCloud.mediaWidgetId.",
+      "Added Model.remoteControlStreamerSetMoblinCloudMediaShareWidget and Model.remoteControlStreamerSkipMoblinCloudMediaShare next to the other Moblin Cloud streamer callbacks.",
+      "The ended reason uses the remotecontrol package enum naming convention (PascalCase entries, like RemoteControlFilter and RemoteControlResult), i.e. RemoteControlMediaShareEndedReason.Skipped.",
+      "The new streamer callbacks are not yet added to RemoteControlStreamerDelegateAdapter, because the delegate interface does not declare them in this change."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 100555,
-    "tokens_out": 20413,
-    "seconds": 53.6,
-    "ported_at": "2026-11-25T03:13:47+00:00"
+    "tokens_in": 100959,
+    "tokens_out": 23705,
+    "seconds": 107.8,
+    "ported_at": "2026-11-26T02:32:38+00:00"
   },
   "Moblin/Various/Model/ModelStream.swift": {
     "status": "ok",
@@ -15252,28 +15246,24 @@
   },
   "Moblin/Various/Model/ModelScene.swift": {
     "status": "ok",
-    "sha256": "c6f5b3c417e32ba373d60db2a4cc2271dc13ecfc8acbbbbbd817b8f8c3516bb6",
-    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
-    "mode": "full",
+    "sha256": "39b61bec13506433f785250e4815192659df0208e5e35884062a4cbdfdede3b8",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
+    "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelScene.kt",
     "notes": [
-      "CreateWidgetWizard/CreateSceneWizard become plain classes whose @Published properties are MutableStateFlow (read/write through .value); settings objects stay Published-delegated plain properties.",
-      "Swift inout [VideoEffect] / inout Bool parameters are modelled as MutableList<VideoEffect> parameters and Boolean return values (addScene*Effects return whether speech-to-text is needed).",
-      "The generic getWidgetVideoEffect<T> helper is split into a VideoEffect? helper plus explicit `as? ShapeEffect` casts at the call sites, since Kotlin cannot do `as? T` on an erased type parameter.",
-      "Swift struct copies (effect.shape.toSettings(), widget.qrCode.clone(), widget.alerts.clone(), sceneWidget.clone()) keep their clone/toSettings call shape; settings object mutations are direct property writes because settings are classes.",
-      "Timer-based throttling (DispatchQueue.main.asyncAfter 33ms / 1s) becomes mainScope.launch { delay(...) }, assuming Model exposes mainScope as in the rest of the port.",
-      "Model state objects (sceneSelector, streamOverlay, statusTopRight, createSceneWizard) are assumed to expose MutableStateFlow published properties, so their writes use .value; Database collections are MutableList.",
-      "TextFormatPart is treated as a sealed class (Timer, Stopwatch, Checkbox, Rating, LapTimes, Subtitles) because the Swift enum has an associated value; comparisons use equality on the object entries.",
-      "Settings enum entries are written in the port's camelCase entry style (SettingsWidgetType.qrCode, SettingsSceneCameraPosition.srtClient, SettingsQuickButtonType.cameraMan, SettingsMacrosEvent.SWITCH_SCENE, ...)."
+      "Only resetBrowserVideoEffects changed: the URL parsing is replaced by widget.browser.getRequest(), the resulting request is passed to BrowserEffect(request = ...), and moblinCloudMediaShareEffectsReset() is called at the end.",
+      "The previous inline java.net.URI parsing (and its runCatching) is removed, so no import is dropped because the URI was fully qualified.",
+      "Everything else in the file is unchanged, including the Android-specific toCGSize/toComposeSize conversions and the Model extension layout.",
+      "Kotlin Model extension functions are emitted in the same order as the Swift extension so the two files read side by side."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 84634,
-    "tokens_out": 41302,
-    "seconds": 203.7,
-    "ported_at": "2026-11-24T22:36:15+00:00"
+    "tokens_in": 103948,
+    "tokens_out": 19498,
+    "seconds": 53.7,
+    "ported_at": "2026-11-26T02:31:46+00:00"
   },
   "Moblin/View/ControlBar/StreamButton.swift": {
     "status": "ok",
@@ -15365,23 +15355,23 @@
   },
   "Moblin/Various/Settings/Settings.swift": {
     "status": "ok",
-    "sha256": "1edf491d5c0c418fa320f6ac34bfb2c5ecc8865bfc3735cac71dadbdcc54c2b6",
-    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
+    "sha256": "8f8c7695b5e583159c8b0fd8329bb72dac2de5fa026635878e6b1a9e79e59dc2",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/settings/Settings.kt",
     "notes": [
-      "Only the two Swift diff hunks were applied: four new bundled gallery images and four new getter helpers.",
-      "Get helpers use bundledImages[8..11], matching the Swift indices into the bundled image list.",
-      "Everything else in the Kotlin file is kept byte-identical."
+      "Removed the browserWidgets flag from SettingsShow (constructor, published property, encode and decode) to mirror the Swift diff.",
+      "Added mediaWidgetId to SettingsMoblinCloud as a nullable UUID published property, encoded and decoded between alertsWidgetId and url.",
+      "Everything else is byte-identical to the previous Kotlin port, including the Android-only storage, zip and mic-id hooks."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 117096,
-    "tokens_out": 27933,
-    "seconds": 67.4,
-    "ported_at": "2026-11-24T04:29:56+00:00"
+    "tokens_in": 117664,
+    "tokens_out": 28728,
+    "seconds": 76.6,
+    "ported_at": "2026-11-26T02:31:54+00:00"
   },
   "Moblin/View/Settings/Display/QuickButtons/QuickButtonsSettingsView.swift": {
     "status": "ok",
@@ -15425,26 +15415,22 @@
   },
   "Moblin/View/ControlBar/RemoteControlAssistant/ControlBarRemoteControlAssistantView.swift": {
     "status": "ok",
-    "sha256": "3fc4f45788915088c6ac5ecf4302b2c86728b3051a20c486725fb78564a0b09c",
-    "moblin_commit": "3a68b5f97fb93e37a5987eff8faeedd8048c82cd",
+    "sha256": "67b7a997d1cf31374da1c67f7b98f1ab19c3204e69bf8727b302ca0cfb592f1b",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/controlbar/remotecontrolassistant/ControlBarRemoteControlAssistantView.kt",
     "notes": [
-      "Adds a shared PreviewImageView composable that collects RemoteControlPreview.image and renders the content builder or the 'No preview received yet.' text.",
-      "Both former inline preview/fallback branches in the status section and the full-screen preview now call PreviewImageView.",
-      "The now-unused `val preview by remoteControl.preview.collectAsState()` reads at both call sites were removed.",
-      "The fallback Text keeps the Android tint formPalette().label that the full-screen branch had.",
-      "Content lambda takes an android.graphics.Bitmap, which call sites wrap with asImageBitmap() as before.",
-      "No other declarations changed."
+      "The only change is the removal of the 'globe' / browserWidgets status row from the Top right section; every other line is byte-identical to the previous Kotlin translation.",
+      "All other declarations, imports and hand-written Android adaptations (SegmentedPicker, SystemImage usage, BasicTextField rows, BorderlessButtonView, Form/Section/Sheet components) are kept unchanged."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 73036,
-    "tokens_out": 14148,
-    "seconds": 46.9,
-    "ported_at": "2026-11-08T23:46:10+00:00"
+    "tokens_in": 73694,
+    "tokens_out": 12126,
+    "seconds": 48.9,
+    "ported_at": "2026-11-26T02:32:28+00:00"
   },
   "Moblin/View/Settings/Streams/Stream/StreamSettingsView.swift": {
     "status": "ok",
@@ -15535,23 +15521,24 @@
   },
   "Moblin/Various/Settings/SettingsScene.swift": {
     "status": "ok",
-    "sha256": "b8021325bfc8d2189e8390f4d2a9aa2abf89b8d075d7c5e69e74c323aacdfe6a",
-    "moblin_commit": "33acad8eb54894bacb3b7cf647e14214f3095625",
+    "sha256": "8bbab0415e6a2c45b9ca919936752a532446b40bb44f5ee0391f1c6e692fff12",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/settings/SettingsScene.kt",
     "notes": [
-      "Added SettingsWidget.removeSecrets() and SettingsWidget.keepSecrets(from:) directly after migrateFromOlderVersions(), matching the Swift diff position.",
-      "Both use plain var properties (alerts.ai, alerts.ttsMonster) so assignments follow the existing Kotlin pattern for SettingsOpenAi / SettingsTtsMonster fields.",
-      "Everything else in the file is untouched."
+      "Added SettingsWidgetBrowser.getRequest() after the decode companion, matching the Swift position after init(from:).",
+      "Swift URL(string:) is mapped to java.net.URI with runCatching plus an empty-string guard, returning null for unparsable URLs.",
+      "URLRequest comes from the hand-written com.moblin.android.platform.webkit shim, so an import was added.",
+      "Nothing else in the file changed; all existing Kotlin (including hand-written platform hooks) is byte-identical."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 141035,
-    "tokens_out": 43679,
-    "seconds": 127.1,
-    "ported_at": "2026-11-12T01:46:03+00:00"
+    "tokens_in": 141812,
+    "tokens_out": 44464,
+    "seconds": 121.3,
+    "ported_at": "2026-11-26T02:33:04+00:00"
   },
   "Moblin/View/ControlBar/QuickButton/QuickButtonLiveView.swift": {
     "status": "ok",
@@ -15579,23 +15566,24 @@
   },
   "Moblin/View/Stream/Overlay/StreamOverlayRightView.swift": {
     "status": "ok",
-    "sha256": "8d33cc26956bb60710c3803daf9b60873eb43d5928e3ee8f15471aa281f118f9",
-    "moblin_commit": "6f9c3366d46355d2d932309ef7e5310a80462e0e",
+    "sha256": "3773059e569c86be30f9bb3bd94051693c9d8972e31f5b2ceab297418eaa5983",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/stream/overlay/StreamOverlayRightView.kt",
     "notes": [
-      "Only the Swift diff was applied: the Column that holds controls() in RightOverlayBottomHorizontalView's verticalZoom branch now gets Modifier.padding(bottom = 11.dp) before StreamOverlayRightZoomPresetVSelctorView.",
-      "Every other line, import and declaration is unchanged from the current Kotlin file, including the hand-written observe() helpers, placement constants and the LocalModel default parameters.",
-      "Swift's .padding(.bottom, 11) sits on the VStack (not the HStack), so it is added as a modifier on the Column rather than on the wrapping Row."
+      "Removed the private BrowserWidgetsStatusView composable and its call in StatusesView, following the Swift deletion.",
+      "Removed the now-dead Android-only observation hooks (status.browserWidgetsStatusChanged.observe() and the browserWidgetsStatus collectAsState) that existed solely to refresh the deleted view.",
+      "Everything else, including the bonding pie chart, collapsed status rows and the bottom overlay layouts, is unchanged.",
+      "BondingPieChart stays as the Canvas stand-in for the Swift Charts SectorMark pie."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 74155,
-    "tokens_out": 10137,
-    "seconds": 46.8,
-    "ported_at": "2026-11-20T01:29:28+00:00"
+    "tokens_in": 74225,
+    "tokens_out": 10004,
+    "seconds": 29.4,
+    "ported_at": "2026-11-26T02:31:38+00:00"
   },
   "Moblin/View/Settings/Audio/AudioSettingsView.swift": {
     "status": "ok",
@@ -15620,21 +15608,24 @@
   },
   "Moblin/Various/Model/Model.swift": {
     "status": "ok",
-    "sha256": "b7425b5cfb48acb63670f2ee4b8446d1a979fe6284774bbe9190680dcebfa5fb",
-    "moblin_commit": "a2f1225ddb7a1e759a943833e1ce2ec9b3e23836",
+    "sha256": "68f637baf9a6d0aca09c020120324ecbcdf050c4844a171dd4e15a46da754e69",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/Model.kt",
     "notes": [
-      "Removed the isLive condition from isShowingStatusViewers so the viewers status now shows whenever viewers are configured and at least one platform status exists."
+      "Removed StatusTopRight.browserWidgetsStatusChanged and browserWidgetsStatus flows together with updateBrowserWidgetStatus, isShowingStatusBrowserWidgets and isStatusBrowserWidgetsActive.",
+      "Model.moblinCloudTipEffects / moblinCloudTipEffectPlayer / moblinCloudTipEffectTimer replaced by MoblinCloudTipEffects() and a new MoblinCloudMediaShare() property, both from the same package.",
+      "The updateBrowserWidgetStatus() call in handle1sTimer is gone.",
+      "Everything else, including the hand-written Android hooks, is untouched."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 149042,
-    "tokens_out": 35863,
-    "seconds": 94.9,
-    "ported_at": "2026-11-25T03:14:34+00:00"
+    "tokens_in": 149545,
+    "tokens_out": 35112,
+    "seconds": 138.7,
+    "ported_at": "2026-11-26T02:33:40+00:00"
   },
   "Moblin/View/Settings/Scenes/Widgets/Widget/VTuber/WidgetVTuberSettingsView.swift": {
     "status": "ok",
@@ -17606,48 +17597,50 @@
   },
   "Moblin/View/Settings/MoblinCloud/MoblinCloudSettingsView.swift": {
     "status": "ok",
-    "sha256": "1bc8129bada9e39d01dc2f30c6b432e100b2f70e9b2e30b78601499cf2b8b3d4",
-    "moblin_commit": "ed0c4bd672433448859cd362023824b14d3b9ce5",
+    "sha256": "d70fa4201bbd71ecb5ea988a1277dd3e4373b5cf6de4039857ce9bdd6c21bb82",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/moblincloud/MoblinCloudSettingsView.kt",
     "notes": [
-      "Replaced the three plain Text rows with the new logo header Section (AssetImage of the mirrored asset MoblinCloudLogo, title2 bold title, subheadline secondary centred subtitle).",
-      "The new 'Get started' Section uses com.moblin.android.platform.swiftui.Label with the 1/2/3.circle.fill system images.",
-      "Swift Text markdown link `[cloud.moblin.app](https://cloud.moblin.app)` cannot be rendered by the platform Label, so the row shows the plain text 'Sign in at cloud.moblin.app and set up your page.'; the URL is still reachable from the guide row.",
-      "The SwiftUI Link row is a Section-row Button (accent tint, book icon) that opens the guide URL with UIApplication.shared.open.",
-      "VStack(spacing: 10) became Column with Arrangement.spacedBy(10.dp), centred horizontally; .frame(maxWidth: .infinity).padding(.vertical, 8) became fillMaxWidth().padding(vertical = 8.dp) in that order.",
-      "Text styles mapped manually: title2 = 22.sp bold, subheadline = 15.sp with formPalette().secondaryLabel and TextAlign.Center.",
-      "Everything from the 'Enabled' Toggle downwards is untouched."
+      "Added the new Media share Section between the Wheel of luck and URL sections, following the existing Picker pattern used for alerts and wheel of luck.",
+      "The Swift .onChange of mediaWidgetId becomes assignment plus model.moblinCloudMediaShareWidgetUpdated() in the Picker onChange, like the wheel of luck section.",
+      "Added the import of moblinCloudMediaShareWidgetUpdated from com.moblin.android.various.model.",
+      "Options are built as List<UUID?> = null plus the browser widgets, mirroring the nil tag.",
+      "Every other line of the file is unchanged."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 45264,
-    "tokens_out": 7304,
-    "seconds": 40.6,
-    "ported_at": "2026-11-10T02:28:39+00:00"
+    "tokens_in": 47466,
+    "tokens_out": 2783,
+    "seconds": 16.2,
+    "ported_at": "2026-11-26T02:31:18+00:00"
   },
   "Moblin/Various/Model/ModelMoblinCloud.swift": {
     "status": "ok",
-    "sha256": "f4f54adac4448b5a8aaea9ecced798b8995de408fd392671351b4f83c8ab3c2a",
-    "moblin_commit": "3f1672131b35948f5f17ad021ee5b712a52f48d0",
+    "sha256": "5e658ae228ff9b9c5317fcb427e09a9ebbf2e3bd0e5262c5b5ce3128c2a06b6b",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "platform",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelMoblinCloud.kt",
     "notes": [
-      "Only remoteControlStreamerTriggerReaction changed: it now forwards the reaction to Model.handleRemoteControlTriggerReaction.",
-      "The rest of the file is byte-identical to the previous translation, including the DeviceCheck TODO() stubs."
+      "SwiftDeque becomes kotlin.collections.ArrayDeque with addLast/removeFirstOrNull, matching the new MoblinCloudTipEffects.queue member.",
+      "makeMoblinCloudMediaShareRequest builds an okhttp3.Request via toHttpUrl().newBuilder() plus addQueryParameter, keeping the exact query order and the Referer header.",
+      "MoblinCloudMediaShareMedia takes RemoteControlMediaShareSource; the two Swift cases map to the sealed subclasses YouTube and TwitchClip (switch written as an exhaustive when).",
+      "Media-share state and end reason values use RemoteControlMediaShareState.Unavailable/Playing/Idle and RemoteControlMediaShareEndedReason.FailedToStart/TimedOut/Finished/Skipped from com.moblin.android.remotecontrol.",
+      "URL in the tip-effect queue becomes a String path (Bundle.url returns String), so the queue holds Triple<String, String, String>.",
+      "duration.clamped(to: 1...600) becomes coerceIn(1, 600); start is clamped with maxOf(start, 0).",
+      "Effect callbacks are wired as effect.onVideoPlaying = { playing -> ... } and effect.setRequest(request = ...), assuming the matching BrowserEffect update lands in parallel.",
+      "Model.moblinCloudTipEffects is now the MoblinCloudTipEffects holder, so player/timer are reached through moblinCloudTipEffects.player/timer."
     ],
-    "unsupported": [
-      "no Android counterpart for DeviceCheck"
-    ],
+    "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 77460,
-    "tokens_out": 8233,
-    "seconds": 21.7,
-    "ported_at": "2026-11-24T04:29:09+00:00"
+    "tokens_in": 82566,
+    "tokens_out": 18714,
+    "seconds": 65.8,
+    "ported_at": "2026-11-26T02:31:50+00:00"
   },
   "Moblin/View/Settings/Scenes/Widgets/Widget/Alerts/WidgetAlertsMoblinCloudSettingsView.swift": {
     "status": "ok",
@@ -17837,19 +17830,23 @@
   },
   "Moblin/View/ControlBar/QuickButton/SceneEditor/SceneEditorView.swift": {
     "status": "ok",
-    "sha256": "c2c32fcd0950bdc1bc934f41dadf24ec45290c34ed913c510a6d76879287ce4e",
-    "moblin_commit": "3a68b5f97fb93e37a5987eff8faeedd8048c82cd",
+    "sha256": "a2c3d2dfb312718a5c52cc176d32f73e7efaa6b194e02eb19193ca057982f45d",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/controlbar/quickbutton/sceneeditor/SceneEditorView.kt",
-    "notes": [],
+    "notes": [
+      "The only Swift change adds .scrollBounceBehavior(.basedOnSize, axes:) to the toolbar ScrollView; Compose scroll containers have no bounce behaviour, so the Kotlin file is unchanged.",
+      "Unsupported list is empty: no TODO() is needed because dropping a purely visual iOS rubber-band effect leaves the Android scrolling behaviour correct.",
+      "SceneEditorToolbarView keeps its existing Column/verticalScroll and Row/horizontalScroll implementation, matching the Swift ScrollView with hidden indicators."
+    ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 71642,
-    "tokens_out": 16075,
-    "seconds": 61.5,
-    "ported_at": "2026-11-08T23:47:35+00:00"
+    "tokens_in": 71404,
+    "tokens_out": 11318,
+    "seconds": 51.2,
+    "ported_at": "2026-11-26T02:32:43+00:00"
   },
   "MoblinTests/Moblin/View/ControlBar/QuickButton/SceneEditor/SceneEditorGeometrySuite.swift": {
     "status": "ok",
@@ -18431,28 +18428,23 @@
   },
   "Moblin/View/Settings/SettingsSearchView.swift": {
     "status": "ok",
-    "sha256": "1802d3a270af3a7bd1f8fd48d386999cd67acddb0e1b71844fbfa0d6d3fa738f",
-    "moblin_commit": "ed96f78947c8ab8bbfc1c4c08e944aac9b849449",
-    "mode": "full",
+    "sha256": "2b20955b50a541095661d9e61be89e9af8a81ac390ca77cc316b444897badcde",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
+    "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/SettingsSearchView.kt",
     "notes": [
-      "settingsSearchItems is @Composable: it builds a binding() for the stream and stores @Composable destinations in the item list.",
-      "SettingsSearchItem keeps a `@Composable () -> Unit` destination instead of AnyView; AnyView(destination()) simply disappears.",
-      "text.folding(.caseInsensitive, .diacriticInsensitive) is reproduced with NFD normalisation plus combining-mark removal, and words are split on grapheme clusters with java.text.BreakIterator.",
-      "Parameter names of destination views that are not listed in the dependency declarations follow the Swift labels (e.g. StreamVideoSettingsView(database =, stream =)).",
-      "`model.stream` is read with collectAsState; the Swift Binding(get:set:) becomes binding({ model.stream.value }, { model.stream.value = it }).",
-      "The #available(iOS 17.0, *) check around the Keyboard entry is dropped, its body is kept unconditionally.",
-      "The `#if !targetEnvironment(macCatalyst)` block is kept as the isPad() check around the Stream decks entry.",
-      "model.supportsAppleLog / model.supportsAppleLog2 are used as Boolean properties of Model as in the Swift source."
+      "Only the Help and support entry changed: keywords now include \"Videos\" and the extra search terms youtube and shorts.",
+      "Rest of the file is byte-identical to the previous Kotlin translation.",
+      "Android-specific hand-written destinations (AppleWatchSettingsDestination, decodeWatchSettings, TODO for watch chat) were preserved unchanged."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 66812,
-    "tokens_out": 17857,
-    "seconds": 60.7,
-    "ported_at": "2026-11-19T20:56:23+00:00"
+    "tokens_in": 74565,
+    "tokens_out": 7747,
+    "seconds": 33.8,
+    "ported_at": "2026-11-26T02:32:21+00:00"
   },
   "MoblinTests/Moblin/Media/HaishinKit/Rtmp/RtmpChunkSuite.swift": {
     "status": "ok",
@@ -18617,49 +18609,42 @@
   },
   "Moblin/View/Settings/Display/LocalOverlays/LocalOverlaysZoomAndSceneControlsSettingsView.swift": {
     "status": "ok",
-    "sha256": "59bdd48bd7ee6e38edd74c24d5b141df1bec0c19b1b374302ba8769150108b9b",
-    "moblin_commit": "ed96f78947c8ab8bbfc1c4c08e944aac9b849449",
-    "mode": "full",
+    "sha256": "c18ba0e9e499d6a198f4f27b714838df42f071b30fb2690ee9be9cb0d2327a75",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
+    "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/display/localoverlays/LocalOverlaysZoomAndSceneControlsSettingsView.kt",
     "notes": [
-      "Form + .navigationTitle becomes Form(title = \"Zoom and scene controls\"), which supplies the NavigationStack and iOS styling.",
-      "Swift's $database.zoomAndSceneButtonsLayout binding is split into the Picker's selection value plus its onChange lambda that assigns back to the Published property.",
-      "Toggles on Published properties use binding({ get }) { set } from com.moblin.android.platform.swiftui.",
-      "SettingsZoomAndSceneButtonsLayout.allCases maps to the Kotlin enum's entries list.",
-      "The Zoom section is emitted only when database.showAllSettings is true, exactly as the Swift if-branch does.",
-      "Section headers and footers keep the Swift strings (\"General\", \"Zoom\", footer about landscape) and are localized by the components.",
-      "Settings classes read their Published properties directly, so no collectAsState is used for database or show."
+      "Added FeatureVideosSectionView(videos = listOf(FeatureVideo.zoomAndSceneControls)) as the last child of the Form, matching the new Swift line.",
+      "The videos argument is assumed to take a list of the port's FeatureVideo enum (Swift FeatureVideo.zoomAndSceneControls); the declaration was not supplied with this request, so the entry spelling should be verified against com.moblin.android.view.utils.",
+      "Two imports (FeatureVideosSectionView, FeatureVideo) were added from com.moblin.android.view.utils; all other lines are unchanged."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 38354,
-    "tokens_out": 1941,
-    "seconds": 8.5,
-    "ported_at": "2026-11-19T20:54:15+00:00"
+    "tokens_in": 39181,
+    "tokens_out": 1274,
+    "seconds": 7.3,
+    "ported_at": "2026-11-26T02:30:30+00:00"
   },
   "Moblin/View/Settings/Display/LocalOverlays/LocalOverlaysStatusSettingsView.swift": {
     "status": "ok",
-    "sha256": "dad4b0d1117f52814992c7e07bcdacecb757bf7d22fe27816c087da8009826f5",
-    "moblin_commit": "ed96f78947c8ab8bbfc1c4c08e944aac9b849449",
-    "mode": "full",
+    "sha256": "26c329262e53c60ecd0503aa0b99dd85db74eff9e3e053c86008ca427600ca05",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
+    "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/display/localoverlays/LocalOverlaysStatusSettingsView.kt",
     "notes": [
-      "Each Swift `Label { Toggle(...) } icon: { Image(systemName:) }` becomes the Toggle overload that takes a label lambda, with the SF Symbol passed to Label via systemImage so the icon matches the iOS row.",
-      "The two Section headers become Section(header = \"...\") and the body's .navigationTitle(\"Status\") becomes Form(title = \"Status\").",
-      "Rows guarded by `database.showAllSettings` keep their `if` inside the same Section, so the ordering of rows is identical to SwiftUI.",
-      "The `if !isMac()` guard around Moblin Cloud is kept as a Kotlin `if (!isMac())` inside the Top right Section.",
-      "Toggle bindings to settings properties write directly (`show.stream = it`, `database.bigAudioLevelMeter = it`) because those settings classes expose mutable properties read by Compose."
+      "Removed the Browser widgets toggle (globe icon) from the Top right section, matching the Swift diff.",
+      "No other lines changed; all imports and declaration order preserved."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 48273,
-    "tokens_out": 3495,
-    "seconds": 13.3,
-    "ported_at": "2026-11-19T20:54:28+00:00"
+    "tokens_in": 49842,
+    "tokens_out": 1188,
+    "seconds": 4.8,
+    "ported_at": "2026-11-26T02:30:48+00:00"
   },
   "Moblin/Various/Model/ModelShowTaps.swift": {
     "status": "ok",
@@ -18706,5 +18691,51 @@
     "tokens_out": 26909,
     "seconds": 229.9,
     "ported_at": "2026-11-20T01:32:22+00:00"
+  },
+  "Moblin/Various/FeatureVideos.swift": {
+    "status": "ok",
+    "sha256": "d51943ffe8b745c1d3fb4280d5d08b041b69f9fb04681f85f1208aa2540830dd",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
+    "mode": "full",
+    "tier": "logic",
+    "kotlin_path": "app/src/main/java/com/moblin/android/various/FeatureVideos.kt",
+    "notes": [
+      "FeatureVideo becomes a data class implementing Identifiable<String> since its Swift ID is a String.",
+      "Static FeatureVideo constants and the `all` list live in the companion object, keeping the same declaration order as the Swift source.",
+      "url() returns a java.net.URI built with URI.create, the parsed counterpart of the forced-unwrap URL(string:)!.",
+      "No Apple frameworks are used, so nothing required a TODO."
+    ],
+    "unsupported": [],
+    "model": "deepseek-flash",
+    "backend": "api",
+    "tokens_in": 28635,
+    "tokens_out": 1385,
+    "seconds": 13.0,
+    "ported_at": "2026-11-26T02:30:36+00:00"
+  },
+  "Moblin/View/Utils/FeatureVideoView.swift": {
+    "status": "ok",
+    "sha256": "22f432d2c85a70f60839a058309f0717d2c75c8842ec4f33989ed8eff5208d8d",
+    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
+    "mode": "full",
+    "tier": "ui",
+    "kotlin_path": "app/src/main/java/com/moblin/android/view/utils/FeatureVideoView.kt",
+    "notes": [
+      "LazyVGrid is replaced by BoxWithConstraints plus chunked Rows: a LazyVerticalGrid/ LazyColumn inside the enclosing Form would nest vertical scrolling and crash, and the adaptive 130pt / 15pt spacing is reproduced by computing the column count from the available width.",
+      "Link(destination:) has no Compose counterpart; the card is a clickable with indication = null that opens video.url() through UIApplication.shared.open, so no Material ripple appears.",
+      "Image(video.thumbnail) is an asset-catalog image, so it becomes AssetImage(name = video.thumbnail, contentScale = ContentScale.Crop) which reads assets through the Bundle shim.",
+      "Color(.secondarySystemGroupedBackground) is UIColor.secondarySystemBackground from the uikit shim, used as the card background under the thumbnail.",
+      ".symbolRenderingMode(.palette) with two foreground styles is approximated by a single SystemImage tint of white; the black-0.5 secondary layer is lost.",
+      ".listRowBackground(Color.clear) has no Compose equivalent; the Section row background is left as it is.",
+      "Modifier order is reversed from Swift: clip before background, so the rounded corners clip the colour and the thumbnail.",
+      "The videos list is plain (not lazy) because it is short; ForEach identity is not needed for keying since no state is kept per item."
+    ],
+    "unsupported": [],
+    "model": "deepseek-flash",
+    "backend": "api",
+    "tokens_in": 35908,
+    "tokens_out": 5013,
+    "seconds": 25.5,
+    "ported_at": "2026-11-26T02:30:49+00:00"
   }
 }

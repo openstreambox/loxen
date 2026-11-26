@@ -366,13 +366,11 @@ class SystemMonitor {
 }
 
 class StatusTopRight {
-    val browserWidgetsStatusChanged = MutableStateFlow(false)
     val remoteControlOk = MutableStateFlow(false)
     val remoteControlStatus = MutableStateFlow(noValue)
     val moblinCloudOk = MutableStateFlow(false)
     val moblinCloudStatus = MutableStateFlow(noValue)
     val djiDevicesStatus = MutableStateFlow(noValue)
-    val browserWidgetsStatus = MutableStateFlow(noValue)
     val catPrinterStatus = MutableStateFlow(noValue)
     val workoutDeviceStatus = MutableStateFlow(noValue)
     val fixedHorizonStatus = MutableStateFlow(noValue)
@@ -771,9 +769,8 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
     var remoteControlRelay: RemoteControlRelay? = null
     var remoteControlWeb: RemoteControlWeb? = null
     var moblinCloud: MoblinCloud? = null
-    var moblinCloudTipEffects: ArrayDeque<Triple<String, String, String>> = ArrayDeque()
-    var moblinCloudTipEffectPlayer: AudioPlayer? = null
-    val moblinCloudTipEffectTimer = MainTimer()
+    val moblinCloudTipEffects = MoblinCloudTipEffects()
+    val moblinCloudMediaShare = MoblinCloudMediaShare()
     var isRemoteControlAssistantRequestingPreview = false
     var isRemoteControlAssistantRequestingStatus = false
     var isRemoteControlAssistantRequestingStats = false
@@ -2080,7 +2077,6 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
         updateLocation()
         updateObsSourceScreenshot()
         updateObsAudioVolume()
-        updateBrowserWidgetStatus()
         logStatus()
         updateDebugOverlay()
         updateDistance()
@@ -2672,29 +2668,6 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
 
     fun seventvEmotesEnabledUpdated() {
         reloadChats()
-    }
-
-    fun updateBrowserWidgetStatus() {
-        if (statusTopRight.browserWidgetsStatusChanged.value) {
-            statusTopRight.browserWidgetsStatusChanged.value = false
-        }
-        val messages = mutableListOf<String>()
-        for (browser in browsers.value) {
-            val progress = browser.browserEffect.progress
-            if (browser.browserEffect.isLoaded) {
-                messages.add("${browser.browserEffect.host}: $progress%")
-                if ((progress != 100 ||
-                        com.moblin.android.platform.core.ContinuousClock.now < browser.browserEffect.startLoadingTime.advanced(bySeconds = 5.0)) &&
-                    !statusTopRight.browserWidgetsStatusChanged.value
-                ) {
-                    statusTopRight.browserWidgetsStatusChanged.value = true
-                }
-            }
-        }
-        val message: String = if (messages.isEmpty()) noValue else messages.joinToString(", ")
-        if (statusTopRight.browserWidgetsStatus.value != message) {
-            statusTopRight.browserWidgetsStatus.value = message
-        }
     }
 
     fun reloadViewers() {
@@ -3471,9 +3444,6 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
 
     fun isShowingStatusReplay(): Boolean = stream.value.replay.enabled && !isChatPhone()
 
-    fun isShowingStatusBrowserWidgets(): Boolean =
-        database.show.browserWidgets && isStatusBrowserWidgetsActive() && !isChatPhone()
-
     fun isShowingStatusCatPrinter(): Boolean =
         database.show.catPrinter && isAnyCatPrinterConfigured()
 
@@ -3487,10 +3457,6 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
         val scene = getSelectedScene()
         return if (scene != null) isFixedHorizonEnabled(scene = scene) else false
     }
-
-    fun isStatusBrowserWidgetsActive(): Boolean =
-        statusTopRight.browserWidgetsStatus.value.isNotEmpty() &&
-            statusTopRight.browserWidgetsStatusChanged.value
 
     fun isShowingStatusCpu(): Boolean = database.show.systemMonitor
 

@@ -4,11 +4,16 @@ import com.moblin.android.common.various.RgbColor
 import com.moblin.android.common.various.noValue
 import com.moblin.android.localized
 import com.moblin.android.platform.Bundle
+import com.moblin.android.platform.webkit.URLRequest
 import com.moblin.android.platform.core.CharacterSet
 import com.moblin.android.platform.core.addingPercentEncoding
 import com.moblin.android.remotecontrol.RemoteControlChatMessage
 import com.moblin.android.remotecontrol.RemoteControlEditorOptions
 import com.moblin.android.remotecontrol.RemoteControlFilter
+import com.moblin.android.remotecontrol.RemoteControlMediaShareEnded
+import com.moblin.android.remotecontrol.RemoteControlMediaShareEndedReason
+import com.moblin.android.remotecontrol.RemoteControlMediaShareSource
+import com.moblin.android.remotecontrol.RemoteControlMediaShareState
 import com.moblin.android.remotecontrol.RemoteControlMusicCommand
 import com.moblin.android.remotecontrol.RemoteControlReaction
 import com.moblin.android.remotecontrol.RemoteControlRemoteSceneData
@@ -31,6 +36,7 @@ import com.moblin.android.remotecontrol.RemoteControlWheelOfLuck
 import com.moblin.android.remotecontrol.RemoteControlWheelOfLuckOption
 import com.moblin.android.various.AudioPlayer
 import com.moblin.android.various.ChatHighlight
+import com.moblin.android.various.MainTimer
 import com.moblin.android.various.makeChatPostTextSegments
 import com.moblin.android.various.settings.SettingsAlertsMediaGallery
 import com.moblin.android.various.settings.SettingsGimbalMotion
@@ -40,6 +46,7 @@ import com.moblin.android.various.settings.SettingsWidget
 import com.moblin.android.various.settings.SettingsWidgetScoreboardPlayer
 import com.moblin.android.various.settings.SettingsWidgetType
 import com.moblin.android.videoeffects.alerts.AlertsEffectAlert
+import com.moblin.android.videoeffects.browser.BrowserEffect
 import java.net.URI
 import java.time.Instant
 import java.util.UUID
@@ -61,6 +68,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.resume
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -111,6 +119,76 @@ private sealed class MoblinCloudError : Exception() {
     class NotSupported : MoblinCloudError()
     class KeyRejected(val reason: String) : MoblinCloudError()
     class BadResponse(val reason: String) : MoblinCloudError()
+}
+
+private fun makeMoblinCloudMediaShareRequest(
+    host: String,
+    path: String,
+    queryItems: List<Pair<String, String>>,
+): Request {
+    val url = "https://$host$path".toHttpUrl().newBuilder()
+    for ((name, value) in queryItems) {
+        url.addQueryParameter(name, value)
+    }
+    return Request.Builder()
+        .url(url.build())
+        .header("Referer", "https://cloud.moblin.app/")
+        .build()
+}
+
+class MoblinCloudTipEffects {
+    var queue: ArrayDeque<Triple<String, String, String>> = ArrayDeque()
+    var player: AudioPlayer? = null
+    val timer = MainTimer()
+}
+
+class MoblinCloudMediaShare {
+    var widgetId: UUID? = null
+    var media: MoblinCloudMediaShareMedia? = null
+    var lastEnded: RemoteControlMediaShareEnded? = null
+    var started = false
+    val timer = MainTimer()
+    val endedTimer = MainTimer()
+}
+
+data class MoblinCloudMediaShareMedia(
+    val requestId: String,
+    val source: RemoteControlMediaShareSource,
+    val duration: Int,
+) {
+    fun request(): Request {
+        return when (source) {
+            is RemoteControlMediaShareSource.YouTube -> {
+                val start = maxOf(source.start, 0)
+                makeMoblinCloudMediaShareRequest(
+                    host = "www.youtube.com",
+                    path = "/embed/${source.videoId}",
+                    queryItems = listOf(
+                        "start" to "$start",
+                        "end" to "${start + duration}",
+                        "autoplay" to "1",
+                        "playsinline" to "1",
+                        "controls" to "0",
+                        "rel" to "0",
+                        "iv_load_policy" to "3",
+                        "fs" to "0",
+                    ),
+                )
+            }
+            is RemoteControlMediaShareSource.TwitchClip -> {
+                makeMoblinCloudMediaShareRequest(
+                    host = "clips.twitch.tv",
+                    path = "/embed",
+                    queryItems = listOf(
+                        "clip" to source.slug,
+                        "parent" to "cloud.moblin.app",
+                        "autoplay" to "true",
+                        "muted" to "false",
+                    ),
+                )
+            }
+        }
+    }
 }
 
 private fun describe(response: Response, data: ByteArray): String {
@@ -376,6 +454,105 @@ fun Model.moblinCloudSendIcon() {
     moblinCloud?.sendIcon(id = database.iconImage)
 }
 
+private fun Model.getMoblinCloudMediaShareEffect(): BrowserEffect? {
+    val id = database.moblinCloud.mediaWidgetId ?: return null
+    return browserEffects[id]
+}
+
+fun Model.remoteControlSetMoblinCloudMediaShareWidget(id: UUID?) {
+    if (id != null && !database.widgets.any { it.id == id && it.type == SettingsWidgetType.browser }) {
+        return
+    }
+    database.moblinCloud.mediaWidgetId = id
+    moblinCloudMediaShareWidgetUpdated()
+}
+
+fun Model.moblinCloudMediaShareEffectsReset() {
+    moblinCloudMediaShare.widgetId = null
+    moblinCloudMediaShareWidgetUpdated()
+}
+
+fun Model.moblinCloudMediaShareWidgetUpdated() {
+    val widgetId = database.moblinCloud.mediaWidgetId
+    if (widgetId != moblinCloudMediaShare.widgetId) {
+        val oldWidgetId = moblinCloudMediaShare.widgetId
+        if (oldWidgetId != null) {
+            val oldEffect = browserEffects[oldWidgetId]
+            if (oldEffect != null) {
+                oldEffect.onVideoPlaying = null
+                oldEffect.setRequest(request = database.findWidget(id = oldWidgetId)?.browser?.getRequest())
+            }
+        }
+        moblinCloudMediaShare.widgetId = widgetId
+        if (widgetId != null) {
+            val effect = browserEffects[widgetId]
+            if (effect != null) {
+                effect.onVideoPlaying = { playing -> moblinCloudMediaShareVideoPlaying(playing = playing) }
+                val media = moblinCloudMediaShare.media
+                if (media != null) {
+                    moblinCloudStartMediaShare(effect = effect, media = media)
+                } else {
+                    effect.setRequest(request = null)
+                }
+            }
+        }
+    }
+    moblinCloudSendMediaShare()
+}
+
+fun Model.moblinCloudSendMediaShare() {
+    if (getMoblinCloudMediaShareEffect() == null) {
+        moblinCloud?.sendMediaShare(state = RemoteControlMediaShareState.Unavailable)
+    } else {
+        val media = moblinCloudMediaShare.media
+        if (media != null) {
+            moblinCloud?.sendMediaShare(state = RemoteControlMediaShareState.Playing(requestId = media.requestId))
+        } else {
+            moblinCloud?.sendMediaShare(state = RemoteControlMediaShareState.Idle(lastEnded = moblinCloudMediaShare.lastEnded))
+        }
+    }
+}
+
+private fun Model.moblinCloudStartMediaShare(effect: BrowserEffect, media: MoblinCloudMediaShareMedia) {
+    moblinCloudMediaShare.media = media
+    moblinCloudMediaShare.started = false
+    moblinCloudMediaShare.endedTimer.stop()
+    moblinCloudMediaShare.timer.startSingleShot(timeout = 20.0) {
+        moblinCloudMediaShareEnded(reason = RemoteControlMediaShareEndedReason.FailedToStart)
+    }
+    effect.setRequest(request = URLRequest(url = media.request().url.toString()))
+}
+
+private fun Model.moblinCloudMediaShareVideoPlaying(playing: Boolean) {
+    val media = moblinCloudMediaShare.media ?: return
+    if (playing) {
+        moblinCloudMediaShare.endedTimer.stop()
+        if (!moblinCloudMediaShare.started) {
+            moblinCloudMediaShare.started = true
+            moblinCloudMediaShare.timer.startSingleShot(timeout = media.duration.toDouble() + 15) {
+                moblinCloudMediaShareEnded(reason = RemoteControlMediaShareEndedReason.TimedOut)
+            }
+        }
+    } else if (moblinCloudMediaShare.started) {
+        moblinCloudMediaShare.endedTimer.startSingleShot(timeout = 3.0) {
+            moblinCloudMediaShareEnded(reason = RemoteControlMediaShareEndedReason.Finished)
+        }
+    }
+}
+
+fun Model.moblinCloudMediaShareEnded(reason: RemoteControlMediaShareEndedReason) {
+    val media = moblinCloudMediaShare.media ?: return
+    moblinCloudMediaShare.lastEnded = RemoteControlMediaShareEnded(
+        requestId = media.requestId,
+        reason = reason,
+    )
+    moblinCloudMediaShare.media = null
+    moblinCloudMediaShare.timer.stop()
+    moblinCloudMediaShare.endedTimer.stop()
+    getMoblinCloudMediaShareEffect()?.setRequest(request = null)
+    moblinCloudSendMediaShare()
+}
+
 fun Model.moblinCloudPlayTipAlert(name: String, message: String, amount: String, currency: String) {
     val id = database.moblinCloud.alertsWidgetId ?: return
     val effect = getAlertsEffect(id = id) ?: return
@@ -413,7 +590,36 @@ fun Model.moblinCloudTip(name: String, message: String, kind: RemoteControlTipKi
             message = message,
             count = kind.count,
         )
+        is RemoteControlTipKind.MediaShare -> moblinCloudPlayMediaShare(
+            name = name,
+            message = message,
+            requestId = requestId,
+            source = kind.source,
+            duration = kind.duration,
+        )
     }
+}
+
+private fun Model.moblinCloudPlayMediaShare(
+    name: String,
+    message: String,
+    requestId: String,
+    source: RemoteControlMediaShareSource,
+    duration: Int,
+) {
+    val media = MoblinCloudMediaShareMedia(
+        requestId = requestId,
+        source = source,
+        duration = duration.coerceIn(1, 600),
+    )
+    val effect = getMoblinCloudMediaShareEffect() ?: return
+    var text = localized("Requested a video")
+    if (message.isNotEmpty()) {
+        text += ": $message"
+    }
+    moblinCloudAppendChatMessage(name = name, text = text)
+    moblinCloudStartMediaShare(effect = effect, media = media)
+    moblinCloudSendMediaShare()
 }
 
 private fun Model.moblinCloudShowTipMessage(name: String, message: String, amount: String, currency: String) {
@@ -434,22 +640,22 @@ private fun Model.moblinCloudTipEffect(name: String, message: String, sound: Str
     if (message.isNotEmpty()) {
         text += ": $message"
     }
-    moblinCloudTipEffects.add(Triple(name, text, url))
+    moblinCloudTipEffects.queue.addLast(Triple(name, text, url))
     moblinCloudTryNextEffect()
 }
 
 private fun Model.moblinCloudTryNextEffect() {
-    if (moblinCloudTipEffectPlayer != null) {
+    if (moblinCloudTipEffects.player != null) {
         return
     }
-    val effect = moblinCloudTipEffects.removeFirstOrNull() ?: return
+    val effect = moblinCloudTipEffects.queue.removeFirstOrNull() ?: return
     val (name, text, url) = effect
     moblinCloudAppendChatMessage(name = name, text = text)
-    moblinCloudTipEffectPlayer = runCatching { AudioPlayer(contentsOf = url) }.getOrNull()
-    moblinCloudTipEffectPlayer?.play()
-    val timeUntilNextEffect = (moblinCloudTipEffectPlayer?.duration() ?: 0.0) + 3
-    moblinCloudTipEffectTimer.startSingleShot(timeUntilNextEffect) {
-        moblinCloudTipEffectPlayer = null
+    moblinCloudTipEffects.player = runCatching { AudioPlayer(contentsOf = url) }.getOrNull()
+    moblinCloudTipEffects.player?.play()
+    val timeUntilNextEffect = (moblinCloudTipEffects.player?.duration() ?: 0.0) + 3
+    moblinCloudTipEffects.timer.startSingleShot(timeout = timeUntilNextEffect) {
+        moblinCloudTipEffects.player = null
         moblinCloudTryNextEffect()
     }
 }
@@ -555,6 +761,10 @@ open class MoblinCloud(model: Model, url: String, streamerId: String) : RemoteCo
         streamer?.sendIcon(id = id)
     }
 
+    open fun sendMediaShare(state: RemoteControlMediaShareState) {
+        streamer?.sendMediaShare(state = state)
+    }
+
     open fun stateChanged(state: RemoteControlState) {
         if (!requestingStatus) {
             return
@@ -609,6 +819,7 @@ open class MoblinCloud(model: Model, url: String, streamerId: String) : RemoteCo
         model?.updateMoblinCloudStatus()
         model?.moblinCloudSendWheelOfLuck()
         model?.moblinCloudSendIcon()
+        model?.moblinCloudSendMediaShare()
     }
 
     override fun remoteControlStreamerDisconnected() {
@@ -727,6 +938,14 @@ open class MoblinCloud(model: Model, url: String, streamerId: String) : RemoteCo
 
     override fun remoteControlStreamerSetMoblinCloudWheelOfLuckWidget(id: UUID?) {
         model?.remoteControlSetMoblinCloudWheelOfLuckWidget(id = id)
+    }
+
+    override fun remoteControlStreamerSetMoblinCloudMediaShareWidget(id: UUID?) {
+        model?.remoteControlSetMoblinCloudMediaShareWidget(id = id)
+    }
+
+    override fun remoteControlStreamerSkipMoblinCloudMediaShare() {
+        model?.moblinCloudMediaShareEnded(reason = RemoteControlMediaShareEndedReason.Skipped)
     }
 
     override fun remoteControlStreamerTwitchEventSubNotification(message: String) {

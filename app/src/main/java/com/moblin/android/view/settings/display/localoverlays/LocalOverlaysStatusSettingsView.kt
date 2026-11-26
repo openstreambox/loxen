@@ -80,9 +80,6 @@ fun LocalOverlaysStatusSettingsView(database: Database, show: SettingsShow) {
                 Toggle(isOn = show.uptime, onChange = { show.uptime = it }) {
                     Label("Uptime", systemImage = "deskclock")
                 }
-                Toggle(isOn = show.browserWidgets, onChange = { show.browserWidgets = it }) {
-                    Label("Browser widgets", systemImage = "globe")
-                }
                 Toggle(isOn = show.bonding, onChange = { show.bonding = it }) {
                     Label("Bonding", systemImage = "phone.connection")
                 }
