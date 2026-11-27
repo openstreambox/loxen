@@ -260,6 +260,8 @@ private fun Model.executeNextAction(macro: SettingsMacrosMacro) {
             executeNotification(currentMacro = currentMacro,
                                 action = action,
                                 variables = macro.variables)
+        SettingsMacrosActionFunction.PLAY_SOUND ->
+            executePlaySound(action = action)
         SettingsMacrosActionFunction.SEND_TWITCH_SHOUTOUT ->
             executeSendTwitchShoutout(variables = macro.variables)
         SettingsMacrosActionFunction.DELAY ->
@@ -359,6 +361,13 @@ private fun Model.executeNotification(currentMacro: SettingsMacrosMacro,
     chatPostId += 1
     chatActivityFeed.appendMessage(post = post)
     quickButtonChatAlerts.appendMessage(post = post)
+    return true
+}
+
+private fun Model.executePlaySound(action: SettingsMacrosAction): Boolean {
+    action.soundId?.let { soundId ->
+        playSoundBoardSound(soundId = soundId)
+    }
     return true
 }
 

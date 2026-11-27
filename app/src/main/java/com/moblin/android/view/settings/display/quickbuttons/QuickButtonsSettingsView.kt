@@ -29,7 +29,9 @@ import com.moblin.android.various.settings.Database
 import com.moblin.android.various.settings.SettingsQuickButton
 import com.moblin.android.various.settings.SettingsQuickButtons
 import com.moblin.android.view.controlbar.controlBarPages
+import com.moblin.android.view.utils.FeatureVideosSectionView
 import com.moblin.android.view.utils.IconAndTextView
+import com.moblin.android.various.FeatureVideo
 
 @Composable
 private fun AppearanceSettingsView(database: Database, quickButtons: SettingsQuickButtons) {
@@ -181,6 +183,7 @@ fun QuickButtonsSettingsView(
             database = model.database,
             quickButtons = model.database.quickButtonsGeneral,
         )
+        FeatureVideosSectionView(videos = listOf(FeatureVideo.findQuickButtons))
         if (showAll) {
             ButtonsSettingsView(
                 model = model,

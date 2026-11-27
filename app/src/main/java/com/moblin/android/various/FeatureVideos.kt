@@ -23,10 +23,15 @@ data class FeatureVideo(
             id = "5v07BwaDe0s",
             thumbnail = "FeatureVideoZoomAndSceneControls",
         )
+        val findQuickButtons = FeatureVideo(
+            id = "QWYT2eC-cio",
+            thumbnail = "FeatureVideoFindQuickButtons",
+        )
         val all: List<FeatureVideo> = listOf(
-            soundBoard,
+            findQuickButtons,
             webcamInObs,
             chatSnapshotsToDiscord,
+            soundBoard,
             twitchRaid,
             zoomAndSceneControls,
         )

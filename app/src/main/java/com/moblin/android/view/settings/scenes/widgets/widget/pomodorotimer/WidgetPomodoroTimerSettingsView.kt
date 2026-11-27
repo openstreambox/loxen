@@ -1,6 +1,5 @@
 package com.moblin.android.view.settings.scenes.widgets.widget.pomodorotimer
 
-import android.media.MediaPlayer
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -9,15 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -27,10 +22,7 @@ import com.moblin.android.LocalModel
 import com.moblin.android.LocalOnNavigate
 import com.moblin.android.localized
 import com.moblin.android.platform.SystemImage
-import com.moblin.android.platform.swiftui.Form
-import com.moblin.android.platform.swiftui.FormRow
 import com.moblin.android.platform.swiftui.FormSlider
-import com.moblin.android.platform.swiftui.NavigationLink
 import com.moblin.android.platform.swiftui.Picker
 import com.moblin.android.platform.swiftui.Section
 import com.moblin.android.platform.swiftui.formPalette
@@ -39,79 +31,11 @@ import com.moblin.android.various.settings.PomodoroBreakIcon
 import com.moblin.android.various.settings.PomodoroFocusIcon
 import com.moblin.android.various.settings.PomodoroPhase
 import com.moblin.android.various.settings.SettingsWidgetPomodoroTimer
-import com.moblin.android.view.settings.streams.stream.GrayTextView
+import com.moblin.android.view.settings.scenes.widgets.widget.alerts.SoundSelectorNavigationView
 import com.moblin.android.view.utils.RgbColorPickerView
 import com.moblin.android.view.utils.TextEditNavigationView
-import java.util.UUID
 import kotlin.math.roundToInt
 import com.moblin.android.various.model.updateWidgetOutlines
-
-private fun getPomodoroSoundName(model: Model, soundId: UUID?): String {
-    return model.database.alertsMediaGallery.allSounds().firstOrNull { it.id == soundId }?.name ?: localized("-- None --")
-}
-
-@Composable
-fun PomodoroSoundSelectorView(
-    model: Model = LocalModel.current,
-    soundId: UUID?,
-    onChange: (UUID?) -> Unit,
-) {
-    val palette = formPalette()
-    var previewPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
-    DisposableEffect(Unit) {
-        onDispose {
-            previewPlayer?.release()
-            previewPlayer = null
-        }
-    }
-    Form(title = localized("Sound")) {
-        Section {
-            for (sound in model.database.alertsMediaGallery.allSounds()) {
-                FormRow(onClick = { onChange(sound.id) }) {
-                    Text(sound.name)
-                    Spacer(modifier = Modifier.weight(1f))
-                    val interactionSource = remember { MutableInteractionSource() }
-                    val pressed by interactionSource.collectIsPressedAsState()
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .alpha(if (pressed) 0.2f else 1f)
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null,
-                            ) {
-                                val url = model.getAlertSoundUrl(soundId = sound.id)
-                                    ?: return@clickable
-                                previewPlayer?.release()
-                                previewPlayer = runCatching {
-                                    MediaPlayer().apply {
-                                        setDataSource(url)
-                                        prepare()
-                                        start()
-                                    }
-                                }.getOrNull()
-                            },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        SystemImage(
-                            name = "play.fill",
-                            fontSize = 17.sp,
-                            tint = palette.accent,
-                        )
-                    }
-                    if (sound.id == soundId) {
-                        SystemImage(
-                            name = "checkmark",
-                            fontSize = 17.sp,
-                            modifier = Modifier.padding(start = 8.dp),
-                            tint = palette.accent,
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 private fun PomodoroIconButton(
@@ -281,42 +205,20 @@ fun WidgetPomodoroTimerSettingsView(
         }
     }
     Section(header = localized("Sounds")) {
-        NavigationLink(
-            destination = {
-                PomodoroSoundSelectorView(
-                    model = model,
-                    soundId = pomodoroTimer.focusToBreakSoundId,
-                    onChange = { pomodoroTimer.focusToBreakSoundId = it },
-                )
-            },
-        ) {
-            Text(localized("Focus to break"))
-            Spacer(modifier = Modifier.weight(1f))
-            GrayTextView(
-                text = getPomodoroSoundName(
-                    model = model,
-                    soundId = pomodoroTimer.focusToBreakSoundId,
-                ),
-            )
-        }
-        NavigationLink(
-            destination = {
-                PomodoroSoundSelectorView(
-                    model = model,
-                    soundId = pomodoroTimer.breakToFocusSoundId,
-                    onChange = { pomodoroTimer.breakToFocusSoundId = it },
-                )
-            },
-        ) {
-            Text(localized("Break to focus"))
-            Spacer(modifier = Modifier.weight(1f))
-            GrayTextView(
-                text = getPomodoroSoundName(
-                    model = model,
-                    soundId = pomodoroTimer.breakToFocusSoundId,
-                ),
-            )
-        }
+        SoundSelectorNavigationView(
+            model = model,
+            gallery = model.database.alertsMediaGallery,
+            title = localized("Focus to break"),
+            soundId = pomodoroTimer.focusToBreakSoundId,
+            onSoundIdChange = { pomodoroTimer.focusToBreakSoundId = it },
+        )
+        SoundSelectorNavigationView(
+            model = model,
+            gallery = model.database.alertsMediaGallery,
+            title = localized("Break to focus"),
+            soundId = pomodoroTimer.breakToFocusSoundId,
+            onSoundIdChange = { pomodoroTimer.breakToFocusSoundId = it },
+        )
     }
     Section(header = localized("Chat messages")) {
         TextEditNavigationView(

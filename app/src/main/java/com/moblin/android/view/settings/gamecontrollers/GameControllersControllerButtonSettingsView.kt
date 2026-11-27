@@ -19,6 +19,7 @@ import com.moblin.android.various.settings.SettingsControllerFunctionData
 import com.moblin.android.various.settings.SettingsControllerFunctionSection
 import com.moblin.android.various.settings.SettingsGameControllerButton
 import com.moblin.android.various.settings.SettingsGimbalMotion
+import com.moblin.android.view.settings.scenes.widgets.widget.alerts.SoundSelectorNavigationView
 import java.util.UUID
 
 @Composable
@@ -94,6 +95,15 @@ fun ControllerButtonView(
                 options = listOf<UUID?>(null) + layouts.map { layout -> layout.id },
                 text = { id -> layouts.firstOrNull { layout -> layout.id == id }?.name ?: "-- None --" },
                 onChange = { id -> onFunctionDataChange(functionData.copy(streamDeckLayoutId = id)) },
+            )
+        }
+        SettingsControllerFunction.PLAY_SOUND -> {
+            SoundSelectorNavigationView(
+                model = model,
+                gallery = model.database.alertsMediaGallery,
+                title = "Sound",
+                soundId = functionData.soundId,
+                onSoundIdChange = { id -> onFunctionDataChange(functionData.copy(soundId = id)) },
             )
         }
         else -> Unit

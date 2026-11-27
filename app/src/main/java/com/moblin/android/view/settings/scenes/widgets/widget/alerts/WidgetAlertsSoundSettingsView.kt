@@ -24,11 +24,11 @@ import com.moblin.android.various.AudioPlayer
 import com.moblin.android.various.model.Model
 import com.moblin.android.various.settings.SettingsAlertsMediaGallery
 import com.moblin.android.various.settings.SettingsAlertsMediaGalleryItem
-import com.moblin.android.various.settings.SettingsWidgetAlertsAlert
 import com.moblin.android.view.utils.ContextMenuDeleteButton
 import com.moblin.android.view.utils.SwipeLeftToDeleteHelpView
 import com.moblin.android.view.utils.TextButtonView
 import com.moblin.android.view.utils.TextEditNavigationView
+import com.moblin.android.view.utils.TextItemLocalizedView
 import java.io.File
 import java.util.UUID
 import com.moblin.android.various.model.makeAlertSoundUrl
@@ -109,15 +109,13 @@ fun SoundGalleryItemView(
 fun SoundGalleryView(
     model: Model = LocalModel.current,
     gallery: SettingsAlertsMediaGallery,
-    alert: SettingsWidgetAlertsAlert,
-    soundId: UUID,
-    onSoundIdChange: (UUID) -> Unit,
+    onDeleted: () -> Unit,
     onNavigate: (String) -> Unit = LocalOnNavigate.current,
 ) {
     fun deleteSound(offsets: IndexSet) {
         gallery.customSounds = gallery.customSounds.removing(atOffsets = offsets)
         model.fixAlertMedias()
-        onSoundIdChange(alert.soundId)
+        onDeleted()
     }
 
     Form(title = "My sounds") {
@@ -152,39 +150,38 @@ fun SoundGalleryView(
 private var player: AudioPlayer? = null
 
 @Composable
-fun AlertSoundSelectorView(
+fun SoundSelectorView(
     model: Model = LocalModel.current,
     gallery: SettingsAlertsMediaGallery,
-    alert: SettingsWidgetAlertsAlert,
-    soundId: UUID,
-    onSoundIdChange: (UUID) -> Unit,
+    soundId: UUID?,
+    onSoundIdChange: (UUID?) -> Unit,
     onNavigate: (String) -> Unit = LocalOnNavigate.current,
 ) {
     val sounds = gallery.allSounds()
+    val options: List<UUID?> = sounds.map { it.id } + listOf<UUID?>(null)
 
     Form(title = "Sound") {
         Section {
             Picker(
                 title = "",
                 selection = soundId,
-                options = sounds.map { it.id },
-                text = { id -> sounds.firstOrNull { it.id == id }?.name ?: id.toString() },
-                pickerStyle = PickerStyle.inline,
-                onChange = { id ->
-                    onSoundIdChange(id)
-                    alert.soundId = id
-                    model.updateAlertsSettings()
+                options = options,
+                text = { id ->
+                    if (id == null) {
+                        localized("-- None --")
+                    } else {
+                        sounds.firstOrNull { it.id == id }?.name ?: id.toString()
+                    }
                 },
+                pickerStyle = PickerStyle.inline,
+                onChange = { id -> onSoundIdChange(id) },
             )
         }
         Section {
             NavigationLink(title = "My sounds") {
                 SoundGalleryView(
-                    model = model,
                     gallery = gallery,
-                    alert = alert,
-                    soundId = soundId,
-                    onSoundIdChange = onSoundIdChange,
+                    onDeleted = {},
                     onNavigate = onNavigate,
                 )
             }
@@ -194,5 +191,32 @@ fun AlertSoundSelectorView(
         onDispose {
             player = null
         }
+    }
+}
+
+@Composable
+fun SoundSelectorNavigationView(
+    model: Model = LocalModel.current,
+    gallery: SettingsAlertsMediaGallery,
+    title: String,
+    soundId: UUID?,
+    onSoundIdChange: (UUID?) -> Unit,
+    onNavigate: (String) -> Unit = LocalOnNavigate.current,
+) {
+    fun soundName(): String =
+        gallery.allSounds().firstOrNull { it.id == soundId }?.name ?: localized("-- None --")
+
+    NavigationLink(
+        destination = {
+            SoundSelectorView(
+                model = model,
+                gallery = gallery,
+                soundId = soundId,
+                onSoundIdChange = onSoundIdChange,
+                onNavigate = onNavigate,
+            )
+        },
+    ) {
+        TextItemLocalizedView(name = title, value = soundName())
     }
 }

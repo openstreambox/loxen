@@ -9,7 +9,9 @@ import androidx.compose.ui.unit.dp
 import com.moblin.android.platform.swiftui.Form
 import com.moblin.android.platform.swiftui.Section
 import com.moblin.android.various.settings.SettingsStream
+import com.moblin.android.view.utils.FeatureVideosSectionView
 import com.moblin.android.view.utils.TextItemLocalizedView
+import com.moblin.android.various.FeatureVideo
 
 @Composable
 fun StreamMobcamSettingsView(stream: SettingsStream) {
@@ -32,5 +34,6 @@ fun StreamMobcamSettingsView(stream: SettingsStream) {
         ) {
             TextItemLocalizedView(name = "Port", value = stream.mobcamPort().toString())
         }
+        FeatureVideosSectionView(videos = listOf(FeatureVideo.webcamInObs))
     }
 }

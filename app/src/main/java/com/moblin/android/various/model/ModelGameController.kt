@@ -121,6 +121,12 @@ fun Model.handleControllerFunction(
                 setSelectedStreamDeck()
             }
         }
+        SettingsControllerFunction.PLAY_SOUND -> {
+            val soundId = functionData.soundId
+            if (soundId != null && !pressed) {
+                playSoundBoardSound(soundId = soundId)
+            }
+        }
         SettingsControllerFunction.INSTANT_REPLAY -> {
             if (!pressed) {
                 instantReplay()

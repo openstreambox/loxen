@@ -16,6 +16,7 @@ import com.moblin.android.platform.codable.decodeIfPresent
 import com.moblin.android.platform.codable.encodeContainer
 import com.moblin.android.platform.swiftui.Published
 import com.moblin.android.platform.swiftui.PublishedList
+import com.moblin.android.remotecontrol.remoteControlAllAlerts
 import com.moblin.android.streamingplatforms.kick.loadKickAccessTokenFromKeychain
 import com.moblin.android.streamingplatforms.twitch.loadTwitchAccessTokenFromKeychain
 import com.moblin.android.various.model.CameraId
@@ -1268,7 +1269,6 @@ private val allBundledAlertsMediaGallerySounds = listOf(
     SettingsAlertsMediaGalleryItem(name = "Fart 2"),
     SettingsAlertsMediaGalleryItem(name = "Bad chili fart"),
     SettingsAlertsMediaGalleryItem(name = "Perfect fart"),
-    SettingsAlertsMediaGalleryItem(name = "Silence"),
 )
 
 @Serializable(with = SettingsAlertsMediaGallery.Serializer::class)
@@ -2871,6 +2871,22 @@ private fun updateBundledAlertsMediaGallery(database: Database) {
         }
     }
     database.alertsMediaGallery.bundledImages = bundledImages
+    val silence = database.alertsMediaGallery.bundledSounds.firstOrNull { it.name == "Silence" }
+    if (silence != null) {
+        for (widget in database.widgets) {
+            for (alert in remoteControlAllAlerts(widget.alerts)) {
+                if (alert.soundId == silence.id) {
+                    alert.soundId = null
+                }
+            }
+            if (widget.pomodoroTimer.focusToBreakSoundId == silence.id) {
+                widget.pomodoroTimer.focusToBreakSoundId = null
+            }
+            if (widget.pomodoroTimer.breakToFocusSoundId == silence.id) {
+                widget.pomodoroTimer.breakToFocusSoundId = null
+            }
+        }
+    }
     val bundledSounds = mutableListOf<SettingsAlertsMediaGalleryItem>()
     for (sound in allBundledAlertsMediaGallerySounds) {
         val existingSound = database.alertsMediaGallery.bundledSounds

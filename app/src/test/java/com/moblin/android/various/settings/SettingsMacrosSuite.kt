@@ -83,6 +83,23 @@ class SettingsMacrosSuite {
     }
 
     @Test
+    fun playSoundActionSurvivesEncodeAndDecode() {
+        val soundId = UUID.randomUUID()
+        val action = SettingsMacrosAction()
+        action.function = SettingsMacrosActionFunction.PLAY_SOUND
+        action.soundId = soundId
+        val decoded = Json.decodeFromString<SettingsMacrosAction>(Json.encodeToString(action))
+        assertEquals(SettingsMacrosActionFunction.PLAY_SOUND, decoded.function)
+        assertEquals(soundId, decoded.soundId)
+    }
+
+    @Test
+    fun playSoundActionDefaultsWhenMissingFromSettings() {
+        val action = Json.decodeFromString<SettingsMacrosAction>("{}")
+        assertNull(action.soundId)
+    }
+
+    @Test
     fun waitForEventMatchesOnlyItsEvent() {
         val action = makeWaitForEventAction(SettingsMacrosEvent.TWITCH_FOLLOW)
         assertTrue(action.matches(event = MacroEvent(event = SettingsMacrosEvent.TWITCH_FOLLOW)))

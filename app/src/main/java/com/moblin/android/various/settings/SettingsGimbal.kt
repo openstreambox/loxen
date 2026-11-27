@@ -72,6 +72,7 @@ class SettingsGimbal {
         encode("shutterMotion", functionDataShutter.gimbalMotion)
         encode("shutterMacroId", functionDataShutter.macroId)
         encode("shutterStreamDeckLayoutId", functionDataShutter.streamDeckLayoutId)
+        encode("shutterSoundId", functionDataShutter.soundId)
         encode("functionFlip", functionFlip)
         encode("flipSceneId", functionDataFlip.sceneId)
         encode("flipWidgetId", functionDataFlip.widgetId)
@@ -79,6 +80,7 @@ class SettingsGimbal {
         encode("flipMotion", functionDataFlip.gimbalMotion)
         encode("flipMacroId", functionDataFlip.macroId)
         encode("flipStreamDeckLayoutId", functionDataFlip.streamDeckLayoutId)
+        encode("flipSoundId", functionDataFlip.soundId)
         encode("presets", presets, ListSerializer(SettingsGimbalPreset.serializer()))
     }
 
@@ -98,6 +100,7 @@ class SettingsGimbal {
                 gimbalMotion = container.decode("shutterMotion", SettingsGimbalMotion.KAPOW),
                 macroId = container.decode<UUID?>("shutterMacroId", null),
                 streamDeckLayoutId = container.decode<UUID?>("shutterStreamDeckLayoutId", null),
+                soundId = container.decode<UUID?>("shutterSoundId", null),
             )
             gimbal.functionFlip = container.decode("functionFlip", SettingsControllerFunction.SWITCH_SCENE)
             gimbal.functionDataFlip = SettingsControllerFunctionData(
@@ -107,6 +110,7 @@ class SettingsGimbal {
                 gimbalMotion = container.decode("flipMotion", SettingsGimbalMotion.KAPOW),
                 macroId = container.decode<UUID?>("flipMacroId", null),
                 streamDeckLayoutId = container.decode<UUID?>("flipStreamDeckLayoutId", null),
+                soundId = container.decode<UUID?>("flipSoundId", null),
             )
             gimbal.presets = container.decode("presets", ListSerializer(SettingsGimbalPreset.serializer()), emptyList())
             return gimbal

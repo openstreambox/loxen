@@ -186,6 +186,7 @@ class VideoUnit(private val colorRange: SettingsStreamColorRange) : VideoCapture
     )
     private var firstFrameTime: TimeSource.Monotonic.ValueTimeMark? = null
     private var isFirstAfterAttach = false
+    private var isWaitingForFirstFrame = false
     private var ignoreFramesAfterAttachSeconds = 0.0
     private var configuredIgnoreFramesAfterAttachSeconds = 0.0
     private var latestSampleBufferAppendTime: Long = 0L
@@ -648,7 +649,7 @@ class VideoUnit(private val colorRange: SettingsStreamColorRange) : VideoCapture
     }
 
     private fun handleGapFillerTimer() {
-        if (!isFirstAfterAttach) {
+        if (!isWaitingForFirstFrame) {
             return
         }
         var latestSampleBuffer = this.latestSampleBuffer ?: return
@@ -682,6 +683,7 @@ class VideoUnit(private val colorRange: SettingsStreamColorRange) : VideoCapture
     private fun prepareFirstFrame() {
         firstFrameTime = null
         isFirstAfterAttach = true
+        isWaitingForFirstFrame = true
         ignoreFramesAfterAttachSeconds = configuredIgnoreFramesAfterAttachSeconds
     }
 
@@ -906,6 +908,7 @@ class VideoUnit(private val colorRange: SettingsStreamColorRange) : VideoCapture
             )
         ) {
             isFirstAfterAttach = false
+            isWaitingForFirstFrame = false
         }
     }
 

@@ -662,9 +662,9 @@ sealed class RemoteControlRequest {
         }
     }
 
-    data class SetMoblinCloudMediaShareWidget(val id: UUID?) : RemoteControlRequest() {
+    data class SetTipsAlertsWidget(val id: UUID?) : RemoteControlRequest() {
         override fun toJsonElement(): JsonObject = buildJsonObject {
-            putJsonObject("setMoblinCloudMediaShareWidget") {
+            putJsonObject("setTipsAlertsWidget") {
                 if (id != null) {
                     put("id", id.toString())
                 }
@@ -672,9 +672,29 @@ sealed class RemoteControlRequest {
         }
     }
 
-    data object SkipMoblinCloudMediaShare : RemoteControlRequest() {
+    data class SetTipsWheelOfLuckWidget(val id: UUID?) : RemoteControlRequest() {
         override fun toJsonElement(): JsonObject = buildJsonObject {
-            putJsonObject("skipMoblinCloudMediaShare") {}
+            putJsonObject("setTipsWheelOfLuckWidget") {
+                if (id != null) {
+                    put("id", id.toString())
+                }
+            }
+        }
+    }
+
+    data class SetTipsMediaShareWidget(val id: UUID?) : RemoteControlRequest() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("setTipsMediaShareWidget") {
+                if (id != null) {
+                    put("id", id.toString())
+                }
+            }
+        }
+    }
+
+    data object SkipMediaShare : RemoteControlRequest() {
+        override fun toJsonElement(): JsonObject = buildJsonObject {
+            putJsonObject("skipMediaShare") {}
         }
     }
 
@@ -904,12 +924,22 @@ sealed class RemoteControlRequest {
                         if (it is JsonNull) null else UUID.fromString(it.jsonPrimitive.content)
                     },
                 )
-                "setMoblinCloudMediaShareWidget" -> SetMoblinCloudMediaShareWidget(
+                "setTipsAlertsWidget" -> SetTipsAlertsWidget(
                     id = params["id"]?.let {
                         if (it is JsonNull) null else UUID.fromString(it.jsonPrimitive.content)
                     },
                 )
-                "skipMoblinCloudMediaShare" -> SkipMoblinCloudMediaShare
+                "setTipsWheelOfLuckWidget" -> SetTipsWheelOfLuckWidget(
+                    id = params["id"]?.let {
+                        if (it is JsonNull) null else UUID.fromString(it.jsonPrimitive.content)
+                    },
+                )
+                "setTipsMediaShareWidget" -> SetTipsMediaShareWidget(
+                    id = params["id"]?.let {
+                        if (it is JsonNull) null else UUID.fromString(it.jsonPrimitive.content)
+                    },
+                )
+                "skipMediaShare" -> SkipMediaShare
                 "showTally" -> ShowTally(
                     message = params.getValue("message").jsonPrimitive.content,
                     background = remoteControlJson.decodeFromJsonElement(params.getValue("background")),
@@ -2698,7 +2728,7 @@ data class RemoteControlEditorOptions(
 )
 
 @Serializable
-data class RemoteControlSettingsMoblinCloud(
+data class RemoteControlSettingsTips(
     @Serializable(with = UUIDSerializer::class)
     val alertsWidgetId: UUID? = null,
     @Serializable(with = UUIDSerializer::class)
@@ -2717,7 +2747,8 @@ data class RemoteControlSettings(
     var bitratePresets: List<RemoteControlSettingsBitratePreset>,
     var mics: List<RemoteControlSettingsMic>,
     var srt: RemoteControlSettingsSrt,
-    var moblinCloud: RemoteControlSettingsMoblinCloud? = null,
+    var moblinCloud: RemoteControlSettingsTips? = null,
+    var tips: RemoteControlSettingsTips? = null,
     var zoomPresets: RemoteControlSettingsZoomPresets? = null,
 )
 

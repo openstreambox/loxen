@@ -2275,7 +2275,8 @@ class Model : FaxReceiverDelegate, AlertsEffectDelegate {
         if (database.alertsMediaGallery.allImages().firstOrNull { it.id == alert.imageId } == null) {
             alert.imageId = database.alertsMediaGallery.bundledImages[0].id
         }
-        if (database.alertsMediaGallery.allSounds().firstOrNull { it.id == alert.soundId } == null) {
+        val soundId = alert.soundId
+        if (soundId != null && database.alertsMediaGallery.allSounds().none { it.id == soundId }) {
             alert.soundId = database.alertsMediaGallery.bundledSounds[0].id
         }
     }

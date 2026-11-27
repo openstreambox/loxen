@@ -28,6 +28,7 @@ class SettingsKeyboardKey {
         encode("gimbalMotion", functionData.gimbalMotion)
         encode("macroId", functionData.macroId)
         encode("streamDeckLayoutId", functionData.streamDeckLayoutId)
+        encode("soundId", functionData.soundId)
     }
 
     companion object {
@@ -43,6 +44,7 @@ class SettingsKeyboardKey {
                 gimbalMotion = container.decode("gimbalMotion", SettingsGimbalMotion.KAPOW),
                 macroId = container.decode<UUID?>("macroId", null),
                 streamDeckLayoutId = container.decode<UUID?>("streamDeckLayoutId", null),
+                soundId = container.decode<UUID?>("soundId", null),
             )
             return key
         }

@@ -19,6 +19,8 @@ import com.moblin.android.various.model.WizardPlatform
 import com.moblin.android.various.utils.makeUniqueName
 import com.moblin.android.view.settings.streams.stream.CreateStreamWizardToolbar
 import com.moblin.android.view.settings.streams.stream.WizardNextButtonView
+import com.moblin.android.view.utils.FeatureVideosSectionView
+import com.moblin.android.various.FeatureVideo
 
 @Composable
 fun StreamWizardMobcamSettingsView(
@@ -77,5 +79,6 @@ fun StreamWizardMobcamSettingsView(
                 WizardNextButtonView()
             }
         }
+        FeatureVideosSectionView(videos = listOf(FeatureVideo.webcamInObs))
     }
 }

@@ -189,7 +189,7 @@ private fun SceneEditorCanvasView(
     var lastTapLocation by remember { mutableStateOf<CGPoint?>(null) }
 
     val scale = if (size.width != 0.0) canvasSize.width / size.width else 1.0
-    val snapThreshold = 8 * scale
+    val snapThreshold = 4 * scale
     val editableOutlines = allOutlines.filter { it.inScene }
     val selectedOutline = editableOutlines.firstOrNull { it.id == selectedId }
     val selectedFill = palette.accent.copy(alpha = 0.25f)

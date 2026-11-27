@@ -485,15 +485,23 @@ class RemoteControlStreamer(
                 delegate.remoteControlStreamerSetMoblinCloudAlertsWidget(data.id)
                 sendEmptyOkResponse(id)
             }
+            is RemoteControlRequest.SetTipsAlertsWidget -> {
+                delegate.remoteControlStreamerSetMoblinCloudAlertsWidget(data.id)
+                sendEmptyOkResponse(id)
+            }
             is RemoteControlRequest.SetMoblinCloudWheelOfLuckWidget -> {
                 delegate.remoteControlStreamerSetMoblinCloudWheelOfLuckWidget(data.id)
                 sendEmptyOkResponse(id)
             }
-            is RemoteControlRequest.SetMoblinCloudMediaShareWidget -> {
+            is RemoteControlRequest.SetTipsWheelOfLuckWidget -> {
+                delegate.remoteControlStreamerSetMoblinCloudWheelOfLuckWidget(data.id)
+                sendEmptyOkResponse(id)
+            }
+            is RemoteControlRequest.SetTipsMediaShareWidget -> {
                 delegate.remoteControlStreamerSetMoblinCloudMediaShareWidget(data.id)
                 sendEmptyOkResponse(id)
             }
-            is RemoteControlRequest.SkipMoblinCloudMediaShare -> {
+            is RemoteControlRequest.SkipMediaShare -> {
                 delegate.remoteControlStreamerSkipMoblinCloudMediaShare()
                 sendEmptyOkResponse(id)
             }

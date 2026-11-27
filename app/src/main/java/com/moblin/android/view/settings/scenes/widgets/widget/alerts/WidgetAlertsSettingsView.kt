@@ -147,10 +147,6 @@ private fun getImageName(model: Model, id: UUID?): String {
     return model.database.alertsMediaGallery.allImages().firstOrNull { it.id == id }?.name ?: ""
 }
 
-private fun getSoundName(model: Model, id: UUID?): String {
-    return model.database.alertsMediaGallery.allSounds().firstOrNull { it.id == id }?.name ?: ""
-}
-
 @Composable
 private fun VideoPickerView(model: Model = LocalModel.current) {
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -241,17 +237,19 @@ fun AlertMediaView(
                 ) {
                     TextItemLocalizedView(name = "Image", value = getImageName(model = model, id = alert.imageId))
                 }
-                NavigationLink(
-                    destination = {
-                        AlertSoundSelectorView(
-                            gallery = model.database.alertsMediaGallery,
-                            alert = alert,
-                            soundId = alert.soundId,
-                            onSoundIdChange = { alert.soundId = it },
-                        )
-                    },
-                ) {
-                    TextItemLocalizedView(name = "Sound", value = getSoundName(model = model, id = alert.soundId))
+                SoundSelectorNavigationView(
+                    model = model,
+                    gallery = model.database.alertsMediaGallery,
+                    title = "Sound",
+                    soundId = alert.soundId,
+                    onSoundIdChange = { alert.soundId = it },
+                )
+                var previousSoundId by remember { mutableStateOf(alert.soundId) }
+                LaunchedEffect(alert.soundId) {
+                    if (previousSoundId != alert.soundId) {
+                        previousSoundId = alert.soundId
+                        model.updateAlertsSettings()
+                    }
                 }
             }
             SettingsWidgetAlertsAlertMediaType.video -> {

@@ -75,6 +75,7 @@ class SettingsStreamDeckKey {
         encode("gimbalMotion", functionData.value.gimbalMotion)
         encode("macroId", functionData.value.macroId)
         encode("streamDeckLayoutId", functionData.value.streamDeckLayoutId)
+        encode("soundId", functionData.value.soundId)
     }
 
     companion object {
@@ -94,6 +95,7 @@ class SettingsStreamDeckKey {
                 gimbalMotion = container.decode("gimbalMotion", SettingsGimbalMotion.KAPOW),
                 macroId = container.decode<UUID?>("macroId", null),
                 streamDeckLayoutId = container.decode<UUID?>("streamDeckLayoutId", null),
+                soundId = container.decode<UUID?>("soundId", null),
             )
             return key
         }

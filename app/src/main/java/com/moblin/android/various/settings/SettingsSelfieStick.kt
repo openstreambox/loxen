@@ -29,7 +29,8 @@ class SettingsSelfieStick(
         gimbalPresetId,
         gimbalMotion,
         macroId,
-        streamDeckLayoutId
+        streamDeckLayoutId,
+        soundId
     }
 
     fun encode(): JsonObject = encodeContainer {
@@ -41,6 +42,7 @@ class SettingsSelfieStick(
         encode("gimbalMotion", functionData.value.gimbalMotion)
         encode("macroId", functionData.value.macroId)
         encode("streamDeckLayoutId", functionData.value.streamDeckLayoutId)
+        encode("soundId", functionData.value.soundId)
     }
 
     companion object {
@@ -55,6 +57,7 @@ class SettingsSelfieStick(
                 gimbalMotion = container.decode("gimbalMotion", SettingsGimbalMotion.KAPOW),
                 macroId = container.decode<UUID?>("macroId", null),
                 streamDeckLayoutId = container.decode<UUID?>("streamDeckLayoutId", null),
+                soundId = container.decode<UUID?>("soundId", null),
             )
             return selfieStick
         }

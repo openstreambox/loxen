@@ -605,6 +605,9 @@ class RemoteControlSceneConfigValidationSuite {
                 widget.alerts.twitch.follows.imageId = image.id
                 widget.alerts.twitch.follows.soundId = sound.id
             },
+            WidgetCase("Alert without sound", SettingsWidgetType.alerts) { _, widget ->
+                widget.alerts.twitch.follows.soundId = null
+            },
             WidgetCase("Configured AI", SettingsWidgetType.alerts) { _, widget ->
                 widget.alerts.ai.apiKey = "key"
                 widget.alerts.aiEnabled = true

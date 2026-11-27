@@ -39,7 +39,7 @@ import com.moblin.android.remotecontrol.RemoteControlSettingsAutoSceneSwitcher
 import com.moblin.android.remotecontrol.RemoteControlSettingsBitratePreset
 import com.moblin.android.remotecontrol.RemoteControlSettingsGimbalPreset
 import com.moblin.android.remotecontrol.RemoteControlSettingsMic
-import com.moblin.android.remotecontrol.RemoteControlSettingsMoblinCloud
+import com.moblin.android.remotecontrol.RemoteControlSettingsTips
 import com.moblin.android.remotecontrol.RemoteControlSettingsScene
 import com.moblin.android.remotecontrol.RemoteControlSettingsSrt
 import com.moblin.android.remotecontrol.RemoteControlSettingsSrtConnectionPriority
@@ -822,7 +822,7 @@ fun Model.remoteControlGetSettings(): RemoteControlSettings {
         )
     }
     val connectionPrioritiesEnabled = stream.value.srt.connectionPriorities.enabled
-    val moblinCloud = RemoteControlSettingsMoblinCloud(
+    val tips = RemoteControlSettingsTips(
         alertsWidgetId = database.moblinCloud.alertsWidgetId,
         wheelOfLuckWidgetId = database.moblinCloud.wheelOfLuckWidgetId,
         mediaShareWidgetId = database.moblinCloud.mediaWidgetId
@@ -838,7 +838,8 @@ fun Model.remoteControlGetSettings(): RemoteControlSettings {
             connectionPrioritiesEnabled = connectionPrioritiesEnabled,
             connectionPriorities = connectionPriorities
         ),
-        moblinCloud = moblinCloud,
+        moblinCloud = tips,
+        tips = tips,
         zoomPresets = RemoteControlSettingsZoomPresets(
             front = makeRemoteControlZoomPresets(presets = database.zoom.front),
             back = makeRemoteControlZoomPresets(presets = database.zoom.back)

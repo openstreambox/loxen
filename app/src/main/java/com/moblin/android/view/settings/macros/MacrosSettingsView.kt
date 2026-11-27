@@ -67,6 +67,7 @@ import com.moblin.android.various.settings.SettingsQuickButtonType
 import com.moblin.android.various.settings.SettingsReaction
 import com.moblin.android.various.settings.minZoomX
 import com.moblin.android.various.utils.makeUniqueName
+import com.moblin.android.view.settings.scenes.widgets.widget.alerts.SoundSelectorNavigationView
 import com.moblin.android.view.settings.scenes.widgets.widget.text.TextFormatVariablesView
 import com.moblin.android.view.settings.scenes.widgets.widget.text.TextFormatWarningsView
 import com.moblin.android.view.settings.scenes.widgets.widget.text.TextWidgetSuggestionsView
@@ -339,6 +340,15 @@ private fun ActionView(
                         Spacer(modifier = Modifier.weight(1f))
                         GrayTextView(text = action.notificationMessage)
                     }
+                    SettingsMacrosActionFunction.PLAY_SOUND -> {
+                        val soundName = database.alertsMediaGallery.allSounds()
+                            .firstOrNull { it.id == action.soundId }
+                            ?.name
+                        if (soundName != null) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            GrayTextView(text = soundName)
+                        }
+                    }
                     SettingsMacrosActionFunction.DELAY -> {
                         Spacer(modifier = Modifier.weight(1f))
                         GrayTextView(text = "${action.delay.toInt()}s")
@@ -590,6 +600,16 @@ fun ActionDestinationView(
                             value = action.notificationMessage,
                         )
                     }
+                }
+                SettingsMacrosActionFunction.PLAY_SOUND -> {
+                    SoundSelectorNavigationView(
+                        model = model,
+                        gallery = database.alertsMediaGallery,
+                        title = localized("Sound"),
+                        soundId = action.soundId,
+                        onSoundIdChange = { action.soundId = it },
+                        onNavigate = onNavigate,
+                    )
                 }
                 SettingsMacrosActionFunction.SEND_TWITCH_SHOUTOUT -> {}
                 SettingsMacrosActionFunction.DELAY -> {

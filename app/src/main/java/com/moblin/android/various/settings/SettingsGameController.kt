@@ -134,6 +134,7 @@ enum class SettingsControllerFunction(val rawValue: String) {
     WIDGET("Widget"),
     MACRO("Macro"),
     STREAM_DECK_LAYOUT("Stream deck layout"),
+    PLAY_SOUND("Play sound"),
     INSTANT_REPLAY("Instant replay"),
     STOP_REPLAY("Stop replay"),
     SNAPSHOT("Snapshot"),
@@ -174,6 +175,7 @@ enum class SettingsControllerFunction(val rawValue: String) {
         WIDGET -> localized("Widget")
         MACRO -> localized("Macro")
         STREAM_DECK_LAYOUT -> localized("Stream Deck layout")
+        PLAY_SOUND -> localized("Play sound")
         INSTANT_REPLAY -> localized("Instant replay")
         STOP_REPLAY -> localized("Stop replay")
         SNAPSHOT -> localized("Snapshot")
@@ -227,6 +229,7 @@ enum class SettingsControllerFunction(val rawValue: String) {
         WIDGET,
         MACRO,
         STREAM_DECK_LAYOUT,
+        PLAY_SOUND,
         INSTANT_REPLAY,
         STOP_REPLAY,
         SNAPSHOT,
@@ -266,6 +269,7 @@ data class SettingsControllerFunctionData(
     val gimbalMotion: SettingsGimbalMotion = SettingsGimbalMotion.KAPOW,
     val macroId: UUID? = null,
     val streamDeckLayoutId: UUID? = null,
+    val soundId: UUID? = null,
 )
 
 @Serializable(with = SettingsGameControllerButton.Serializer::class)
@@ -295,6 +299,7 @@ class SettingsGameControllerButton {
             SettingsControllerFunction.GIMBAL_ANIMATE -> encode("gimbalMotion", functionData.value.gimbalMotion)
             SettingsControllerFunction.MACRO -> encode("macroId", functionData.value.macroId)
             SettingsControllerFunction.STREAM_DECK_LAYOUT -> encode("streamDeckLayoutId", functionData.value.streamDeckLayoutId)
+            SettingsControllerFunction.PLAY_SOUND -> encode("soundId", functionData.value.soundId)
             else -> Unit
         }
     }
@@ -312,6 +317,7 @@ class SettingsGameControllerButton {
                 gimbalMotion = container.decode("gimbalMotion", SettingsGimbalMotion.KAPOW),
                 macroId = container.decode<UUID?>("macroId", null),
                 streamDeckLayoutId = container.decode<UUID?>("streamDeckLayoutId", null),
+                soundId = container.decode<UUID?>("soundId", null),
             )
             return button
         }

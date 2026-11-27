@@ -134,11 +134,16 @@ open class AlertsEffectMedia {
         mediaStorage: AlertMediaStorage,
         bundledSounds: List<SettingsAlertsMediaGalleryItem>,
     ) {
-        val bundledSound = bundledSounds.firstOrNull { it.id == alert.soundId }
+        val soundId = alert.soundId
+        if (soundId == null) {
+            soundUrl = null
+            return
+        }
+        val bundledSound = bundledSounds.firstOrNull { it.id == soundId }
         val sound: AlertsEffectMediaItem = if (bundledSound != null) {
             AlertsEffectMediaItem.BundledName(bundledSound.name)
         } else {
-            AlertsEffectMediaItem.CustomUrl(mediaStorage.makePath(id = alert.soundId).path)
+            AlertsEffectMediaItem.CustomUrl(mediaStorage.makePath(id = soundId).path)
         }
         when (sound) {
             is AlertsEffectMediaItem.BundledName -> {

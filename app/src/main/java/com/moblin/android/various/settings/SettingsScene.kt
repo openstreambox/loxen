@@ -1470,7 +1470,7 @@ class SettingsWidgetAlertsAlert(
     mediaType: SettingsWidgetAlertsAlertMediaType = SettingsWidgetAlertsAlertMediaType.gifAndSound,
     imageId: UUID = UUID.randomUUID(),
     imageLoopCount: Int = 1,
-    soundId: UUID = UUID.randomUUID(),
+    soundId: UUID? = UUID.randomUUID(),
     videoName: String = "",
     var textColor: RgbColor = RgbColor(red = 255, green = 255, blue = 255),
     var accentColor: RgbColor = RgbColor(red = 0xFD, green = 0xFB, blue = 0x67),
@@ -1486,7 +1486,7 @@ class SettingsWidgetAlertsAlert(
     var mediaType: SettingsWidgetAlertsAlertMediaType by Published(mediaType)
     var imageId: UUID by Published(imageId)
     var imageLoopCount: Int by Published(imageLoopCount)
-    var soundId: UUID by Published(soundId)
+    var soundId: UUID? by Published(soundId)
     var videoName: String by Published(videoName)
     var textToSpeechLanguageVoices: Map<String, SettingsVoice> by Published(textToSpeechLanguageVoices)
     var positionType: SettingsWidgetAlertPositionType by Published(positionType)
@@ -1523,7 +1523,7 @@ class SettingsWidgetAlertsAlert(
             alert.mediaType = container.decode("mediaType", SettingsWidgetAlertsAlertMediaType.gifAndSound)
             alert.imageId = container.decode("imageId", UUID.randomUUID())
             alert.imageLoopCount = container.decode("imageLoopCount", 1)
-            alert.soundId = container.decode("soundId", UUID.randomUUID())
+            alert.soundId = container.decode<UUID?>("soundId", UUID.randomUUID())
             alert.videoName = container.decode("videoName", "")
             alert.textColor = container.decode("textColor", RgbColor(red = 255, green = 255, blue = 255))
             alert.accentColor = container.decode("accentColor", RgbColor(red = 0xFD, green = 0xFB, blue = 0x67))
@@ -2597,6 +2597,7 @@ class SettingsWidgetWheelOfLuckOption(
         encode("gimbalMotion", functionData.gimbalMotion)
         encode("macroId", functionData.macroId)
         encode("streamDeckLayoutId", functionData.streamDeckLayoutId)
+        encode("soundId", functionData.soundId)
     }
 
     companion object {
@@ -2613,6 +2614,7 @@ class SettingsWidgetWheelOfLuckOption(
                 gimbalMotion = container.decode("gimbalMotion", SettingsGimbalMotion.KAPOW),
                 macroId = container.decode<UUID?>("macroId", null),
                 streamDeckLayoutId = container.decode<UUID?>("streamDeckLayoutId", null),
+                soundId = container.decode<UUID?>("soundId", null),
             )
             return option
         }

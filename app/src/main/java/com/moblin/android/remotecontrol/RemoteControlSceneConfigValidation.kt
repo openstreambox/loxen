@@ -454,7 +454,11 @@ private fun isValidAlertUpdate(
             !isValidChange(
                 old.soundId,
                 new.soundId,
-            ) { soundId -> mediaDatabase.alertsMediaGallery.allSounds().any { it.id == soundId } }
+            ) { soundId ->
+                soundId?.let { id ->
+                    mediaDatabase.alertsMediaGallery.allSounds().any { it.id == id }
+                } ?: true
+            }
         ) {
             return false
         }
