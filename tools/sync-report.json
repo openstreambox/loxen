@@ -1,12 +1,202 @@
 {
-  "upstream": "04a17f4a153da0dbf84fb9ea22cc9978b85c8933",
+  "upstream": "7237d1c523920441e84a5c9e0449c89b36d0696c",
   "sync_error": null,
   "build": [],
   "pbswift": null,
-  "held_back": [],
+  "held_back": [
+    {
+      "swift": "Moblin/Integrations/GoPro/GoProDevice.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/integrations/gopro/GoProDevice.kt",
+      "reason": "dependency",
+      "ported_from": "5f7d6d88b697ac0fb5b371166e29a2844f98c429",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Media/HaishinKit/Util/ByteWriter.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/media/haishinkit/util/ByteWriter.kt",
+      "reason": "dependency",
+      "ported_from": "c861d40e79a6198cbded1604ce80c3de3707b035",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Media/RtspClient/RtspClient.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/media/rtspclient/RtspClient.kt",
+      "reason": "compile",
+      "ported_from": "5f7d6d88b697ac0fb5b371166e29a2844f98c429",
+      "errors": [
+        "562: Class 'RtspClient' is not abstract and does not implement abstract member:"
+      ],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Media/RtspClient/RtspTransport.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/media/rtspclient/RtspTransport.kt",
+      "reason": "dependency",
+      "ported_from": "5f7d6d88b697ac0fb5b371166e29a2844f98c429",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Media/Webrtc/WebrtcIngestClient.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/media/webrtc/WebrtcIngestClient.kt",
+      "reason": "dependency",
+      "ported_from": "5f7d6d88b697ac0fb5b371166e29a2844f98c429",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Various/Model/ModelRemoteControlStreams.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/various/model/ModelRemoteControlStreams.kt",
+      "reason": "dependency",
+      "ported_from": "33acad8eb54894bacb3b7cf647e14214f3095625",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Various/Model/ModelSceneEditor.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/various/model/ModelSceneEditor.kt",
+      "reason": "dependency",
+      "ported_from": "6ad3761a777898a67c1aa71d746b5baaf52cdfab",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Various/Settings/Settings.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/various/settings/Settings.kt",
+      "reason": "dependency",
+      "ported_from": "04a17f4a153da0dbf84fb9ea22cc9978b85c8933",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Various/Settings/SettingsScene.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/various/settings/SettingsScene.kt",
+      "reason": "dependency",
+      "ported_from": "04a17f4a153da0dbf84fb9ea22cc9978b85c8933",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/Various/Settings/SettingsStream.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/various/settings/SettingsStream.kt",
+      "reason": "dependency",
+      "ported_from": "e8bd765e4ae24aa9ae185be826cad79dc6b05fb9",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/ControlBar/QuickButton/SceneEditor/SceneEditorGeometry.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/controlbar/quickbutton/sceneeditor/SceneEditorGeometry.kt",
+      "reason": "dependency",
+      "ported_from": "a04b3ed01577174ed701e23996f459631354b418",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/ControlBar/QuickButton/SceneEditor/SceneEditorView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/controlbar/quickbutton/sceneeditor/SceneEditorView.kt",
+      "reason": "compile",
+      "ported_from": "04a17f4a153da0dbf84fb9ea22cc9978b85c8933",
+      "errors": [
+        "118: Unresolved reference 'height'.",
+        "118: Syntax error: Unexpected type specification.",
+        "118: Syntax error: Expecting ')'.",
+        "118: Syntax error: Expecting an element.",
+        "118: Expression 'scale' of type 'Double' cannot be invoked as a function. Function 'invoke()' is not found.",
+        "118: Syntax error: Expecting an element.",
+        "118: Syntax error: Unexpected tokens (use ';' to separate expressions on the same line).",
+        "119: Syntax error: Expecting an element.",
+        "363: Syntax error: Unexpected type specification."
+      ],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/Settings/Scenes/Scene/SceneSettingsView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/settings/scenes/scene/SceneSettingsView.kt",
+      "reason": "dependency",
+      "ported_from": "6ad3761a777898a67c1aa71d746b5baaf52cdfab",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/Settings/Scenes/Scene/SceneWidgetSettingsView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/settings/scenes/scene/SceneWidgetSettingsView.kt",
+      "reason": "dependency",
+      "ported_from": "6ad3761a777898a67c1aa71d746b5baaf52cdfab",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/Settings/Scenes/Widgets/Widget/WidgetSettingsView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/settings/scenes/widgets/widget/WidgetSettingsView.kt",
+      "reason": "compile",
+      "ported_from": "6ad3761a777898a67c1aa71d746b5baaf52cdfab",
+      "errors": [
+        "56: Unresolved reference 'sceneEditorWidgetWidth'.",
+        "191: Unresolved reference 'sceneEditorWidgetWidth'."
+      ],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/Settings/Streams/Stream/Replay/StreamReplaySettingsView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/settings/streams/stream/replay/StreamReplaySettingsView.kt",
+      "reason": "dependency",
+      "ported_from": "4f25c4c9f9af9144ed6860e8ad58677e376d98b2",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/Utils/PositionEditView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/utils/PositionEditView.kt",
+      "reason": "dependency",
+      "ported_from": "c861d40e79a6198cbded1604ce80c3de3707b035",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/Utils/SizeEditView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/utils/SizeEditView.kt",
+      "reason": "dependency",
+      "ported_from": "c861d40e79a6198cbded1604ce80c3de3707b035",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "Moblin/View/Utils/ValueEditView.swift",
+      "kotlin": "app/src/main/java/com/moblin/android/view/utils/ValueEditView.kt",
+      "reason": "dependency",
+      "ported_from": "c861d40e79a6198cbded1604ce80c3de3707b035",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "MoblinTests/Moblin/VideoEffects/EffectUtilsSuite.swift",
+      "kotlin": "app/src/test/java/com/moblin/android/videoeffects/EffectUtilsSuite.kt",
+      "reason": "dependency",
+      "ported_from": "13df78b9956af458a9396b3a282bf0465dfdcb7a",
+      "errors": [],
+      "hooks": []
+    },
+    {
+      "swift": "MoblinTests/Moblin/View/ControlBar/QuickButton/SceneEditor/SceneEditorGeometrySuite.swift",
+      "kotlin": "app/src/test/java/com/moblin/android/view/controlbar/quickbutton/sceneeditor/SceneEditorGeometrySuite.kt",
+      "reason": "dependency",
+      "ported_from": "a04b3ed01577174ed701e23996f459631354b418",
+      "errors": [],
+      "hooks": []
+    }
+  ],
   "port_failures": [],
   "hooks": [],
   "hand_ported": [],
-  "effects": [],
+  "effects": [
+    "check_effects_api.py: skipped: 2 findings",
+    "check_effects_api.py:   Moblin/VideoEffects/Blur/BlurFilter.swift: the platform-replaced file was removed upstream (Moblin/VideoEffects/Blur/BlurFilter.swift)",
+    "check_effects_api.py:   Moblin/VideoEffects/Blur/BlurKernel.swift: the platform-replaced file was removed upstream (Moblin/VideoEffects/Blur/BlurKernel.swift)",
+    "check_effects_api.py: known gaps: 21 findings are listed in effects_known_gaps.json",
+    "check_effects_api.py: check_effects_api: 2 open findings, 21 known gaps"
+  ],
   "api35": []
 }

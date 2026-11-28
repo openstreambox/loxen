@@ -33,10 +33,22 @@ import com.moblin.android.various.model.moblinCloudSendWheelOfLuck
 import com.moblin.android.various.model.reloadMoblinCloud
 import com.moblin.android.various.settings.Database
 import com.moblin.android.various.settings.SettingsMoblinCloud
+import com.moblin.android.various.settings.SettingsWidgetBrowser
+import com.moblin.android.various.settings.SettingsWidgetBrowserMode
 import com.moblin.android.various.settings.SettingsWidgetType
 import com.moblin.android.view.utils.TextEditNavigationView
 import java.util.UUID
 import com.moblin.android.LocalModel
+
+@Composable
+fun MediaShareModeWarningView(browser: SettingsWidgetBrowser) {
+    if (browser.mode != SettingsWidgetBrowserMode.audioAndVideoOnly || browser.localOnly) {
+        Text(
+            localized("⚠️ Configure the browser widget as audio and video only, with local only off."),
+            color = formPalette().label
+        )
+    }
+}
 
 @Composable
 fun MoblinCloudSettingsView(model: Model = LocalModel.current, database: Database, moblinCloud: SettingsMoblinCloud) {
@@ -184,6 +196,13 @@ fun MoblinCloudSettingsView(model: Model = LocalModel.current, database: Databas
                     model.moblinCloudMediaShareWidgetUpdated()
                 }
             )
+            val mediaWidgetId = moblinCloud.mediaWidgetId
+            if (mediaWidgetId != null) {
+                val widget = database.findWidget(id = mediaWidgetId)
+                if (widget != null) {
+                    MediaShareModeWarningView(browser = widget.browser)
+                }
+            }
         }
         Section(
             footer = localized("Moblin Cloud API server. Default is $moblinCloudApiUrl.")

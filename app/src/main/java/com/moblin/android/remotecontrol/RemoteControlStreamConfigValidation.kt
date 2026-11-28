@@ -334,8 +334,8 @@ private fun isValidPreviewStreamUpdate(
 
 private fun isValidReplayUpdate(replay: SettingsStreamReplay, newReplay: SettingsStreamReplay): Boolean {
     return isValidChange(replay.postTriggerDelay, newReplay.postTriggerDelay) { it in 2..5 } &&
-        isValidChange(replay.layout.x, newReplay.layout.x) { it.toDouble() in 0.0..100.0 } &&
-        isValidChange(replay.layout.y, newReplay.layout.y) { it.toDouble() in 0.0..100.0 } &&
+        isValidChange(replay.layout.x, newReplay.layout.x) { it.toDouble() in -100.0..100.0 } &&
+        isValidChange(replay.layout.y, newReplay.layout.y) { it.toDouble() in -100.0..100.0 } &&
         isValidChange(replay.layout.size, newReplay.layout.size) { it.toDouble() in 1.0..100.0 } &&
         isValidChange(replay.inStinger.transitionPoint, newReplay.inStinger.transitionPoint) {
             it.toDouble() in 0.0..1.0

@@ -108,7 +108,7 @@ private fun layoutOffset(offset: Double,
                          isCenter: Boolean,
                          isNear: Boolean): Double {
     return if (isCenter) {
-        (streamSize - size) / 2
+        (streamSize - size) / 2 + toPixels(offset, streamSize)
     } else if (isNear) {
         toPixels(offset, streamSize)
     } else {
@@ -208,7 +208,7 @@ fun CIImage.move(layout: SettingsWidgetLayout, streamSize: CGSize): CIImage {
         streamSize.width,
         alignment.isHorizontalCenter(),
         alignment.isLeft()) - extent.minX
-    var y = layoutOffset(layout.y,
+    var y = layoutOffset(if (alignment.isVerticalCenter()) -layout.y else layout.y,
         extent.height,
         streamSize.height,
         alignment.isVerticalCenter(),

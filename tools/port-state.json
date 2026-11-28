@@ -2318,23 +2318,24 @@
   },
   "Moblin/StreamingPlatforms/Twitch/TwitchEventSub.swift": {
     "status": "ok",
-    "sha256": "04c10332618477c95640850978bb195d187e1dad12b701f848ff2f45888ab542",
-    "moblin_commit": "6f9c3366d46355d2d932309ef7e5310a80462e0e",
+    "sha256": "2fae5774a7bc46130b235c7b183036408d8cb74bab0599d138f96e26fe2826d9",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
     "mode": "incremental",
     "tier": "logic",
     "kotlin_path": "app/src/main/java/com/moblin/android/streamingplatforms/twitch/TwitchEventSub.kt",
     "notes": [
-      "Adds the channel.shoutout.receive EventSub type: event, payload, message models, delegate method, subscription entry, dispatch case and handler.",
-      "New public event struct becomes a @Serializable data class like its sibling shoutout models.",
-      "The subscription uses the broadcasterAndModerator condition, matching the Swift source."
+      "The Swift diff only removes two `// periphery:ignore` comments, which have no Kotlin counterpart, so the Kotlin file is unchanged.",
+      "All declarations, imports and formatting in TwitchEventSub.kt stay byte-identical.",
+      "No new Swift types, members or functions were added or removed.",
+      "unsupported is empty: this file needs no Apple framework replacement beyond the existing Android hooks."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 60767,
-    "tokens_out": 9616,
-    "seconds": 42.1,
-    "ported_at": "2026-11-20T01:29:14+00:00"
+    "tokens_in": 60391,
+    "tokens_out": 10072,
+    "seconds": 23.2,
+    "ported_at": "2026-11-28T02:15:28+00:00"
   },
   "MoblinTests/Moblin/Media/HaishinKit/Media/Audio/AudioUnitSuite.swift": {
     "status": "ok",
@@ -7840,27 +7841,22 @@
   },
   "Moblin/View/Utils/InlinePickerView.swift": {
     "status": "ok",
-    "sha256": "1b63ed732a88145c18f9e930dd65f64f0cc0d5779656bfff0402f02f6e3b4510",
+    "sha256": "686610b07b637d7f9d4dd554fe3f9796254a5253d0a404c33ef572d492c14e3b",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
+    "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/utils/InlinePickerView.kt",
     "notes": [
-      "InlinePickerItem becomes a data class; SwiftUI's Identifiable has no Kotlin counterpart, LazyColumn is keyed by the item id instead.",
-      "InlinePickerView becomes a top-level @Composable function of the same name; it must be called from the parent screen with the same named arguments.",
-      "@Environment(\\.dismiss) becomes an onDismiss: () -> Unit parameter, and the @State selectedId becomes remember'ed state seeded by the new initialSelectedId parameter (renamed so it does not shadow the state variable).",
-      "SwiftUI's .onChange(of: selectedId) { onChange($0); dismiss() } is executed in the row click handler; a LaunchedEffect(selectedId) would also fire on first composition, so it is not used.",
-      "The inline Picker is rendered as RadioButton rows; a disabled, already-selected row reproduces the fact that SwiftUI's onChange does not fire when the tag does not change.",
-      "The extra \"Unknown 😢\" tag is shown as an extra selected row whenever selectedId is not present in items.",
-      "Form/Section/footer map to a LazyColumn whose last item is a Column holding the footer strings; footers are rendered verbatim because SwiftUI's Text(String) overload does not localize.",
-      ".navigationTitle(title) becomes a Material 3 TopAppBar title inside a Scaffold, which is why @OptIn(ExperimentalMaterial3Api::class) is needed; LocalizedStringKey values are passed as plain Strings to localized()."
+      "Removed the InlinePickerItem companion object because Swift's static fromStrings(values:) was deleted; nothing else in the file changed.",
+      "InlinePickerView stays as previously translated: unknown ids still get an 'Unknown 😢' option and the picker dismisses after onChange."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 2390,
-    "tokens_out": 8807,
-    "seconds": 33.1,
-    "ported_at": "2026-09-22T13:21:05+00:00",
-    "moblin_commit": "c861d40e79a6198cbded1604ce80c3de3707b035"
+    "tokens_in": 37575,
+    "tokens_out": 788,
+    "seconds": 3.3,
+    "ported_at": "2026-11-28T02:15:08+00:00"
   },
   "Moblin/Various/Model/ModelNavigation.swift": {
     "status": "ok",
@@ -9411,28 +9407,24 @@
   },
   "Moblin/VideoEffects/EffectUtils.swift": {
     "status": "ok",
-    "sha256": "94d6147b3b9f3b2b7409377d9e826c6b92dc1a390b9dfd9b70d8f7b3be2fabe4",
-    "moblin_commit": "13df78b9956af458a9396b3a282bf0465dfdcb7a",
+    "sha256": "b3e5148daf444bf5c1f94d51b187ca36bb8d445e9c1c40d5f6868c967cee7d32",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/videoeffects/EffectUtils.kt",
     "notes": [
-      "layoutScale and the private layoutOffset helper are added; layoutPosition and move are rebuilt on top of layoutOffset.",
-      "metalPetalLayerPosition is renamed to layoutCenter (layoutPosition + half size) and its old body is dropped.",
-      "moveComposited, resizeMirrorMoveComposited and composited now take WidgetShape/WidgetShapePlacement from the same package instead of MetalPetalWidgetShape.",
-      "composited gained the resize parameter and reads placement.center/placement.size/placement.borderSize/placement.borderWidth; the border layer wraps cornerRadius/borderColor in MTICornerRadius/MTIColor.",
-      "shape.rotationRadians() is converted with .toFloat() and shape.borderColor components with .toFloat() for the Float MTIColor constructor, matching Swift's Float(...) casts.",
-      "move now uses alignment.mirrorPositionVertically() and alignment.mirrorPositionHorizontally() instead of the old isTop()/else branch logic.",
-      "resizeMirror computes a single layoutScale and scales by (mirror ? -scale : scale, scale).",
-      "Imports MTIColor and MTICornerRadius added; shape.placement and shape.cornerRadiusPixels are called positionally because WidgetShape lives in another file of this package."
+      "Center alignment now adds the layout offset on top of the centering term, so layout.x/layout.y shift widgets away from the exact center in both axes.",
+      "CIImage.move negates layout.y when the vertical alignment is centered, matching the Swift change; the mirrorPositionVertically flag argument is unchanged.",
+      "Only layoutOffset and CIImage.move changed; every other declaration, import and Android-specific call (WidgetShape, MTILayer, MTIAlphaType.premultiplied) is kept byte-identical.",
+      "highQualityDownsampling stays a top-level @Volatile var so pipeline threads observe it."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 59577,
-    "tokens_out": 11720,
-    "seconds": 39.1,
-    "ported_at": "2026-10-02T23:56:32+00:00"
+    "tokens_in": 57700,
+    "tokens_out": 2685,
+    "seconds": 8.2,
+    "ported_at": "2026-11-28T02:15:13+00:00"
   },
   "Moblin/View/Settings/DeepLinkCreator/DeepLinkCreatorStreamsSettingsView.swift": {
     "status": "ok",
@@ -10343,23 +10335,24 @@
   },
   "Moblin/Media/Webrtc/WhepClient/WhepClient.swift": {
     "status": "ok",
-    "sha256": "25452d10fcc130277064bfd51d865112ec917d46dd8ff07beb344de22e0106c6",
-    "moblin_commit": "c2b8fd91a8136b0e138e1d5ee7d5f71fd59c5e73",
+    "sha256": "2944f986536beac6681de4d20bd723f87d9b6e1c26b9fe6456691eb6edd993d4",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/media/webrtc/whepclient/WhepClient.kt",
     "notes": [
-      "The diff only replaces URLSession.shared with httpUrlSession() for the POST offer and the DELETE request, which routes through Moblin's shared OkHttp client instead of a per-call session.",
-      "The hand-written Android port already does this: sendOffer uses httpRequest(request, queue = dispatchQueue) and sendDeleteRequest uses httpRequest(request), both backed by the shared client, so the Kotlin file is unchanged.",
-      "No other line of the Swift diff touches behaviour, so every Kotlin line stays byte-identical."
+      "Removed the isConnected() accessor, matching the Swift diff; the class now relies only on the delegate callbacks for connection state.",
+      "runBlocking import is retained because updateStats() still synchronises on dispatchQueue.",
+      "connected stays a plain private var updated from the WebrtcIngestClientDelegate callbacks on the serial dispatchQueue.",
+      "rest of the file is byte-identical to the previous translation, including the httpRequest/OkHttp WHEP signalling and the libdatachannel track setup."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 43024,
-    "tokens_out": 2524,
-    "seconds": 7.9,
-    "ported_at": "2026-10-06T23:22:21+00:00"
+    "tokens_in": 43188,
+    "tokens_out": 2240,
+    "seconds": 6.8,
+    "ported_at": "2026-11-28T02:15:33+00:00"
   },
   "Moblin/Various/Model/ModelSrtlaServer.swift": {
     "status": "ok",
@@ -10600,28 +10593,23 @@
   },
   "Moblin/VideoEffects/VTuber/VTuberVrmEffect.swift": {
     "status": "ok",
-    "sha256": "c1e3916edc23c8db12e98ba4c67938c57c51e5f25294d8ca16a5898d913145cb",
-    "moblin_commit": "218bcfb64a6fce5eb3fa9327f4aab095de912cc1",
+    "sha256": "ef7a8a92425d76866db0e57c789e4842933da4f2452a5be2671307456bb5b76a",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/videoeffects/vtuber/VTuberVrmEffect.kt",
     "notes": [
-      "RealityKit/VRMRealityKit has no Android shim, so the renderer is built on the SceneKit shim that the previous port used: SCNRenderer.snapshot(atTime:with:antialiasingMode:) returns a Bitmap, and render() hands back an EffectImage instead of a Metal-rendered CVPixelBuffer.",
-      "CVMetalTextureCache, CVMetalTexture, RealityRenderer.CameraOutput, makePixelBuffer/makeTexture and the pixel-buffer pool are dropped: the SceneKit shim renders straight into a Bitmap, so there is no pool/texture path and no RenderedPixelBuffer wrapper.",
-      "VTuberVrmBoneRest and the simd_quatf rest-relative bone composition have no Kotlin counterpart (platform.simd has no quaternion type); setBone() writes eulerAngles as the previous port did, keeping the same neck/spine/arm angle maths.",
-      "ExpressionHandle/ExpressionWeights are replaced by the shim calls node.setBlendShape(.aa) for mouthOpen and node.setBlendShape(.blink) for 1 - leftEyeOpen, which is what the SceneKit VRM node exposes.",
-      "MTLCreateSystemDefaultDevice() guard is not translated: SCNRenderer(device = null) owns the default Android GL device, so a missing Metal device cannot happen.",
-      "render() still takes the completion callback, but the snapshot is synchronous on the calling pipeline thread; the rendering flag and renderedImage cache are kept and the result is written back through processorPipelineQueue, so a render is still returned one call later like in Swift.",
-      "updateCamera() runs directly instead of DispatchQueue.main.async, because the SceneKit camera node must be touched on the pipeline thread that also renders it.",
-      "entity.update(deltaTime:) becomes node.update(at: pose.time) (SceneKit animates by absolute time); a null render keeps the previously rendered image, as in Swift."
+      "The Swift diff only removes the unused stored `device: MTLDevice` property and its assignment; the Kotlin renderer never stored a Metal device (the SCNRenderer shim owns it), so no Kotlin line changes.",
+      "The whole Kotlin file is returned byte-identical to the current version.",
+      "`VTuberVrmRenderer.load` still catches load failures and logs them; the `device` parameter of the Swift initializer has no Kotlin counterpart."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 53830,
-    "tokens_out": 18487,
-    "seconds": 87.2,
-    "ported_at": "2026-11-01T23:37:08+00:00"
+    "tokens_in": 50752,
+    "tokens_out": 2342,
+    "seconds": 7.1,
+    "ported_at": "2026-11-28T02:15:21+00:00"
   },
   "Moblin/VideoEffects/ShapeEffect.swift": {
     "status": "ok",
@@ -13983,23 +13971,22 @@
   },
   "Moblin/Various/Model/ModelTwitch.swift": {
     "status": "ok",
-    "sha256": "795d6e12d7d55cf50811527c40a35b404461418e19bd1d02de25544355bd1383",
-    "moblin_commit": "a2f1225ddb7a1e759a943833e1ce2ec9b3e23836",
+    "sha256": "a9f9c84edc0879e72ede480928ab8acfbda715b0d01bafc723290b26d9529481",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
     "mode": "incremental",
     "tier": "media",
     "kotlin_path": "app/src/main/java/com/moblin/android/various/model/ModelTwitch.kt",
     "notes": [
-      "Only the guard in updateTwitchStream changed: the isLive check was dropped, so the Twitch viewer refresh now runs whenever the channel is configured.",
-      "Everything else is byte-identical to the previous Kotlin translation.",
-      "isLive is no longer referenced in this file but the Model property remains untouched elsewhere."
+      "Only the Swift removeRaid() removal is applied; every other Kotlin line stays byte-identical.",
+      "The Kotlin Model.removeRaid() extension function is deleted together with its raid state resets."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 80052,
-    "tokens_out": 13666,
-    "seconds": 37.9,
-    "ported_at": "2026-11-25T03:13:31+00:00"
+    "tokens_in": 80054,
+    "tokens_out": 13535,
+    "seconds": 31.1,
+    "ported_at": "2026-11-28T02:16:13+00:00"
   },
   "Moblin/View/Settings/BlackSharkCoolers/BlackSharkCoolerDevicesSettingsView.swift": {
     "status": "ok",
@@ -14716,27 +14703,23 @@
   },
   "Moblin/View/Settings/Streams/Stream/YouTube/StreamYouTubeSettingsView.swift": {
     "status": "ok",
-    "sha256": "613b6607615e69b026578d4b2d97b2930bb0756cb3d9739f4331dc4254d4acea",
+    "sha256": "64aba78a50625044d2809321796a12953024ce2816bf58a2e19cfa56d450d0ed",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
+    "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/streams/stream/youtube/StreamYouTubeSettingsView.kt",
     "notes": [
-      "The private enum ScheduleStreamState with an associated value became a sealed class with data objects Idle/InProgress/Succeeded and a Failed(message) data class.",
-      "SwiftUI @Binding parameters became a plain value plus an onChange lambda where the child really writes back; read-only bindings (StreamsView streams/loadError) are passed as plain values only.",
-      "CacheAsyncImage is called with url/modifier/placeholder; its content slot is omitted and the AppIconNoBackground asset is referenced as R.drawable.app_icon_no_background.",
-      "NetworkResponse is assumed to be Success(value)/AuthError/Error and OperationResult is assumed to expose Success; adjust the when branches if the real port differs.",
-      "@Published model/stream properties are read with collectAsState() inside composables and with .value inside plain callbacks; direct assignment is used for writes.",
-      "TextButtonView, TextEditNavigationView, CloseToolbar and HCenter are invoked with assumed parameter names (text/enabled/onClick, title/value/onSubmit/placeholder, presenting/onPresentingChange, modifier/content).",
-      "ISO8601DateFormatter, Date.formatted and Date.distance were replaced with java.time OffsetDateTime/Instant and a localized DateTimeFormatter.",
-      "The destroy SF Symbol names map to Icons.Default.Close for \"stop\" and Icons.Default.Delete for \"trash\"."
+      "The Swift diff only removes the private tokenExpiresIn() helper; the Kotlin port never translated it (no Kotlin code reads stream.youTubeAuthState's token expiration), so the Kotlin file is unchanged.",
+      "No other declaration in the file depended on tokenExpiresIn(), so nothing else was removed or reordered.",
+      "All Android-specific behaviour (formPalette usage, FormRow/BasicTextField title editing, Sheet + LaunchedEffect load, confirmation dialogs) is kept byte-identical."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 9623,
-    "tokens_out": 23391,
-    "seconds": 79.2,
-    "ported_at": "2026-09-22T13:59:55+00:00",
-    "moblin_commit": "c861d40e79a6198cbded1604ce80c3de3707b035"
+    "tokens_in": 58224,
+    "tokens_out": 6327,
+    "seconds": 16.0,
+    "ported_at": "2026-11-28T02:16:03+00:00"
   },
   "Moblin/View/Settings/Streams/Stream/Video/StreamVideoSettingsView.swift": {
     "status": "ok",
@@ -17577,25 +17560,24 @@
   },
   "Moblin/View/Settings/MoblinCloud/MoblinCloudSettingsView.swift": {
     "status": "ok",
-    "sha256": "d70fa4201bbd71ecb5ea988a1277dd3e4373b5cf6de4039857ce9bdd6c21bb82",
-    "moblin_commit": "44882cf528418c3ac4a90da77e5eedb898421861",
+    "sha256": "fd5c4c92c9cf62a28e543e3b7b462ee3ace482d677edf50a1198929c33f28bfb",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
     "mode": "incremental",
     "tier": "ui",
     "kotlin_path": "app/src/main/java/com/moblin/android/view/settings/moblincloud/MoblinCloudSettingsView.kt",
     "notes": [
-      "Added the new Media share Section between the Wheel of luck and URL sections, following the existing Picker pattern used for alerts and wheel of luck.",
-      "The Swift .onChange of mediaWidgetId becomes assignment plus model.moblinCloudMediaShareWidgetUpdated() in the Picker onChange, like the wheel of luck section.",
-      "Added the import of moblinCloudMediaShareWidgetUpdated from com.moblin.android.various.model.",
-      "Options are built as List<UUID?> = null plus the browser widgets, mirroring the nil tag.",
-      "Every other line of the file is unchanged."
+      "Added the private Swift struct MediaShareModeWarningView as a top-level @Composable function above the settings view, before MoblinCloudSettingsView, as in the Swift declaration order.",
+      "The new warning row is inserted inside the Media share Section after the Picker, guarded by the media widget id lookup through database.findWidget(id = ...).",
+      "SettingsWidgetBrowser is a settings ObservableObject class, so browser.mode and browser.localOnly are read directly, without collectAsState.",
+      "The warning text colour uses formPalette().label instead of a Material default so it matches the iOS body colour."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 47466,
-    "tokens_out": 2783,
-    "seconds": 16.2,
-    "ported_at": "2026-11-26T02:31:18+00:00"
+    "tokens_in": 50852,
+    "tokens_out": 3600,
+    "seconds": 12.9,
+    "ported_at": "2026-11-28T02:16:13+00:00"
   },
   "Moblin/Various/Model/ModelMoblinCloud.swift": {
     "status": "ok",
@@ -17936,23 +17918,23 @@
   },
   "Moblin/RemoteControl/RemoteControlSceneConfigValidation.swift": {
     "status": "ok",
-    "sha256": "1b965aafe4bbef81f041e6371667d87e2d12631c7f79e8ee4af3e6458be84c83",
-    "moblin_commit": "04a17f4a153da0dbf84fb9ea22cc9978b85c8933",
+    "sha256": "52100cdaba1b71df01e38dc0c5880490f16ddf36ea29bf4ab2d7b4a1ac3637ba",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
     "mode": "incremental",
     "tier": "logic",
     "kotlin_path": "app/src/main/java/com/moblin/android/remotecontrol/RemoteControlSceneConfigValidation.kt",
     "notes": [
-      "Only isValidAlertUpdate's soundId validation changed: a null soundId now passes validation (matching the new Swift soundId.map { ... } ?? true).",
-      "The imageId branch stays as before, so a null imageId still has to exist in the alerts media gallery.",
-      "Everything else in the file is byte-identical to the previous translation."
+      "Applied the Swift diff: isValidLayoutChange now accepts x and y in -100.0..100.0.",
+      "remoteControlMergeSceneWidgets no longer resets positioningLock or builds a layout copy; it keeps the existing scene widget and just takes the new layout.",
+      "Everything else in the file is unchanged from the previous translation."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 57910,
-    "tokens_out": 6197,
-    "seconds": 15.3,
-    "ported_at": "2026-11-27T02:27:32+00:00"
+    "tokens_in": 58106,
+    "tokens_out": 6244,
+    "seconds": 15.9,
+    "ported_at": "2026-11-28T02:16:05+00:00"
   },
   "Moblin/Various/Model/ModelRemoteControlScenes.swift": {
     "status": "ok",
@@ -17998,22 +17980,23 @@
   },
   "MoblinTests/Moblin/RemoteControl/RemoteControlSceneConfigValidationSuite.swift": {
     "status": "ok",
-    "sha256": "8b3cb6f1d85fb1fa52282a6bda3c39a23ad787c76f09909a77ea4039c318f6b3",
-    "moblin_commit": "04a17f4a153da0dbf84fb9ea22cc9978b85c8933",
+    "sha256": "737d153df8513907536b490c226d44685d962292dbed9d0749a9118657209457",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
     "mode": "incremental",
     "tier": "test",
     "kotlin_path": "app/src/test/java/com/moblin/android/remotecontrol/RemoteControlSceneConfigValidationSuite.kt",
     "notes": [
-      "Only one test case was added, inside the updateIsAccepted argument list, translated as a WidgetCase with soundId set to null.",
-      "Everything else in the file stays byte-identical to the current Kotlin file."
+      "Applied the three Swift diff changes: widened the negative out-of-canvas arguments to -101, added the negative-coordinate acceptance case, and replaced the positioning-lock test with two merge tests.",
+      "The removed centeringSceneWidgetUnlocksPosition test and its positioningLock assertions are gone; mergeAddsNewSceneWidget is new.",
+      "mergeKeepsExistingSceneWidgetAndAppliesLayout asserts the merged scene widget is the same instance and that its alignment became center, using layout.copy for the struct-style write."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 72586,
-    "tokens_out": 10400,
-    "seconds": 28.8,
-    "ported_at": "2026-11-27T02:28:19+00:00"
+    "tokens_in": 73117,
+    "tokens_out": 11381,
+    "seconds": 26.8,
+    "ported_at": "2026-11-28T02:16:32+00:00"
   },
   "Moblin/Various/Model/ModelTally.swift": {
     "status": "ok",
@@ -18194,28 +18177,23 @@
   },
   "Moblin/RemoteControl/RemoteControlStreamConfigValidation.swift": {
     "status": "ok",
-    "sha256": "670c2e3f518f1aea88d4d811d6a5431d09f4436d75bd906a1711df8864235563",
-    "moblin_commit": "33acad8eb54894bacb3b7cf647e14214f3095625",
-    "mode": "full",
+    "sha256": "faab66af322ce7c9be22e0586cab972a9aeeac0301de8852b0fbd6770fc76e08",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
+    "mode": "incremental",
     "tier": "logic",
     "kotlin_path": "app/src/main/java/com/moblin/android/remotecontrol/RemoteControlStreamConfigValidation.kt",
     "notes": [
-      "Swift structs RemoteControlStreamState and StreamLocks became Kotlin data classes; StreamLocks stays file-private like the Swift private struct.",
-      "isValidChange keeps its Swift shape: generic helper with a default disabled=false and a default isValid lambda returning true.",
-      "SettingsStream/SettingsStreamSrt companion validators (isValidBitrate, isValidAudioBitrate, isValidMaxKeyFrameInterval, isValidLatency) are called exactly as declared.",
-      "List equality (headers, repeated WebSocket/HTTP checks) uses Kotlin == on List<List<String>>, which is structural like Swift Array ==.",
-      "Swift's `(low ... high).contains(x)` became `x in low..high` for Int fields, and `x.toDouble() in low..high` for layout.x/y/size and stinger transitionPoint whose numeric types are Float/Double in the port.",
-      "`newDestinations.enumerated().allSatisfy` became `newDestinations.withIndex().all { (index, newDestination) -> ... }` with the previous destination looked up by index and defaulted with `?:`.",
-      "`count(where:)` became `count { }`, `first(where:)` became `firstOrNull { }`, and `max(a, 1)` became `maxOf(a, 1)`.",
-      "Enum cases (.srt, .rist, .h265hevc) use the Kotlin entries SettingsStreamProtocol.srt/rist and SettingsStreamCodec.h265hevc; ranges on settings used as closed ranges."
+      "Only the replay layout x/y ranges changed: 0…100 became -100…100.",
+      "Both use the existing toDouble() conversion, matching Swift's Double comparison.",
+      "All other lines are byte-identical to the previous translation."
     ],
     "unsupported": [],
     "model": "deepseek-flash",
     "backend": "api",
-    "tokens_in": 40910,
-    "tokens_out": 10423,
-    "seconds": 44.1,
-    "ported_at": "2026-11-12T01:43:22+00:00"
+    "tokens_in": 45240,
+    "tokens_out": 3943,
+    "seconds": 10.7,
+    "ported_at": "2026-11-28T02:15:40+00:00"
   },
   "Moblin/Various/Model/ModelRemoteControlStreams.swift": {
     "status": "ok",
@@ -18737,5 +18715,29 @@
     "tokens_out": 2836,
     "seconds": 12.7,
     "ported_at": "2026-11-27T02:27:01+00:00"
+  },
+  "MoblinTests/Moblin/Various/Settings/SettingsSceneWidgetSuite.swift": {
+    "status": "ok",
+    "sha256": "3b7bb18f4688095ca932bebc892837e1cbc72821861f6ef7daaeacc95da4e145",
+    "moblin_commit": "7237d1c523920441e84a5c9e0449c89b36d0696c",
+    "mode": "full",
+    "tier": "test",
+    "kotlin_path": "app/src/test/java/com/moblin/android/various/settings/SettingsSceneWidgetSuite.kt",
+    "notes": [
+      "Swift Testing suite becomes a JUnit 4 class with kotlin.test assertions; the private decode helper uses codableJson with SettingsSceneWidget.serializer().",
+      "Swift struct mutation of sceneWidget.layout is written as a single copy(x =, y =, alignment =) assignment because SettingsWidgetLayout is a data class with val fields.",
+      "JSONDecoder()/JSONEncoder() are replaced by codableJson.decodeFromString/encodeToString, matching the hand-written Codable container used by the settings types.",
+      "SettingsSceneWidget(widgetId: .init()) maps to SettingsSceneWidget(widgetId = UUID.randomUUID()).",
+      "Swift .center alignment literal maps to the SettingsAlignment.center entry, never a rawValue lookup.",
+      "layout.x and layout.y are compared as Double values, hence the 0.0 / 10.0 / 20.0 literals.",
+      "The suite does not depend on locale or time zone, so no @Config or TimeZone setup is added."
+    ],
+    "unsupported": [],
+    "model": "deepseek-flash",
+    "backend": "api",
+    "tokens_in": 37274,
+    "tokens_out": 4335,
+    "seconds": 19.1,
+    "ported_at": "2026-11-28T02:15:30+00:00"
   }
 }

@@ -77,12 +77,6 @@ class WhepClient(
         }
     }
 
-    fun isConnected(): Boolean {
-        return runBlocking(dispatchQueue) {
-            connected
-        }
-    }
-
     fun updateStats(): BitrateStatsInstant {
         return runBlocking(dispatchQueue) {
             bitrateStats.update()

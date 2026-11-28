@@ -21,13 +21,7 @@ import com.moblin.android.platform.swiftui.rememberDismiss
 data class InlinePickerItem(
     val id: String,
     val text: String,
-) {
-    companion object {
-        fun fromStrings(values: List<String>): List<InlinePickerItem> {
-            return values.map { InlinePickerItem(id = it, text = it) }
-        }
-    }
-}
+)
 
 @Composable
 fun InlinePickerView(

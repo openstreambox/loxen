@@ -19,8 +19,8 @@ private fun <T> isValidChange(old: T, new: T, isValid: (T) -> Boolean): Boolean 
 }
 
 private fun isValidLayoutChange(old: SettingsWidgetLayout, new: SettingsWidgetLayout): Boolean {
-    return isValidChange(old.x, new.x) { it in 0.0..100.0 } &&
-        isValidChange(old.y, new.y) { it in 0.0..100.0 } &&
+    return isValidChange(old.x, new.x) { it in -100.0..100.0 } &&
+        isValidChange(old.y, new.y) { it in -100.0..100.0 } &&
         isValidChange(old.size, new.size) { it in 1.0..100.0 }
 }
 
@@ -181,17 +181,8 @@ fun remoteControlMergeSceneWidgets(
 ): List<SettingsSceneWidget> {
     return newSceneWidgets.map { sceneWidget ->
         val oldSceneWidget = sceneWidgets.firstOrNull { it.id == sceneWidget.id }
-        var layout = sceneWidget.layout
-        if (layout.alignment != (oldSceneWidget?.layout?.alignment ?: SettingsWidgetLayout().alignment) &&
-            layout.alignment.isHorizontalOrVerticalCenter()
-        ) {
-            layout = layout.copy(positioningLock = false)
-        }
-        if (oldSceneWidget == null) {
-            sceneWidget.layout = layout
-            return@map sceneWidget
-        }
-        oldSceneWidget.layout = layout
+            ?: return@map sceneWidget
+        oldSceneWidget.layout = sceneWidget.layout
         oldSceneWidget
     }
 }

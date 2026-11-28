@@ -734,12 +734,6 @@ fun Model.updateTwitchRaid() {
     }
 }
 
-fun Model.removeRaid() {
-    raid.state.value = RaidState.idle
-    raid.channelImage.value = ""
-    raid.channelLogin.value = ""
-}
-
 private fun Model.appendTwitchRaidSent(channelId: String, channelName: String) {
     stream.value.twitchRaidsSent = appendTwitchRaidChannel(
         stream.value.twitchRaidsSent,

@@ -816,9 +816,9 @@ class RemoteControlSceneConfigValidationSuite {
     fun sceneWidgetOutsideCanvasIsRejected() {
         val testCases = listOf(
             Triple(101.0, 0.0, 10.0),
-            Triple(-1.0, 0.0, 10.0),
+            Triple(-101.0, 0.0, 10.0),
             Triple(0.0, 101.0, 10.0),
-            Triple(0.0, -1.0, 10.0),
+            Triple(0.0, -101.0, 10.0),
             Triple(0.0, 0.0, 0.0),
             Triple(0.0, 0.0, 101.0),
         )
@@ -862,6 +862,16 @@ class RemoteControlSceneConfigValidationSuite {
                         size = 1.0,
                         alignment = SettingsAlignment.bottomRight,
                     )
+                },
+                database = fixture.database,
+                cameras = fixture.cameras,
+            ),
+        )
+        assertTrue(
+            isValidRemoteControlSceneUpdate(
+                scene = fixture.mainScene,
+                new = modified(fixture.mainScene) {
+                    it.widgets[0].layout = it.widgets[0].layout.copy(x = -100.0, y = -100.0)
                 },
                 database = fixture.database,
                 cameras = fixture.cameras,
@@ -1063,16 +1073,9 @@ class RemoteControlSceneConfigValidationSuite {
     }
 
     @Test
-    fun centeringSceneWidgetUnlocksPosition() {
+    fun mergeKeepsExistingSceneWidgetAndAppliesLayout() {
         val sceneWidget = SettingsSceneWidget(widgetId = UUID.randomUUID())
-        sceneWidget.layout = sceneWidget.layout.copy(positioningLock = true)
-        val kept = remoteControlMergeSceneWidgets(
-            listOf(sceneWidget),
-            listOf(roundTrip(sceneWidget)),
-        )
-        assertSame(sceneWidget, kept.first())
-        assertTrue(sceneWidget.layout.positioningLock)
-        remoteControlMergeSceneWidgets(
+        val merged = remoteControlMergeSceneWidgets(
             listOf(sceneWidget),
             listOf(
                 modified(sceneWidget) {
@@ -1080,15 +1083,15 @@ class RemoteControlSceneConfigValidationSuite {
                 },
             ),
         )
-        assertFalse(sceneWidget.layout.positioningLock)
+        assertSame(sceneWidget, merged.first())
+        assertEquals(SettingsAlignment.center, sceneWidget.layout.alignment)
+    }
+
+    @Test
+    fun mergeAddsNewSceneWidget() {
+        val sceneWidget = SettingsSceneWidget(widgetId = UUID.randomUUID())
         val new = SettingsSceneWidget(widgetId = UUID.randomUUID())
-        new.layout = new.layout.copy(
-            positioningLock = true,
-            alignment = SettingsAlignment.topCenter,
-        )
-        val merged = remoteControlMergeSceneWidgets(listOf(sceneWidget), listOf(new))
-        assertSame(new, merged.first())
-        assertFalse(new.layout.positioningLock)
+        assertSame(new, remoteControlMergeSceneWidgets(listOf(sceneWidget), listOf(new)).first())
     }
 
     @Test
